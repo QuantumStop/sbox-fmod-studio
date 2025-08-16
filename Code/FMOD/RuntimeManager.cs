@@ -235,6 +235,5 @@ public class FMODManager : Component
 
 		initException = null;
 		Instance = null;
-
 	}
 }

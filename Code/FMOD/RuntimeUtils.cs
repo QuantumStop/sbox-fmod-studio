@@ -6,19 +6,19 @@ namespace FMOD
 	[Serializable]
 	public partial struct GUID : IEquatable<GUID>
 	{
-		public GUID(Guid guid)
+		public GUID( Guid guid )
 		{
 			byte[] bytes = guid.ToByteArray();
 
-			Data1 = BitConverter.ToInt32(bytes, 0);
-			Data2 = BitConverter.ToInt32(bytes, 4);
-			Data3 = BitConverter.ToInt32(bytes, 8);
-			Data4 = BitConverter.ToInt32(bytes, 12);
+			Data1 = BitConverter.ToInt32( bytes, 0 );
+			Data2 = BitConverter.ToInt32( bytes, 4 );
+			Data3 = BitConverter.ToInt32( bytes, 8 );
+			Data4 = BitConverter.ToInt32( bytes, 12 );
 		}
 
-		public static GUID Parse(string s)
+		public static GUID Parse( string s )
 		{
-			return new GUID(new Guid(s));
+			return new GUID( new Guid( s ) );
 		}
 
 		public bool IsNull
@@ -32,12 +32,12 @@ namespace FMOD
 			}
 		}
 
-		public override bool Equals(object other)
+		public override bool Equals( object other )
 		{
-			return (other is GUID) && Equals((GUID)other);
+			return (other is GUID) && Equals( (GUID)other );
 		}
 
-		public bool Equals(GUID other)
+		public bool Equals( GUID other )
 		{
 			return Data1 == other.Data1
 				&& Data2 == other.Data2
@@ -45,14 +45,14 @@ namespace FMOD
 				&& Data4 == other.Data4;
 		}
 
-		public static bool operator ==(GUID a, GUID b)
+		public static bool operator ==( GUID a, GUID b )
 		{
-			return a.Equals(b);
+			return a.Equals( b );
 		}
 
-		public static bool operator !=(GUID a, GUID b)
+		public static bool operator !=( GUID a, GUID b )
 		{
-			return !a.Equals(b);
+			return !a.Equals( b );
 		}
 
 		public override int GetHashCode()
@@ -60,9 +60,9 @@ namespace FMOD
 			return Data1 ^ Data2 ^ Data3 ^ Data4;
 		}
 
-		public static implicit operator Guid(GUID guid)
+		public static implicit operator Guid( GUID guid )
 		{
-			return new Guid(guid.Data1,
+			return new Guid( guid.Data1,
 					(short)((guid.Data2 >> 0) & 0xFFFF),
 					(short)((guid.Data2 >> 16) & 0xFFFF),
 					(byte)((guid.Data3 >> 0) & 0xFF),
@@ -78,7 +78,7 @@ namespace FMOD
 
 		public override string ToString()
 		{
-			return ((Guid)this).ToString("B");
+			return ((Guid)this).ToString( "B" );
 		}
 	}
 }
@@ -90,20 +90,20 @@ namespace FMODSbox
 		public FMOD.GUID Guid;
 		public string Path;
 
-		public EventNotFoundException(string path)
-			: base("[FMOD] Event not found: '" + path + "'")
+		public EventNotFoundException( string path )
+			: base( "[FMOD] Event not found: '" + path + "'" )
 		{
 			Path = path;
 		}
 
-		public EventNotFoundException(FMOD.GUID guid)
-			: base("[FMOD] Event not found: " + guid)
+		public EventNotFoundException( FMOD.GUID guid )
+			: base( "[FMOD] Event not found: " + guid )
 		{
 			Guid = guid;
 		}
 
-		public EventNotFoundException(EventReference eventReference)
-			: base("[FMOD] Event not found: " + eventReference.ToString())
+		public EventNotFoundException( EventReference eventReference )
+			: base( "[FMOD] Event not found: " + eventReference.ToString() )
 		{
 			Guid = eventReference.Guid;
 		}
@@ -113,8 +113,8 @@ namespace FMODSbox
 	{
 		public string Path;
 
-		public BusNotFoundException(string path)
-			: base("[FMOD] Bus not found '" + path + "'")
+		public BusNotFoundException( string path )
+			: base( "[FMOD] Bus not found '" + path + "'" )
 		{
 			Path = path;
 		}
@@ -124,8 +124,8 @@ namespace FMODSbox
 	{
 		public string Path;
 
-		public VCANotFoundException(string path)
-			: base("[FMOD] VCA not found '" + path + "'")
+		public VCANotFoundException( string path )
+			: base( "[FMOD] VCA not found '" + path + "'" )
 		{
 			Path = path;
 		}
@@ -136,14 +136,14 @@ namespace FMODSbox
 		public string Path;
 		public FMOD.RESULT Result;
 
-		public BankLoadException(string path, FMOD.RESULT result)
-			: base(string.Format("[FMOD] Could not load bank '{0}' : {1} : {2}", path, result.ToString(), FMOD.Error.String(result)))
+		public BankLoadException( string path, FMOD.RESULT result )
+			: base( string.Format( "[FMOD] Could not load bank '{0}' : {1} : {2}", path, result.ToString(), FMOD.Error.String( result ) ) )
 		{
 			Path = path;
 			Result = result;
 		}
-		public BankLoadException(string path, string error)
-			: base(string.Format("[FMOD] Could not load bank '{0}' : {1}", path, error))
+		public BankLoadException( string path, string error )
+			: base( string.Format( "[FMOD] Could not load bank '{0}' : {1}", path, error ) )
 		{
 			Path = path;
 			Result = FMOD.RESULT.ERR_INTERNAL;
@@ -155,15 +155,15 @@ namespace FMODSbox
 		public FMOD.RESULT Result;
 		public string Location;
 
-		public SystemNotInitializedException(FMOD.RESULT result, string location)
-			: base(string.Format("[FMOD] Initialization failed : {2} : {0} : {1}", result.ToString(), FMOD.Error.String(result), location))
+		public SystemNotInitializedException( FMOD.RESULT result, string location )
+			: base( string.Format( "[FMOD] Initialization failed : {2} : {0} : {1}", result.ToString(), FMOD.Error.String( result ), location ) )
 		{
 			Result = result;
 			Location = location;
 		}
 
-		public SystemNotInitializedException(Exception inner)
-			: base("[FMOD] Initialization failed", inner)
+		public SystemNotInitializedException( Exception inner )
+			: base( "[FMOD] Initialization failed", inner )
 		{
 		}
 	}
@@ -267,15 +267,15 @@ namespace FMODSbox
 		{
 		}
 
-		public ThreadAffinityGroup(ThreadAffinityGroup other)
+		public ThreadAffinityGroup( ThreadAffinityGroup other )
 		{
-			threads = new List<ThreadType>(other.threads);
+			threads = new List<ThreadType>( other.threads );
 			affinity = other.affinity;
 		}
 
-		public ThreadAffinityGroup(ThreadAffinity affinity, params ThreadType[] threads)
+		public ThreadAffinityGroup( ThreadAffinity affinity, params ThreadType[] threads )
 		{
-			this.threads = new List<ThreadType>(threads);
+			this.threads = new List<ThreadType>( threads );
 			this.affinity = affinity;
 		}
 	}
@@ -288,7 +288,7 @@ namespace FMODSbox
 
 		public CodecChannelCount() { }
 
-		public CodecChannelCount(CodecChannelCount other)
+		public CodecChannelCount( CodecChannelCount other )
 		{
 			format = other.format;
 			channels = other.channels;
@@ -298,17 +298,17 @@ namespace FMODSbox
 	public static class RuntimeUtils
 	{
 
-		public static string GetCommonPlatformPath(string path)
+		public static string GetCommonPlatformPath( string path )
 		{
-			if (string.IsNullOrEmpty(path))
+			if ( string.IsNullOrEmpty( path ) )
 			{
 				return path;
 			}
 
-			return path.Replace('\\', '/');
+			return path.Replace( '\\', '/' );
 		}
 
-		public static FMOD.VECTOR ToFMODVector(this Vector3 vec)
+		public static FMOD.VECTOR ToFMODVector( this Vector3 vec )
 		{
 			FMOD.VECTOR temp;
 			temp.x = vec.x;
@@ -359,9 +359,9 @@ namespace FMODSbox
 					return attributes;
 				}
 		*/
-		public static FMOD.THREAD_TYPE ToFMODThreadType(ThreadType threadType)
+		public static FMOD.THREAD_TYPE ToFMODThreadType( ThreadType threadType )
 		{
-			switch (threadType)
+			switch ( threadType )
 			{
 				case ThreadType.Mixer:
 					return FMOD.THREAD_TYPE.MIXER;
@@ -390,43 +390,43 @@ namespace FMODSbox
 				case ThreadType.Convolution_2:
 					return FMOD.THREAD_TYPE.CONVOLUTION2;
 				default:
-					throw new ArgumentException("Unrecognised thread type '" + threadType.ToString() + "'");
+					throw new ArgumentException( "Unrecognised thread type '" + threadType.ToString() + "'" );
 			}
 		}
 
-		public static string DisplayName(this ThreadType thread)
+		public static string DisplayName( this ThreadType thread )
 		{
-			return thread.ToString().Replace('_', ' ');
+			return thread.ToString().Replace( '_', ' ' );
 		}
 
-		public static FMOD.THREAD_AFFINITY ToFMODThreadAffinity(ThreadAffinity affinity)
+		public static FMOD.THREAD_AFFINITY ToFMODThreadAffinity( ThreadAffinity affinity )
 		{
 			FMOD.THREAD_AFFINITY fmodAffinity = FMOD.THREAD_AFFINITY.CORE_ALL;
 
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core0, FMOD.THREAD_AFFINITY.CORE_0, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core1, FMOD.THREAD_AFFINITY.CORE_1, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core2, FMOD.THREAD_AFFINITY.CORE_2, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core3, FMOD.THREAD_AFFINITY.CORE_3, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core4, FMOD.THREAD_AFFINITY.CORE_4, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core5, FMOD.THREAD_AFFINITY.CORE_5, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core6, FMOD.THREAD_AFFINITY.CORE_6, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core7, FMOD.THREAD_AFFINITY.CORE_7, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core8, FMOD.THREAD_AFFINITY.CORE_8, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core9, FMOD.THREAD_AFFINITY.CORE_9, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core10, FMOD.THREAD_AFFINITY.CORE_10, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core11, FMOD.THREAD_AFFINITY.CORE_11, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core12, FMOD.THREAD_AFFINITY.CORE_12, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core13, FMOD.THREAD_AFFINITY.CORE_13, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core14, FMOD.THREAD_AFFINITY.CORE_14, ref fmodAffinity);
-			SetFMODAffinityBit(affinity, ThreadAffinity.Core15, FMOD.THREAD_AFFINITY.CORE_15, ref fmodAffinity);
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core0, FMOD.THREAD_AFFINITY.CORE_0, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core1, FMOD.THREAD_AFFINITY.CORE_1, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core2, FMOD.THREAD_AFFINITY.CORE_2, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core3, FMOD.THREAD_AFFINITY.CORE_3, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core4, FMOD.THREAD_AFFINITY.CORE_4, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core5, FMOD.THREAD_AFFINITY.CORE_5, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core6, FMOD.THREAD_AFFINITY.CORE_6, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core7, FMOD.THREAD_AFFINITY.CORE_7, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core8, FMOD.THREAD_AFFINITY.CORE_8, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core9, FMOD.THREAD_AFFINITY.CORE_9, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core10, FMOD.THREAD_AFFINITY.CORE_10, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core11, FMOD.THREAD_AFFINITY.CORE_11, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core12, FMOD.THREAD_AFFINITY.CORE_12, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core13, FMOD.THREAD_AFFINITY.CORE_13, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core14, FMOD.THREAD_AFFINITY.CORE_14, ref fmodAffinity );
+			SetFMODAffinityBit( affinity, ThreadAffinity.Core15, FMOD.THREAD_AFFINITY.CORE_15, ref fmodAffinity );
 
 			return fmodAffinity;
 		}
 
-		private static void SetFMODAffinityBit(ThreadAffinity affinity, ThreadAffinity mask,
-			FMOD.THREAD_AFFINITY fmodMask, ref FMOD.THREAD_AFFINITY fmodAffinity)
+		private static void SetFMODAffinityBit( ThreadAffinity affinity, ThreadAffinity mask,
+			FMOD.THREAD_AFFINITY fmodMask, ref FMOD.THREAD_AFFINITY fmodAffinity )
 		{
-			if ((affinity & mask) != 0)
+			if ( (affinity & mask) != 0 )
 			{
 				fmodAffinity |= fmodMask;
 			}
@@ -436,10 +436,10 @@ namespace FMODSbox
 		{
 			// Call a function in fmod.dll to make sure it's loaded before fmodstudio.dll
 			int temp1, temp2;
-			FMOD.Memory.GetStats(out temp1, out temp2);
+			FMOD.Memory.GetStats( out temp1, out temp2 );
 
 			FMOD.GUID temp3;
-			FMOD.Studio.Util.parseID("", out temp3);
+			FMOD.Studio.Util.parseID( "", out temp3 );
 		}
 
 	}

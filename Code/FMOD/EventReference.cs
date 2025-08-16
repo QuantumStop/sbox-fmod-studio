@@ -13,25 +13,25 @@ namespace FMODSbox
 
 		public override string ToString()
 		{
-			return string.Format("{0} ({1})", Guid, Path);
+			return string.Format( "{0} ({1})", Guid, Path );
 		}
 
 		public bool IsNull
 		{
 			get
 			{
-				return string.IsNullOrEmpty(Path) && Guid.IsNull;
+				return string.IsNullOrEmpty( Path ) && Guid.IsNull;
 			}
 		}
 
-		public static EventReference Find(string path)
+		public static EventReference Find( string path )
 		{
-			if (GuidLookupDelegate == null)
+			if ( GuidLookupDelegate == null )
 			{
-				throw new InvalidOperationException("EventReference.Find called before EventManager was initialized");
+				throw new InvalidOperationException( "EventReference.Find called before EventManager was initialized" );
 			}
 
-			return new EventReference { Path = path, Guid = GuidLookupDelegate(path) };
+			return new EventReference { Path = path, Guid = GuidLookupDelegate( path ) };
 		}
 	}
 }
