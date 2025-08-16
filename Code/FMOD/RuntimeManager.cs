@@ -25,9 +25,18 @@ public class FMODManager : Component
 	private Dictionary<FMOD.GUID, FMOD.Studio.EventDescription> cachedDescriptions = new Dictionary<FMOD.GUID, FMOD.Studio.EventDescription>();
 
 	[Property, JsonIgnore, ReadOnly] private Dictionary<string, LoadedBank> loadedBanks = new Dictionary<string, LoadedBank>();
-	private List<string> sampleLoadRequests = new List<string>();
+	[Property, JsonIgnore, ReadOnly] private List<string> sampleLoadRequests = new List<string>();
 
-	//private List<AttachedInstance> attachedInstances = new List<AttachedInstance>(128);
+	[Property, JsonIgnore, ReadOnly] private List<AttachedInstance> attachedInstances = new List<AttachedInstance>( 128 );
+
+	private class AttachedInstance
+	{
+		public FMOD.Studio.EventInstance Instance;
+		public Transform transform;
+
+		public Vector3 lastFramePosition;
+		public bool nonRigidbodyVelocity;
+	}
 
 	private int loadingBanksRef = 0;
 
@@ -37,6 +46,8 @@ public class FMODManager : Component
 
 	static FMODManager()
 	{
+		//NativeHelper.AddDllSearchPath( "balls" );
+
 		UTF8Encoding encoding = new UTF8Encoding();
 
 		masterBusPrefix = encoding.GetBytes( "bus:/, " );
