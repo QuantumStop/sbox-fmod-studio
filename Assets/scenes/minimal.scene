@@ -116,8 +116,10 @@
           "__enabled": true,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
+          "LodOverride": null,
           "MaterialGroup": null,
           "MaterialOverride": "materials/default.vmat",
+          "Materials": null,
           "Model": "models/dev/plane.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -139,6 +141,7 @@
           "__guid": "0715cb55-1733-4f5e-8560-c288b8695631",
           "__enabled": true,
           "Center": "0,0,-5",
+          "Elasticity": null,
           "Friction": null,
           "IsTrigger": false,
           "OnComponentDestroy": null,
@@ -151,6 +154,7 @@
           "OnObjectTriggerExit": null,
           "OnTriggerEnter": null,
           "OnTriggerExit": null,
+          "RollingResistance": null,
           "Scale": "100,100,10",
           "Static": false,
           "Surface": null,
@@ -234,6 +238,35 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Rate": 1
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "e1c64523-58f0-4a03-894d-b047125414c1",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Balls",
+      "Position": "-126.4293,-187.5311,115.5769",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "FMODSbox.FMODManager",
+          "__guid": "12f5e07c-b254-4bad-b1e0-4d1c3b59fc39",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
         }
       ],
       "Children": []
