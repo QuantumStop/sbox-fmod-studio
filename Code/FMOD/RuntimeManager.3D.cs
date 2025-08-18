@@ -1,11 +1,14 @@
 namespace FMODSbox;
 public partial class FMODManager
 {
+	private static float SOURCE_UNITS_TO_METERS( float x ) { return MathX.InchToMeter( x ); }
+	private static float METERS_TO_SOURCE_UNITS( float x ) { return MathX.MeterToInch( x ); }
+
 	public static void SetListenerLocation( int listenerIndex, GameObject gameObject, GameObject attenuationObject = null, Vector3 velocity = new Vector3() )
 	{
 		if ( attenuationObject.IsValid() )
 		{
-			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.Transform.World, velocity ), RuntimeUtils.ToFMODVector( attenuationObject.WorldPosition ) );
+			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.Transform.World, velocity ), RuntimeUtils.SourceToFMODVector( attenuationObject.WorldPosition ) );
 		}
 		else
 		{
@@ -22,7 +25,7 @@ public partial class FMODManager
 	{
 		if ( attenuationObject.IsValid() )
 		{
-			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.WorldPosition ), RuntimeUtils.ToFMODVector( attenuationObject.WorldPosition ) );
+			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.WorldPosition ), RuntimeUtils.SourceToFMODVector( attenuationObject.WorldPosition ) );
 		}
 		else
 		{

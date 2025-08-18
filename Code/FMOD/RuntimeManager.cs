@@ -171,6 +171,9 @@ public partial class FMODManager : Component
 		result = coreSystem.setSoftwareFormat( sampleRate, speakerMode, 0 );
 		CheckInitResult( result, "FMOD.System.setSoftwareFormat" );
 
+		result = coreSystem.set3DSettings( 1, METERS_TO_SOURCE_UNITS( 1 ), 1 );
+		CheckInitResult( result, "FMOD.System.set3DSettings" );
+
 		if ( dspBufferLength > 0 && dspBufferCount > 0 )
 		{
 			result = coreSystem.setDSPBufferSize( dspBufferLength, dspBufferCount );
@@ -186,7 +189,10 @@ public partial class FMODManager : Component
 		studioInitFlags |= FMOD.Studio.INITFLAGS.MEMORY_TRACKING;
 #endif
 
-		result = studioSystem.initialize( virtualChannels, studioInitFlags, FMOD.INITFLAGS.NORMAL, IntPtr.Zero );
+		// Source 2 is X+ Forward, Y+ Left, Z+ Up = Righthanded, FMOD is lefthanded Y-Up
+		FMOD.INITFLAGS coreInitFlags = FMOD.INITFLAGS.NORMAL | FMOD.INITFLAGS._3D_RIGHTHANDED;
+
+		result = studioSystem.initialize( virtualChannels, studioInitFlags, coreInitFlags, IntPtr.Zero );
 		if ( result != FMOD.RESULT.OK && initResult == FMOD.RESULT.OK )
 		{
 			initResult = result; // Save this to throw at the end (we'll attempt NO SOUND to shield ourselves from unexpected device failures)
@@ -221,7 +227,6 @@ public partial class FMODManager : Component
 
 		return initResult;
 	}
-
 	protected override void OnDestroy()
 	{
 		coreSystem.setCallback( null, 0 );

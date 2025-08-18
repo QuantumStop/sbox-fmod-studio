@@ -293,13 +293,23 @@ namespace FMODSbox
 			return temp;
 		}
 
+		public static FMOD.VECTOR SourceToFMODVector( this Vector3 vec )
+		{
+			FMOD.VECTOR temp;
+			temp.x = -vec.x;
+			temp.y = vec.z;
+			temp.z = vec.y;
+
+			return temp;
+		}
+
 		public static FMOD.ATTRIBUTES_3D To3DAttributes( this Vector3 pos )
 		{
 			FMOD.ATTRIBUTES_3D attributes = new()
 			{
-				forward = ToFMODVector( Vector3.Forward ),
-				up = ToFMODVector( Vector3.Up ),
-				position = ToFMODVector( pos )
+				forward = SourceToFMODVector( Vector3.Forward ),
+				up = SourceToFMODVector( Vector3.Up ),
+				position = SourceToFMODVector( pos )
 			};
 			return attributes;
 		}
@@ -308,9 +318,9 @@ namespace FMODSbox
 		{
 			FMOD.ATTRIBUTES_3D attributes = new()
 			{
-				forward = transform.Forward.ToFMODVector(),
-				up = transform.Up.ToFMODVector(),
-				position = transform.Position.ToFMODVector()
+				forward = transform.Forward.SourceToFMODVector(),
+				up = transform.Up.SourceToFMODVector(),
+				position = transform.Position.SourceToFMODVector()
 			};
 
 			return attributes;
@@ -320,10 +330,10 @@ namespace FMODSbox
 		{
 			FMOD.ATTRIBUTES_3D attributes = new()
 			{
-				forward = transform.Forward.ToFMODVector(),
-				up = transform.Up.ToFMODVector(),
-				position = transform.Position.ToFMODVector(),
-				velocity = velocity.ToFMODVector()
+				forward = transform.Forward.SourceToFMODVector(),
+				up = transform.Up.SourceToFMODVector(),
+				position = transform.Position.SourceToFMODVector(),
+				velocity = velocity.SourceToFMODVector()
 			};
 
 			return attributes;
@@ -333,9 +343,9 @@ namespace FMODSbox
 		{
 			FMOD.ATTRIBUTES_3D attributes = new()
 			{
-				forward = go.Transform.World.Forward.ToFMODVector(),
-				up = go.Transform.World.Up.ToFMODVector(),
-				position = go.WorldPosition.ToFMODVector()
+				forward = go.Transform.World.Forward.SourceToFMODVector(),
+				up = go.Transform.World.Up.SourceToFMODVector(),
+				position = go.WorldPosition.SourceToFMODVector()
 			};
 
 			return attributes;
