@@ -317,48 +317,46 @@ namespace FMODSbox
 
 			return temp;
 		}
-		/* this is needed but i dont have autocomplete for some reason
-				public static FMOD.ATTRIBUTES_3D To3DAttributes(this Vector3 pos)
-				{
-					FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
-					attributes.forward = ToFMODVector(Vector3.Forward);
-					attributes.up = ToFMODVector(Vector3.Up);
-					attributes.position = ToFMODVector(pos);
+		public static FMOD.ATTRIBUTES_3D To3DAttributes( this Vector3 pos )
+		{
+			FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
+			attributes.forward = ToFMODVector( Vector3.Forward );
+			attributes.up = ToFMODVector( Vector3.Up );
+			attributes.position = ToFMODVector( pos );
+			return attributes;
+		}
 
-					return attributes;
-				}
+		public static FMOD.ATTRIBUTES_3D To3DAttributes( this Transform transform )
+		{
+			FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
+			attributes.forward = transform.Forward.ToFMODVector();
+			attributes.up = transform.Up.ToFMODVector();
+			attributes.position = transform.Position.ToFMODVector();
 
-				public static FMOD.ATTRIBUTES_3D To3DAttributes(this Transform transform)
-				{
-					FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
-					attributes.forward = transform.Forward.ToFMODVector();
-					attributes.up = transform.Up.ToFMODVector();
-					attributes.position = transform.Position.ToFMODVector();
+			return attributes;
+		}
 
-					return attributes;
-				}
+		public static FMOD.ATTRIBUTES_3D To3DAttributes( this Transform transform, Vector3 velocity )
+		{
+			FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
+			attributes.forward = transform.Forward.ToFMODVector();
+			attributes.up = transform.Up.ToFMODVector();
+			attributes.position = transform.Position.ToFMODVector();
+			attributes.velocity = velocity.ToFMODVector();
 
-				public static FMOD.ATTRIBUTES_3D To3DAttributes(this Transform transform, Vector3 velocity)
-				{
-					FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
-					attributes.forward = transform.Forward.ToFMODVector();
-					attributes.up = transform.Up.ToFMODVector();
-					attributes.position = transform.Position.ToFMODVector();
-					attributes.velocity = velocity.ToFMODVector();
+			return attributes;
+		}
 
-					return attributes;
-				}
+		public static FMOD.ATTRIBUTES_3D To3DAttributes( this GameObject go )
+		{
+			FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
+			attributes.forward = go.Transform.World.Forward.ToFMODVector();
+			attributes.up = go.Transform.World.Up.ToFMODVector();
+			attributes.position = go.WorldPosition.ToFMODVector();
 
-				public static FMOD.ATTRIBUTES_3D To3DAttributes(this GameObject go)
-				{
-					FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
-					attributes.forward = go.Transform.Forward.ToFMODVector();
-					attributes.up = go.Transform.Up.ToFMODVector();
-					attributes.position = go.Transform.Position.ToFMODVector();
+			return attributes;
+		}
 
-					return attributes;
-				}
-		*/
 		public static FMOD.THREAD_TYPE ToFMODThreadType( ThreadType threadType )
 		{
 			switch ( threadType )
