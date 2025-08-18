@@ -16,13 +16,7 @@ namespace FMODSbox
 			return string.Format( "{0} ({1})", Guid, Path );
 		}
 
-		public bool IsNull
-		{
-			get
-			{
-				return string.IsNullOrEmpty( Path ) && Guid.IsNull;
-			}
-		}
+		public readonly bool IsNull => string.IsNullOrEmpty( Path ) && Guid.IsNull;
 
 		public static EventReference Find( string path )
 		{

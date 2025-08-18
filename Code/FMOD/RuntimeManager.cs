@@ -4,15 +4,17 @@ using System;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 [Title( "FMOD Manager" )]
-public class FMODManager : Component
+public partial class FMODManager : Component
 {
 	public const string BankStubPrefix = "bank stub:";
 
 	private static SystemNotInitializedException initException = null;
 	[Property, JsonIgnore, ReadOnly] private static FMODManager Instance;
 
+	private static readonly string bankFolder = "fmod/";
 
 	[Property, JsonIgnore, ReadOnly] private FMOD.DEBUG_CALLBACK debugCallback;
 	[Property, JsonIgnore, ReadOnly] private FMOD.SYSTEM_CALLBACK errorCallback;
@@ -34,6 +36,7 @@ public class FMODManager : Component
 	{
 		public FMOD.Studio.EventInstance Instance;
 		public Transform transform;
+		public Rigidbody rigidBody;
 
 		public Vector3 lastFramePosition;
 		public bool nonRigidbodyVelocity;
@@ -45,10 +48,14 @@ public class FMODManager : Component
 	private static byte[] eventSet3DAttributes;
 	private static byte[] systemGetBus;
 
+	[Property, JsonIgnore, ReadOnly] public List<string> MasterBanks;
+
+	[Property, JsonIgnore, ReadOnly] public List<string> Banks;
+
+	[Property, JsonIgnore, ReadOnly] public List<string> BanksToLoad;
+
 	static FMODManager()
 	{
-		//NativeHelper.AddDllSearchPath( "balls" );
-
 		UTF8Encoding encoding = new();
 
 		masterBusPrefix = encoding.GetBytes( "bus:/, " );
@@ -56,13 +63,8 @@ public class FMODManager : Component
 		systemGetBus = encoding.GetBytes( "System::getBus" );
 	}
 
-	public static bool IsMuted
-	{
-		get
-		{
-			return Instance.isMuted;
-		}
-	}
+	public static bool IsMuted => Instance.isMuted;
+
 
 	protected override void OnAwake()
 	{
@@ -121,6 +123,9 @@ public class FMODManager : Component
 			ReleaseStudioSystem();
 			throw new SystemNotInitializedException( result, cause );
 		}
+#if DEBUG
+		else { Log.Info( cause + " is: " + result ); }
+#endif
 	}
 
 	private void ReleaseStudioSystem()
@@ -137,19 +142,19 @@ public class FMODManager : Component
 		FMOD.RESULT result = FMOD.RESULT.OK;
 		FMOD.RESULT initResult = FMOD.RESULT.OK;
 
-		int sampleRate = 48000;
-		int realChannels = 256;
-		int virtualChannels = 128;
-		uint dspBufferLength = 0;
-		int dspBufferCount = 0;
-		FMOD.SPEAKERMODE speakerMode = FMOD.SPEAKERMODE.STEREO;
-		FMOD.OUTPUTTYPE outputType = FMOD.OUTPUTTYPE.AUTODETECT;
+		int sampleRate = fmodSettings.SampleRate;
+		int realChannels = fmodSettings.RealChannels;
+		int virtualChannels = fmodSettings.VirtualChannels;
+		uint dspBufferLength = fmodSettings.DSPBufferLength;
+		int dspBufferCount = fmodSettings.DSPBufferCount;
+		FMOD.SPEAKERMODE speakerMode = fmodSettings.SpeakerMode;
+		FMOD.OUTPUTTYPE outputType = fmodSettings.OutputType;
 		FMOD.ADVANCEDSETTINGS advancedSettings = new();
 
 		FMOD.Studio.INITFLAGS studioInitFlags = FMOD.Studio.INITFLAGS.NORMAL | FMOD.Studio.INITFLAGS.DEFERRED_CALLBACKS;
 
 		studioInitFlags |= FMOD.Studio.INITFLAGS.LIVEUPDATE;
-		advancedSettings.profilePort = 9264; // the port it expects
+		advancedSettings.profilePort = fmodSettings.LiveUpdatePort; // the port it expects
 
 		retry:
 
@@ -214,7 +219,7 @@ public class FMODManager : Component
 		}
 
 		//currentPlatform.LoadPlugins( coreSystem, CheckInitResult );
-		//	LoadBanks( fmodSettings );
+		//LoadBanks( fmodSettings );
 
 		return initResult;
 	}

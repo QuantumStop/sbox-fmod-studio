@@ -1,0 +1,66 @@
+namespace FMODSbox;
+
+public enum ImportType
+{
+	StreamingAssets,
+	AssetBundle,
+}
+public enum BankLoadType
+{
+	All,
+	Specified,
+	None
+}
+public enum MeterChannelOrderingType
+{
+	Standard,
+	SeparateLFE,
+	Positional
+}
+public enum EventLinkage
+{
+	Path,
+	GUID,
+}
+
+
+public partial class FMODManager
+{
+	private Settings fmodSettings => new();
+
+	/// <summary>
+	/// This is where we store settings for all the shit, and since there is no platform choice we can just hardcode it. 
+	/// The exact definition of overengineering, but I don't care.
+	/// </summary>
+	private readonly struct Settings
+	{
+		[Property, ReadOnly] public bool AutomaticEventLoading { get; init; }
+
+		[Property, ReadOnly] public BankLoadType BankLoadType { get; init; }
+
+		[Property, ReadOnly] public bool AutomaticSampleLoading { get; init; }
+		[Property, ReadOnly] public int SampleRate { get; init; }
+		[Property, ReadOnly] public int RealChannels { get; init; }
+		[Property, ReadOnly] public int VirtualChannels { get; init; }
+		[Property, ReadOnly] public uint DSPBufferLength { get; init; }
+		[Property, ReadOnly] public int DSPBufferCount { get; init; }
+		[Property, ReadOnly] public FMOD.SPEAKERMODE SpeakerMode { get; init; }
+		[Property, ReadOnly] public FMOD.OUTPUTTYPE OutputType { get; init; }
+		[Property, ReadOnly] public ushort LiveUpdatePort { get; init; }
+
+
+		public Settings()
+		{
+			AutomaticEventLoading = true;
+			BankLoadType = BankLoadType.All;
+			SampleRate = 48000;
+			RealChannels = 256;
+			VirtualChannels = 128;
+			DSPBufferLength = 0;
+			DSPBufferCount = 0;
+			SpeakerMode = FMOD.SPEAKERMODE.STEREO;
+			OutputType = FMOD.OUTPUTTYPE.AUTODETECT;
+			LiveUpdatePort = 9264;
+		}
+	}
+}
