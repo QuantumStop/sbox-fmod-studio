@@ -22,12 +22,12 @@ public class FMODManager : Component
 
 	private bool isMuted = false;
 
-	private Dictionary<FMOD.GUID, FMOD.Studio.EventDescription> cachedDescriptions = new Dictionary<FMOD.GUID, FMOD.Studio.EventDescription>();
+	private Dictionary<FMOD.GUID, FMOD.Studio.EventDescription> cachedDescriptions = [];
 
-	[Property, JsonIgnore, ReadOnly] private Dictionary<string, LoadedBank> loadedBanks = new Dictionary<string, LoadedBank>();
-	[Property, JsonIgnore, ReadOnly] private List<string> sampleLoadRequests = new List<string>();
+	[Property, JsonIgnore, ReadOnly] private Dictionary<string, LoadedBank> loadedBanks = [];
+	[Property, JsonIgnore, ReadOnly] private List<string> sampleLoadRequests = [];
 
-	[Property, JsonIgnore, ReadOnly] private List<AttachedInstance> attachedInstances = new List<AttachedInstance>( 128 );
+	[Property, JsonIgnore, ReadOnly] private List<AttachedInstance> attachedInstances = new( 128 );
 
 	private class AttachedInstance
 	{
@@ -48,7 +48,7 @@ public class FMODManager : Component
 	{
 		//NativeHelper.AddDllSearchPath( "balls" );
 
-		UTF8Encoding encoding = new UTF8Encoding();
+		UTF8Encoding encoding = new();
 
 		masterBusPrefix = encoding.GetBytes( "bus:/, " );
 		eventSet3DAttributes = encoding.GetBytes( "EventInstance::set3DAttributes" );

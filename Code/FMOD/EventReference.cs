@@ -11,7 +11,7 @@ namespace FMODSbox
 
 		public static Func<string, FMOD.GUID> GuidLookupDelegate;
 
-		public override string ToString()
+		public override readonly string ToString()
 		{
 			return string.Format( "{0} ({1})", Guid, Path );
 		}

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace FMOD
 {
@@ -21,23 +20,17 @@ namespace FMOD
 			return new GUID( new Guid( s ) );
 		}
 
-		public bool IsNull
-		{
-			get
-			{
-				return Data1 == 0
+		public readonly bool IsNull => Data1 == 0
 					&& Data2 == 0
 					&& Data3 == 0
 					&& Data4 == 0;
-			}
-		}
 
-		public override bool Equals( object other )
+		public override readonly bool Equals( object other )
 		{
-			return (other is GUID) && Equals( (GUID)other );
+			return (other is GUID gUID) && Equals( gUID );
 		}
 
-		public bool Equals( GUID other )
+		public readonly bool Equals( GUID other )
 		{
 			return Data1 == other.Data1
 				&& Data2 == other.Data2
@@ -55,7 +48,7 @@ namespace FMOD
 			return !a.Equals( b );
 		}
 
-		public override int GetHashCode()
+		public override readonly int GetHashCode()
 		{
 			return Data1 ^ Data2 ^ Data3 ^ Data4;
 		}
@@ -76,7 +69,7 @@ namespace FMOD
 				);
 		}
 
-		public override string ToString()
+		public override readonly string ToString()
 		{
 			return ((Guid)this).ToString( "B" );
 		}
@@ -109,26 +102,14 @@ namespace FMODSbox
 		}
 	}
 
-	public class BusNotFoundException : Exception
+	public class BusNotFoundException( string path ) : Exception( "[FMOD] Bus not found '" + path + "'" )
 	{
-		public string Path;
-
-		public BusNotFoundException( string path )
-			: base( "[FMOD] Bus not found '" + path + "'" )
-		{
-			Path = path;
-		}
+		public string Path = path;
 	}
 
-	public class VCANotFoundException : Exception
+	public class VCANotFoundException( string path ) : Exception( "[FMOD] VCA not found '" + path + "'" )
 	{
-		public string Path;
-
-		public VCANotFoundException( string path )
-			: base( "[FMOD] VCA not found '" + path + "'" )
-		{
-			Path = path;
-		}
+		public string Path = path;
 	}
 
 	public class BankLoadException : Exception
@@ -175,12 +156,8 @@ namespace FMODSbox
 		ObjectDestroy,
 		TriggerEnter,
 		TriggerExit,
-		TriggerEnter2D,
-		TriggerExit2D,
 		CollisionEnter,
 		CollisionExit,
-		CollisionEnter2D,
-		CollisionExit2D,
 		ObjectEnable,
 		ObjectDisable,
 		ObjectMouseEnter,
@@ -200,8 +177,6 @@ namespace FMODSbox
 		ObjectDestroy,
 		TriggerEnter,
 		TriggerExit,
-		TriggerEnter2D,
-		TriggerExit2D,
 		ObjectEnable,
 		ObjectDisable,
 	}
@@ -260,7 +235,7 @@ namespace FMODSbox
 	[Serializable]
 	public class ThreadAffinityGroup
 	{
-		public List<ThreadType> threads = new List<ThreadType>();
+		public List<ThreadType> threads = [];
 		public ThreadAffinity affinity = ThreadAffinity.Any;
 
 		public ThreadAffinityGroup()
@@ -317,79 +292,74 @@ namespace FMODSbox
 
 			return temp;
 		}
+
 		public static FMOD.ATTRIBUTES_3D To3DAttributes( this Vector3 pos )
 		{
-			FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
-			attributes.forward = ToFMODVector( Vector3.Forward );
-			attributes.up = ToFMODVector( Vector3.Up );
-			attributes.position = ToFMODVector( pos );
+			FMOD.ATTRIBUTES_3D attributes = new()
+			{
+				forward = ToFMODVector( Vector3.Forward ),
+				up = ToFMODVector( Vector3.Up ),
+				position = ToFMODVector( pos )
+			};
 			return attributes;
 		}
 
 		public static FMOD.ATTRIBUTES_3D To3DAttributes( this Transform transform )
 		{
-			FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
-			attributes.forward = transform.Forward.ToFMODVector();
-			attributes.up = transform.Up.ToFMODVector();
-			attributes.position = transform.Position.ToFMODVector();
+			FMOD.ATTRIBUTES_3D attributes = new()
+			{
+				forward = transform.Forward.ToFMODVector(),
+				up = transform.Up.ToFMODVector(),
+				position = transform.Position.ToFMODVector()
+			};
 
 			return attributes;
 		}
 
 		public static FMOD.ATTRIBUTES_3D To3DAttributes( this Transform transform, Vector3 velocity )
 		{
-			FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
-			attributes.forward = transform.Forward.ToFMODVector();
-			attributes.up = transform.Up.ToFMODVector();
-			attributes.position = transform.Position.ToFMODVector();
-			attributes.velocity = velocity.ToFMODVector();
+			FMOD.ATTRIBUTES_3D attributes = new()
+			{
+				forward = transform.Forward.ToFMODVector(),
+				up = transform.Up.ToFMODVector(),
+				position = transform.Position.ToFMODVector(),
+				velocity = velocity.ToFMODVector()
+			};
 
 			return attributes;
 		}
 
 		public static FMOD.ATTRIBUTES_3D To3DAttributes( this GameObject go )
 		{
-			FMOD.ATTRIBUTES_3D attributes = new FMOD.ATTRIBUTES_3D();
-			attributes.forward = go.Transform.World.Forward.ToFMODVector();
-			attributes.up = go.Transform.World.Up.ToFMODVector();
-			attributes.position = go.WorldPosition.ToFMODVector();
+			FMOD.ATTRIBUTES_3D attributes = new()
+			{
+				forward = go.Transform.World.Forward.ToFMODVector(),
+				up = go.Transform.World.Up.ToFMODVector(),
+				position = go.WorldPosition.ToFMODVector()
+			};
 
 			return attributes;
 		}
 
 		public static FMOD.THREAD_TYPE ToFMODThreadType( ThreadType threadType )
 		{
-			switch ( threadType )
+			return threadType switch
 			{
-				case ThreadType.Mixer:
-					return FMOD.THREAD_TYPE.MIXER;
-				case ThreadType.Feeder:
-					return FMOD.THREAD_TYPE.FEEDER;
-				case ThreadType.Stream:
-					return FMOD.THREAD_TYPE.STREAM;
-				case ThreadType.File:
-					return FMOD.THREAD_TYPE.FILE;
-				case ThreadType.Nonblocking:
-					return FMOD.THREAD_TYPE.NONBLOCKING;
-				case ThreadType.Record:
-					return FMOD.THREAD_TYPE.RECORD;
-				case ThreadType.Geometry:
-					return FMOD.THREAD_TYPE.GEOMETRY;
-				case ThreadType.Profiler:
-					return FMOD.THREAD_TYPE.PROFILER;
-				case ThreadType.Studio_Update:
-					return FMOD.THREAD_TYPE.STUDIO_UPDATE;
-				case ThreadType.Studio_Load_Bank:
-					return FMOD.THREAD_TYPE.STUDIO_LOAD_BANK;
-				case ThreadType.Studio_Load_Sample:
-					return FMOD.THREAD_TYPE.STUDIO_LOAD_SAMPLE;
-				case ThreadType.Convolution_1:
-					return FMOD.THREAD_TYPE.CONVOLUTION1;
-				case ThreadType.Convolution_2:
-					return FMOD.THREAD_TYPE.CONVOLUTION2;
-				default:
-					throw new ArgumentException( "Unrecognised thread type '" + threadType.ToString() + "'" );
-			}
+				ThreadType.Mixer => FMOD.THREAD_TYPE.MIXER,
+				ThreadType.Feeder => FMOD.THREAD_TYPE.FEEDER,
+				ThreadType.Stream => FMOD.THREAD_TYPE.STREAM,
+				ThreadType.File => FMOD.THREAD_TYPE.FILE,
+				ThreadType.Nonblocking => FMOD.THREAD_TYPE.NONBLOCKING,
+				ThreadType.Record => FMOD.THREAD_TYPE.RECORD,
+				ThreadType.Geometry => FMOD.THREAD_TYPE.GEOMETRY,
+				ThreadType.Profiler => FMOD.THREAD_TYPE.PROFILER,
+				ThreadType.Studio_Update => FMOD.THREAD_TYPE.STUDIO_UPDATE,
+				ThreadType.Studio_Load_Bank => FMOD.THREAD_TYPE.STUDIO_LOAD_BANK,
+				ThreadType.Studio_Load_Sample => FMOD.THREAD_TYPE.STUDIO_LOAD_SAMPLE,
+				ThreadType.Convolution_1 => FMOD.THREAD_TYPE.CONVOLUTION1,
+				ThreadType.Convolution_2 => FMOD.THREAD_TYPE.CONVOLUTION2,
+				_ => throw new ArgumentException( "Unrecognised thread type '" + threadType.ToString() + "'" ),
+			};
 		}
 
 		public static string DisplayName( this ThreadType thread )
@@ -433,11 +403,8 @@ namespace FMODSbox
 		public static void EnforceLibraryOrder()
 		{
 			// Call a function in fmod.dll to make sure it's loaded before fmodstudio.dll
-			int temp1, temp2;
-			FMOD.Memory.GetStats( out temp1, out temp2 );
-
-			FMOD.GUID temp3;
-			FMOD.Studio.Util.parseID( "", out temp3 );
+			_ = FMOD.Memory.GetStats( out _, out _ );
+			_ = FMOD.Studio.Util.parseID( "", out _ );
 		}
 
 	}
