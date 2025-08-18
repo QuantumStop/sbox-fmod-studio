@@ -3,6 +3,7 @@ namespace FMODSbox;
 using System;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Runtime.InteropServices;
 
 [Title( "FMOD Manager" )]
 public class FMODManager : Component
@@ -143,13 +144,14 @@ public class FMODManager : Component
 		int dspBufferCount = 0;
 		FMOD.SPEAKERMODE speakerMode = FMOD.SPEAKERMODE.STEREO;
 		FMOD.OUTPUTTYPE outputType = FMOD.OUTPUTTYPE.AUTODETECT;
+		FMOD.ADVANCEDSETTINGS advancedSettings = new();
 
 		FMOD.Studio.INITFLAGS studioInitFlags = FMOD.Studio.INITFLAGS.NORMAL | FMOD.Studio.INITFLAGS.DEFERRED_CALLBACKS;
-		//	if ( currentPlatform.IsLiveUpdateEnabled )
-		//	{
-		//		studioInitFlags |= FMOD.Studio.INITFLAGS.LIVEUPDATE;
-		//		advancedSettings.profilePort = (ushort)currentPlatform.LiveUpdatePort;
-		//	}
+
+		studioInitFlags |= FMOD.Studio.INITFLAGS.LIVEUPDATE;
+		advancedSettings.profilePort = 9264; // the port it expects
+
+		retry:
 
 		result = FMOD.Studio.System.create( out studioSystem );
 		CheckInitResult( result, "FMOD.Studio.System.create" );
@@ -172,26 +174,14 @@ public class FMODManager : Component
 			CheckInitResult( result, "FMOD.System.setDSPBufferSize" );
 		}
 
-		/*		if ( fmodSettings.EnableErrorCallback )
-				{
-					errorCallback = new FMOD.SYSTEM_CALLBACK( ERROR_CALLBACK );
-					result = coreSystem.setCallback( errorCallback, FMOD.SYSTEM_CALLBACK_TYPE.ERROR );
-					CheckInitResult( result, "FMOD.System.setCallback" );
-				}
 
-				if ( fmodSettings.EnableMemoryTracking )
-				{
-					studioInitFlags |= FMOD.Studio.INITFLAGS.MEMORY_TRACKING;
-				}*/
+		errorCallback = new FMOD.SYSTEM_CALLBACK( ERROR_CALLBACK );
+		result = coreSystem.setCallback( errorCallback, FMOD.SYSTEM_CALLBACK_TYPE.ERROR );
+		CheckInitResult( result, "FMOD.System.setCallback" );
 
-		//currentPlatform.PreInitialize( studioSystem );
-
-		//PlatformCallbackHandler callbackHandler = currentPlatform.CallbackHandler;
-
-		//if ( callbackHandler != null )
-		//{
-		//	callbackHandler.PreInitialize( studioSystem, CheckInitResult );
-		//}
+#if DEBUG  // used for memory profiling in studio profiler, use it only in edtior builds                                                                                
+		studioInitFlags |= FMOD.Studio.INITFLAGS.MEMORY_TRACKING;
+#endif
 
 		result = studioSystem.initialize( virtualChannels, studioInitFlags, FMOD.INITFLAGS.NORMAL, IntPtr.Zero );
 		if ( result != FMOD.RESULT.OK && initResult == FMOD.RESULT.OK )
@@ -200,8 +190,9 @@ public class FMODManager : Component
 			outputType = FMOD.OUTPUTTYPE.NOSOUND;
 			Log.Warning( "[FMOD] Studio::System::initialize returned {0}, defaulting to no-sound mode." );
 
-			//goto retry;
+			goto retry;
 		}
+
 		CheckInitResult( result, "Studio::System::initialize" );
 
 		// Test network functionality triggered during System::update
@@ -218,7 +209,7 @@ public class FMODManager : Component
 				result = studioSystem.release();
 				CheckInitResult( result, "FMOD.Studio.System.Release" );
 
-				//	goto retry;
+				goto retry;
 			}
 		}
 
@@ -235,5 +226,34 @@ public class FMODManager : Component
 
 		initException = null;
 		Instance = null;
+	}
+
+	private static FMOD.RESULT ERROR_CALLBACK( IntPtr system, FMOD.SYSTEM_CALLBACK_TYPE type, IntPtr commanddata1, IntPtr commanddata2, IntPtr userdata )
+	{
+		FMOD.ERRORCALLBACK_INFO callbackInfo = Marshal.PtrToStructure<FMOD.ERRORCALLBACK_INFO>( commanddata1 );
+
+		// Filter out benign expected errors.
+		if ( (callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.CHANNEL || callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.CHANNELCONTROL)
+			&& (callbackInfo.result == FMOD.RESULT.ERR_INVALID_HANDLE || callbackInfo.result == FMOD.RESULT.ERR_CHANNEL_STOLEN) )
+		{
+			return FMOD.RESULT.OK;
+		}
+		if ( callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.STUDIO_EVENTINSTANCE
+			&& callbackInfo.functionname.Equals( eventSet3DAttributes )
+			&& callbackInfo.result == FMOD.RESULT.ERR_INVALID_HANDLE )
+		{
+			return FMOD.RESULT.OK;
+		}
+		if ( callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.STUDIO_SYSTEM
+			&& callbackInfo.functionname.Equals( systemGetBus )
+			&& callbackInfo.result == FMOD.RESULT.ERR_EVENT_NOTFOUND
+			&& callbackInfo.functionparams.StartsWith( masterBusPrefix ) )
+		{
+			return FMOD.RESULT.OK;
+		}
+
+		Log.Error( string.Format( "[FMOD] {0}({1}) returned {2} for {3} (0x{4}).",
+			(string)callbackInfo.functionname, (string)callbackInfo.functionparams, callbackInfo.result, callbackInfo.instancetype, callbackInfo.instance.ToString( "X" ) ) );
+		return FMOD.RESULT.OK;
 	}
 }
