@@ -20,11 +20,11 @@ public partial class FMODManager
 
 			if ( System.IO.Path.GetExtension( bankName ) != BankExtension )
 			{
-				bankPath = string.Format( "{0}/{1}{2}", bankFolder, bankName, BankExtension );
+				bankPath = string.Format( "{0}/{1}{2}", fmodSettings.BankFolder, bankName, BankExtension );
 			}
 			else
 			{
-				bankPath = string.Format( "{0}/{1}", bankFolder, bankName );
+				bankPath = string.Format( "{0}/{1}", fmodSettings.BankFolder, bankName );
 			}
 
 			Instance.loadingBanksRef++;
@@ -34,7 +34,6 @@ public partial class FMODManager
 			Instance.RegisterLoadedBank( loadedBank, bankPath, bankId, loadSamples, loadResult );
 
 			Instance.loadingBanksRef--;
-
 		}
 	}
 	public static bool IsInitialized => Instance != null && Instance.studioSystem.isValid();

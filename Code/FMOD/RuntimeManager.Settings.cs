@@ -26,7 +26,7 @@ public enum EventLinkage
 
 public partial class FMODManager
 {
-	private Settings fmodSettings => new();
+	private static Settings fmodSettings => new();
 
 	/// <summary>
 	/// This is where we store settings for all the shit, and since there is no platform choice we can just hardcode it. 
@@ -47,6 +47,7 @@ public partial class FMODManager
 		[Property, ReadOnly] public FMOD.SPEAKERMODE SpeakerMode { get; init; }
 		[Property, ReadOnly] public FMOD.OUTPUTTYPE OutputType { get; init; }
 		[Property, ReadOnly] public ushort LiveUpdatePort { get; init; }
+		[Property, ReadOnly] public string BankFolder { get; init; }
 
 
 		public Settings()
@@ -61,6 +62,7 @@ public partial class FMODManager
 			SpeakerMode = FMOD.SPEAKERMODE.STEREO;
 			OutputType = FMOD.OUTPUTTYPE.AUTODETECT;
 			LiveUpdatePort = 9264;
+			BankFolder = "fmod/";
 		}
 	}
 }

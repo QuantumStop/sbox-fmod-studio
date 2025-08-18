@@ -14,8 +14,6 @@ public partial class FMODManager : Component
 	private static SystemNotInitializedException initException = null;
 	[Property, JsonIgnore, ReadOnly] private static FMODManager Instance;
 
-	private static readonly string bankFolder = "fmod/";
-
 	[Property, JsonIgnore, ReadOnly] private FMOD.DEBUG_CALLBACK debugCallback;
 	[Property, JsonIgnore, ReadOnly] private FMOD.SYSTEM_CALLBACK errorCallback;
 
