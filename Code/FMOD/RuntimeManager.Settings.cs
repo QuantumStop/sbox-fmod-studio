@@ -56,7 +56,7 @@ public partial class FMODManager
 			BankLoadType = BankLoadType.All;
 			SampleRate = 48000;
 			RealChannels = 256;
-			VirtualChannels = 128;
+			VirtualChannels = 512;
 			DSPBufferLength = 0;
 			DSPBufferCount = 0;
 			SpeakerMode = FMOD.SPEAKERMODE.STEREO;
