@@ -48,7 +48,7 @@ public partial class FMODManager
 		[Property, ReadOnly] public FMOD.OUTPUTTYPE OutputType { get; init; }
 		[Property, ReadOnly] public ushort LiveUpdatePort { get; init; }
 		[Property, ReadOnly] public string BankFolder { get; init; }
-
+		[Property, ReadOnly] public ImportType ImportType { get; init; }
 
 		public Settings()
 		{
@@ -62,7 +62,7 @@ public partial class FMODManager
 			SpeakerMode = FMOD.SPEAKERMODE.STEREO;
 			OutputType = FMOD.OUTPUTTYPE.AUTODETECT;
 			LiveUpdatePort = 9264;
-			BankFolder = "fmod/";
+			BankFolder = "fmod";
 		}
 	}
 }

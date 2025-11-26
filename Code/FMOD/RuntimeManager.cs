@@ -46,11 +46,11 @@ public partial class FMODManager : Component
 	private static byte[] eventSet3DAttributes;
 	private static byte[] systemGetBus;
 
-	[Property, JsonIgnore, ReadOnly] public List<string> MasterBanks;
+	[Property] public List<string> MasterBanks;
 
-	[Property, JsonIgnore, ReadOnly] public List<string> Banks;
+	[Property] public List<string> Banks;
 
-	[Property, JsonIgnore, ReadOnly] public List<string> BanksToLoad;
+	[Property] public List<string> BanksToLoad;
 
 	static FMODManager()
 	{
@@ -223,7 +223,7 @@ public partial class FMODManager : Component
 		}
 
 		//currentPlatform.LoadPlugins( coreSystem, CheckInitResult );
-		//LoadBanks( fmodSettings );
+		LoadBanks( fmodSettings );
 
 		return initResult;
 	}
@@ -234,6 +234,12 @@ public partial class FMODManager : Component
 
 		initException = null;
 		Instance = null;
+	}
+
+	[Button]
+	void PlaySound()
+	{
+		PlayOneShot( "event:/Action" );
 	}
 
 	private static FMOD.RESULT ERROR_CALLBACK( IntPtr system, FMOD.SYSTEM_CALLBACK_TYPE type, IntPtr commanddata1, IntPtr commanddata2, IntPtr userdata )

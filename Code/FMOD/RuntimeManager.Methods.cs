@@ -42,4 +42,129 @@ public partial class FMODManager
 			masterBus.setMute( Instance.isMuted );
 		}
 	}
+
+	public static void PlayOneShot( string path, Vector3 position = default )
+	{
+		try
+		{
+			Log.Info( "fuckckcukddddd" );
+			PlayOneShot( PathToGUID( path ), position );	
+		}
+		catch
+		{
+			Log.Error( "FUCK" );
+		}
+	}
+
+	public static void PlayOneShot( FMOD.GUID guid, Vector3 position = new Vector3() )
+	{
+		Log.Info( "fuckckcuk 2" );
+		var instance = CreateInstance( guid );
+
+		instance.set3DAttributes( RuntimeUtils.To3DAttributes( position ) );
+		instance.start();
+		instance.release();
+	}
+
+	public static FMOD.GUID PathToGUID( string path )
+	{
+		FMOD.GUID guid;
+		if ( path.StartsWith( "{" ) )
+		{
+			FMOD.Studio.Util.parseID( path, out guid );
+		}
+		else
+		{
+			var result = Instance.studioSystem.lookupID( path, out guid );
+			if ( result == FMOD.RESULT.ERR_EVENT_NOTFOUND )
+			{
+				throw new EventNotFoundException( path );
+			}
+		}
+		return guid;
+	}
+
+	public static FMOD.Studio.EventInstance CreateInstance( EventReference eventReference )
+	{
+		try
+		{
+			return CreateInstance( eventReference.Guid );
+		}
+		catch ( EventNotFoundException )
+		{
+			throw new EventNotFoundException( eventReference );
+		}
+	}
+
+	public static FMOD.Studio.EventInstance CreateInstance( string path )
+	{
+		try
+		{
+			return CreateInstance( PathToGUID( path ) );
+		}
+		catch ( EventNotFoundException )
+		{
+			// Switch from exception with GUID to exception with path
+			throw new EventNotFoundException( path );
+		}
+	}
+
+	public static FMOD.Studio.EventInstance CreateInstance( FMOD.GUID guid )
+	{
+		Log.Info( "fuckckcuk 1" );
+		FMOD.Studio.EventDescription eventDesc = GetEventDescription( guid );
+		FMOD.Studio.EventInstance newInstance;
+		eventDesc.createInstance( out newInstance );
+
+		return newInstance;
+	}
+
+	public static FMOD.Studio.EventDescription GetEventDescription( EventReference eventReference )
+	{
+		try
+		{
+			return GetEventDescription( eventReference.Guid );
+		}
+		catch ( EventNotFoundException )
+		{
+			throw new EventNotFoundException( eventReference );
+		}
+	}
+
+	public static FMOD.Studio.EventDescription GetEventDescription( string path )
+	{
+		try
+		{
+			return GetEventDescription( PathToGUID( path ) );
+		}
+		catch ( EventNotFoundException )
+		{
+			Log.Info( "fuckckcuk " + path );
+			throw new();
+		}
+	}
+
+	public static FMOD.Studio.EventDescription GetEventDescription( FMOD.GUID guid )
+	{
+		FMOD.Studio.EventDescription eventDesc;
+		if ( Instance.cachedDescriptions.ContainsKey( guid ) && Instance.cachedDescriptions[guid].isValid() )
+		{
+			eventDesc = Instance.cachedDescriptions[guid];
+		}
+		else
+		{
+			var result = Instance.studioSystem.getEventByID( guid, out eventDesc );
+
+			if ( result != FMOD.RESULT.OK )
+			{
+				Log.Error( guid );
+			}
+
+			if ( eventDesc.isValid() )
+			{
+				Instance.cachedDescriptions[guid] = eventDesc;
+			}
+		}
+		return eventDesc;
+	}
 }

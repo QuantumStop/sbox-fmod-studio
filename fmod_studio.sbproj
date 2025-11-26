@@ -1,6 +1,6 @@
 {
   "Title": "FMOD Studio",
-  "Type": "library",
+  "Type": "game",
   "Org": "local",
   "Ident": "fmod_studio",
   "Schema": 1,
@@ -32,7 +32,7 @@
       "WarningsAsErrors": "",
       "TreatWarningsAsErrors": false,
       "Nullables": false,
-      "ReleaseMode": "Debug",
+      "ReleaseMode": "Release",
       "AssemblyReferences": [],
       "ReplacementDirectives": {
         ".Server.cs": "SERVER"

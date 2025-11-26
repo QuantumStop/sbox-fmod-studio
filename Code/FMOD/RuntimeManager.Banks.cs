@@ -18,6 +18,7 @@ public partial class FMODManager
 
 			string bankPath;
 
+
 			if ( System.IO.Path.GetExtension( bankName ) != BankExtension )
 			{
 				bankPath = string.Format( "{0}/{1}{2}", fmodSettings.BankFolder, bankName, BankExtension );
@@ -120,5 +121,66 @@ public partial class FMODManager
 
 			sampleLoadRequests.Clear();
 		}
+	}
+
+	private void LoadBanks( Settings fmodSettings )
+	{
+		if ( fmodSettings.ImportType == ImportType.StreamingAssets )
+		{
+			if ( fmodSettings.AutomaticSampleLoading )
+			{
+				sampleLoadRequests.AddRange( WhichBanksToLoad( fmodSettings ) );
+			}
+
+			try
+			{
+				foreach ( string bankName in WhichBanksToLoad( fmodSettings ) )
+				{
+					LoadBank( bankName );
+				}
+
+				WaitForAllSampleLoading();
+			}
+			catch ( BankLoadException e )
+			{
+				Log.Error( e );
+			}
+		}
+	}
+	private IEnumerable<string> WhichBanksToLoad( Settings fmodSettings )
+	{
+		switch ( fmodSettings.BankLoadType )
+		{
+			case BankLoadType.All:
+				foreach ( string masterBankFileName in MasterBanks )
+				{
+					yield return masterBankFileName + ".strings";
+					yield return masterBankFileName;
+				}
+
+				foreach ( var bank in Banks )
+				{
+					yield return bank;
+				}
+				break;
+			case BankLoadType.Specified:
+				foreach ( var bank in BanksToLoad )
+				{
+					if ( !string.IsNullOrEmpty( bank ) )
+					{
+						yield return bank;
+					}
+				}
+				break;
+			case BankLoadType.None:
+				break;
+			default:
+				break;
+		}
+	}
+
+	public static void WaitForAllSampleLoading()
+	{
+		Instance.studioSystem.flushSampleLoading();
 	}
 }
