@@ -1,4 +1,8 @@
+using FMOD.Studio;
+using System;
+
 namespace FMODSbox;
+
 public partial class FMODManager
 {
 	public static void LoadBank( string bankName, bool loadSamples = false )
@@ -17,15 +21,15 @@ public partial class FMODManager
 			const string BankExtension = ".bank";
 
 			string bankPath;
-
+			string assetsFolder = Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" );
 
 			if ( System.IO.Path.GetExtension( bankName ) != BankExtension )
 			{
-				bankPath = string.Format( "{0}/{1}{2}", fmodSettings.BankFolder, bankName, BankExtension );
+				bankPath = string.Format( "{0}\\{1}{2}", assetsFolder, bankName, BankExtension );
 			}
 			else
 			{
-				bankPath = string.Format( "{0}/{1}", fmodSettings.BankFolder, bankName );
+				bankPath = string.Format( "{0}\\{1}", assetsFolder, bankName );
 			}
 
 			Instance.loadingBanksRef++;
@@ -41,20 +45,20 @@ public partial class FMODManager
 
 	public static bool HaveAllBanksLoaded => Instance.loadingBanksRef == 0;
 
-
+	/*
 	public static bool HaveMasterBanksLoaded
 	{
 		get
 		{
-			var banks = Instance.MasterBanks;
+			var banks = Instance.Banks;
 			foreach ( var bank in banks )
 			{
-				if ( !HasBankLoaded( bank ) ) return false;
+				if ( !HasBankLoaded( bank. ) ) return false;
 			}
 			return true;
 		}
 	}
-
+	*/
 	public static bool HasBankLoaded( string loadedBank )
 	{
 		return Instance.loadedBanks.ContainsKey( loadedBank );
@@ -134,9 +138,12 @@ public partial class FMODManager
 
 			try
 			{
-				foreach ( string bankName in WhichBanksToLoad( fmodSettings ) )
+				var WhichBanksToLoadTemp = WhichBanksToLoad( fmodSettings ).ToList();
+
+				foreach ( string bankName in WhichBanksToLoadTemp )
 				{
 					LoadBank( bankName );
+					Banks.Remove( bankName );	
 				}
 
 				WaitForAllSampleLoading();
@@ -152,15 +159,24 @@ public partial class FMODManager
 		switch ( fmodSettings.BankLoadType )
 		{
 			case BankLoadType.All:
-				foreach ( string masterBankFileName in MasterBanks )
-				{
-					yield return masterBankFileName + ".strings";
-					yield return masterBankFileName;
-				}
+//				foreach ( string masterBankFileName in MasterBanks )
+//				{
+//					if ( !string.IsNullOrEmpty( masterBankFileName ) )
+//					{
+//						yield return masterBankFileName + ".strings";
+//						yield return masterBankFileName;
+//					}
+//				}
 
-				foreach ( var bank in Banks )
+				var path = Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" );
+				var AllBanks = System.IO.Directory.GetFiles( path, "*.bank" ).Select( file => System.IO.Path.GetFileName( file ) ).ToArray();
+
+				foreach ( var bank in AllBanks )
 				{
-					yield return bank;
+					if ( !string.IsNullOrEmpty( bank ) )
+					{
+						yield return bank;
+					}
 				}
 				break;
 			case BankLoadType.Specified:

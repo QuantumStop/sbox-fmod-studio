@@ -46,9 +46,10 @@ public partial class FMODManager
 		[Property, ReadOnly] public int DSPBufferCount { get; init; }
 		[Property, ReadOnly] public FMOD.SPEAKERMODE SpeakerMode { get; init; }
 		[Property, ReadOnly] public FMOD.OUTPUTTYPE OutputType { get; init; }
-		[Property, ReadOnly] public ushort LiveUpdatePort { get; init; }
+		[Property, ReadOnly] public ushort ProfilerPort { get; init; }
 		[Property, ReadOnly] public string BankFolder { get; init; }
 		[Property, ReadOnly] public ImportType ImportType { get; init; }
+		public string BankFolderLocation { get => Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" ); }
 
 		public Settings()
 		{
@@ -62,7 +63,7 @@ public partial class FMODManager
 			DSPBufferCount = 4;
 			SpeakerMode = FMOD.SPEAKERMODE.STEREO;
 			OutputType = FMOD.OUTPUTTYPE.AUTODETECT;
-			LiveUpdatePort = 9264;
+			ProfilerPort = 9264;
 			BankFolder = "fmod";
 		}
 	}

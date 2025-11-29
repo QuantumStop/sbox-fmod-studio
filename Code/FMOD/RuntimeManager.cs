@@ -46,11 +46,8 @@ public partial class FMODManager : Component
 	private static byte[] eventSet3DAttributes;
 	private static byte[] systemGetBus;
 
-	[Property] public List<string> MasterBanks;
-
-	[Property] public List<string> Banks;
-
-	[Property] public List<string> BanksToLoad;
+	[Property, ReadOnly] public List<string> Banks { get; set; }
+	[Property, ReadOnly] public List<string> BanksToLoad { get; set; }
 
 	static FMODManager()
 	{
@@ -114,7 +111,7 @@ public partial class FMODManager : Component
 
 		FMOD.Studio.INITFLAGS studioInitFlags = FMOD.Studio.INITFLAGS.NORMAL | FMOD.Studio.INITFLAGS.ALLOW_MISSING_PLUGINS | FMOD.Studio.INITFLAGS.LIVEUPDATE;
 
-		advancedSettings.profilePort = fmodSettings.LiveUpdatePort; // the port it expects
+		advancedSettings.profilePort = fmodSettings.ProfilerPort; // the port it expects
 
 		retry:
 
@@ -141,7 +138,6 @@ public partial class FMODManager : Component
 			result = coreSystem.setDSPBufferSize( dspBufferLength, dspBufferCount );
 			CheckInitResult( result, "FMOD.System.setDSPBufferSize" );
 		}
-
 
 		errorCallback = new FMOD.SYSTEM_CALLBACK( ERROR_CALLBACK );
 		result = coreSystem.setCallback( errorCallback, FMOD.SYSTEM_CALLBACK_TYPE.ERROR );
