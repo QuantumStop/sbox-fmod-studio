@@ -114,9 +114,8 @@ public partial class FMODManager : Component
 		FMOD.OUTPUTTYPE outputType = fmodSettings.OutputType;
 		FMOD.ADVANCEDSETTINGS advancedSettings = new();
 
-		FMOD.Studio.INITFLAGS studioInitFlags = FMOD.Studio.INITFLAGS.NORMAL;
+		FMOD.Studio.INITFLAGS studioInitFlags = FMOD.Studio.INITFLAGS.NORMAL | FMOD.Studio.INITFLAGS.ALLOW_MISSING_PLUGINS | FMOD.Studio.INITFLAGS.LIVEUPDATE;
 
-		studioInitFlags |= FMOD.Studio.INITFLAGS.LIVEUPDATE;
 		advancedSettings.profilePort = fmodSettings.LiveUpdatePort; // the port it expects
 
 		retry:

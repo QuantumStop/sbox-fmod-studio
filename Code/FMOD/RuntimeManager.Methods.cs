@@ -68,7 +68,6 @@ public partial class FMODManager
 	{
 		try
 		{
-			Log.Info( "fuckckcukddddd" );
 			PlayOneShot( PathToGUID( path ), position );
 		}
 		catch
@@ -79,7 +78,6 @@ public partial class FMODManager
 
 	public static void PlayOneShot( FMOD.GUID guid, Vector3 position = new Vector3() )
 	{
-		Log.Info( "fuckckcuk 2" );
 		var instance = CreateInstance( guid );
 
 		instance.set3DAttributes( RuntimeUtils.To3DAttributes( position ) );
@@ -132,7 +130,6 @@ public partial class FMODManager
 
 	public static FMOD.Studio.EventInstance CreateInstance( FMOD.GUID guid )
 	{
-		Log.Info( "fuckckcuk 1" );
 		FMOD.Studio.EventDescription eventDesc = GetEventDescription( guid );
 		FMOD.Studio.EventInstance newInstance;
 		eventDesc.createInstance( out newInstance );
@@ -160,7 +157,7 @@ public partial class FMODManager
 		}
 		catch ( EventNotFoundException )
 		{
-			Log.Info( "fuckckcuk " + path );
+			Log.Warning( path );
 			throw new();
 		}
 	}
