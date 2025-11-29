@@ -212,8 +212,10 @@ public partial class FMODManager : Component
 	[Button]
 	void PlaySound()
 	{
-		PlayOneShot( "event:/Action" );
+		PlayOneShot( name );
 	}
+
+	[Property] string name { get; set; }
 
 	private static FMOD.RESULT ERROR_CALLBACK( IntPtr system, FMOD.SYSTEM_CALLBACK_TYPE type, IntPtr commanddata1, IntPtr commanddata2, IntPtr userdata )
 	{
