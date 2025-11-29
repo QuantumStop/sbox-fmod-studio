@@ -54,11 +54,12 @@ public partial class FMODManager
 		{
 			AutomaticEventLoading = true;
 			BankLoadType = BankLoadType.All;
+			AutomaticSampleLoading = true;
 			SampleRate = 48000;
 			RealChannels = 256;
 			VirtualChannels = 512;
-			DSPBufferLength = 0;
-			DSPBufferCount = 0;
+			DSPBufferLength = 1024;
+			DSPBufferCount = 4;
 			SpeakerMode = FMOD.SPEAKERMODE.STEREO;
 			OutputType = FMOD.OUTPUTTYPE.AUTODETECT;
 			LiveUpdatePort = 9264;

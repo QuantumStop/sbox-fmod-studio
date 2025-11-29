@@ -2,6 +2,27 @@ namespace FMODSbox;
 
 public partial class FMODManager
 {
+	private void CheckInitResult( FMOD.RESULT result, string cause )
+	{
+		if ( result != FMOD.RESULT.OK )
+		{
+			ReleaseStudioSystem();
+			throw new SystemNotInitializedException( result, cause );
+		}
+#if DEBUG
+		else { Log.Info( cause + " is: " + result ); }
+#endif
+	}
+
+	private void ReleaseStudioSystem()
+	{
+		if ( studioSystem.isValid() )
+		{
+			studioSystem.release();
+			studioSystem.clearHandle();
+		}
+	}
+
 	public static FMOD.Studio.Bus GetBus( string path )
 	{
 		if ( StudioSystem.getBus( path, out FMOD.Studio.Bus bus ) != FMOD.RESULT.OK )
@@ -48,7 +69,7 @@ public partial class FMODManager
 		try
 		{
 			Log.Info( "fuckckcukddddd" );
-			PlayOneShot( PathToGUID( path ), position );	
+			PlayOneShot( PathToGUID( path ), position );
 		}
 		catch
 		{

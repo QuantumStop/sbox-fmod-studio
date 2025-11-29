@@ -100,41 +100,6 @@ public partial class FMODManager : Component
 		public int RefCount;
 	}
 
-	// Explicit comparer to avoid issues on platforms that don't support JIT compilation
-	private class GuidComparer : IEqualityComparer<FMOD.GUID>
-	{
-		bool IEqualityComparer<FMOD.GUID>.Equals( FMOD.GUID x, FMOD.GUID y )
-		{
-			return x.Equals( y );
-		}
-
-		int IEqualityComparer<FMOD.GUID>.GetHashCode( FMOD.GUID obj )
-		{
-			return obj.GetHashCode();
-		}
-	}
-
-	private void CheckInitResult( FMOD.RESULT result, string cause )
-	{
-		if ( result != FMOD.RESULT.OK )
-		{
-			ReleaseStudioSystem();
-			throw new SystemNotInitializedException( result, cause );
-		}
-#if DEBUG
-		else { Log.Info( cause + " is: " + result ); }
-#endif
-	}
-
-	private void ReleaseStudioSystem()
-	{
-		if ( studioSystem.isValid() )
-		{
-			studioSystem.release();
-			studioSystem.clearHandle();
-		}
-	}
-
 	private FMOD.RESULT Initialize()
 	{
 		FMOD.RESULT result = FMOD.RESULT.OK;
@@ -149,7 +114,7 @@ public partial class FMODManager : Component
 		FMOD.OUTPUTTYPE outputType = fmodSettings.OutputType;
 		FMOD.ADVANCEDSETTINGS advancedSettings = new();
 
-		FMOD.Studio.INITFLAGS studioInitFlags = FMOD.Studio.INITFLAGS.NORMAL | FMOD.Studio.INITFLAGS.DEFERRED_CALLBACKS;
+		FMOD.Studio.INITFLAGS studioInitFlags = FMOD.Studio.INITFLAGS.NORMAL;
 
 		studioInitFlags |= FMOD.Studio.INITFLAGS.LIVEUPDATE;
 		advancedSettings.profilePort = fmodSettings.LiveUpdatePort; // the port it expects
@@ -234,6 +199,14 @@ public partial class FMODManager : Component
 
 		initException = null;
 		Instance = null;
+	}
+
+	protected override void OnUpdate()
+	{
+		if ( studioSystem.isValid() )
+		{
+			studioSystem.update();
+		}
 	}
 
 	[Button]
