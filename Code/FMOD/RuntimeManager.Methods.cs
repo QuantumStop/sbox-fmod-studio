@@ -72,7 +72,7 @@ public partial class FMODManager
 		}
 		catch
 		{
-			Log.Error( "FUCK" );
+			Log.Error( "Could not play sound :(" );
 		}
 	}
 

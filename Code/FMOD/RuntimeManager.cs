@@ -75,8 +75,6 @@ public partial class FMODManager : Component
 				Log.Error( "[FMOD] RuntimeManager accessed outside of runtime. Do not use RuntimeManager for Editor-only functionality, create your own System objects instead." );
 				return;
 			}
-
-			FMOD.RESULT initResult = FMOD.RESULT.OK; // Initialize can return an error code if it falls back to NO_SOUND, throw it as a non-cached exception
 		}
 		else
 		{
