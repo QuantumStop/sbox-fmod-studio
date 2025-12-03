@@ -23,13 +23,17 @@ public class FMODSystem : GameObjectSystem
 
 		var listener = Scene.Get<StudioListener>(); // should be created AFTER the manager
 
-		if ( !listener.IsValid() )
+		if ( listener == null )
 		{
 			var listen = Scene.Camera.Components.Create<StudioListener>();
 			listen.NonRigidbodyVelocity = true;
+			listen.PlayerListener = true;
 		}
 		else
+		{
 			listener.NonRigidbodyVelocity = true;
+			listener.PlayerListener = true;
+		}
 	}
 }
 

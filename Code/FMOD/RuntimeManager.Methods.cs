@@ -252,7 +252,7 @@ public partial class FMODManager
 			if ( is3D )
 			{
 				description.getMinMaxDistance( out float min, out float max );
-				if ( StudioListener.DistanceSquaredToNearestListener( position ) > (max * max) )
+				if ( DistanceSquaredToNearestListener( position ) > (max * max) )
 				{
 					instance = new FMOD.Studio.EventInstance();
 					return false;

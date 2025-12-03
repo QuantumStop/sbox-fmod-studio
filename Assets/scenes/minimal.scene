@@ -171,7 +171,7 @@
       "__guid": "38311e02-b522-4de7-aa2c-5b3125f55531",
       "__version": 1,
       "Flags": 0,
-      "Name": "Object",
+      "Name": "Camera",
       "Position": "128,96,64",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
@@ -255,6 +255,22 @@
           },
           "RenderType": "On",
           "Tint": "1,1,1,1"
+        },
+        {
+          "__type": "DistancePrinter",
+          "__guid": "3d07ebc2-45a6-44e8-b72f-5fb5612a5b2c",
+          "__enabled": true,
+          "Obj1": {
+            "_type": "gameobject",
+            "go": "558b5fd7-dcc7-4526-b3aa-26a76529659f"
+          },
+          "Obj2": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
         }
       ],
       "Children": []
