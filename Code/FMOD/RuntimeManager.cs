@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Runtime.InteropServices;
 using System.Globalization;
+using FMOD;
 
 [Title( "FMOD Manager" )]
 public partial class FMODManager : Component
@@ -75,6 +76,7 @@ public partial class FMODManager : Component
 		}
 		else
 		{
+			if ( !Scene.Get<StudioListener>().IsValid() ) Scene.Camera.Components.Create<StudioListener>().NonRigidbodyVelocity = true;
 			RuntimeUtils.EnforceLibraryOrder();
 			Instance.Initialize();
 		}
@@ -251,21 +253,6 @@ public partial class FMODManager : Component
 
 			studioSystem.update();
 		}
-	}
-
-	[Button]
-	void PlaySound()
-	{
-		PlayOneShot( name );
-	}
-
-	[Property] string name { get; set; }
-	[Property] GameObject gameobj { get; set; }
-	[Button]
-	void Play3DSound()
-	{
-		if ( gameobj.IsValid() )
-			PlayOneShotAttached( name, gameobj );
 	}
 
 	private static FMOD.RESULT ERROR_CALLBACK( IntPtr system, FMOD.SYSTEM_CALLBACK_TYPE type, IntPtr commanddata1, IntPtr commanddata2, IntPtr userdata )

@@ -1,0 +1,41 @@
+﻿using FMOD;
+using Sandbox;
+using System;
+
+namespace FMODSbox;
+
+/// <summary>
+/// The real entrance point
+/// </summary>
+static public class FMODSound
+{
+	/// <summary>
+	/// Free the event from memory by releasing it (if it wasn't automatically).
+	/// </summary>
+	/// <param name="instance"></param>
+	static public void Release( FMOD.Studio.EventInstance instance ) => instance.release();
+	/// <summary>
+	/// Play an FMOD sound the easy way. 
+	/// </summary>
+	/// <param name="guid">GUID of the event</param>
+	/// <param name="pos">Static position of the event</param>
+	/// <param name="release">Should the instance be released?</param>
+	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
+	static public FMOD.Studio.EventInstance Play( GUID guid, Vector3 pos = default, bool release = true) => FMODManager.PlayOnce(guid, pos, release);
+	/// <summary>
+	/// Play an FMOD sound the easy way. 
+	/// </summary>
+	/// <param name="path">Full path string of the event</param>
+	/// <param name="pos">Static position of the event</param>
+	/// <param name="release">Should the instance be released?</param>
+	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
+	static public FMOD.Studio.EventInstance Play( string path, Vector3 pos = default, bool release = true) => FMODManager.PlayOnce(path, pos, release);
+	/// <summary>
+	/// Play the sound and attach it to the game object (or the rigidbody)
+	/// </summary>
+	/// <param name="path"></param>
+	/// <param name="gameObject"></param>
+	/// <param name="release"></param>
+	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
+	static public FMOD.Studio.EventInstance Play( string path, GameObject gameObject, bool release = true) => FMODManager.PlayOnObject(path, gameObject, release);
+}

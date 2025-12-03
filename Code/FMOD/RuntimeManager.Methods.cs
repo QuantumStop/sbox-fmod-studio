@@ -1,4 +1,6 @@
+using FMOD;
 using System;
+using System.IO;
 
 namespace FMODSbox;
 
@@ -64,26 +66,39 @@ public partial class FMODManager
 			masterBus.setMute( Instance.isMuted );
 		}
 	}
-
-	public static void PlayOneShot( string path, Vector3 position = default )
+	/// <summary>
+	/// PlayOnObject a sound which is immediately released, making it innacessible (oneshot sound)
+	/// </summary>
+	/// <param name="path">Path string of the event</param>
+	/// <param name="position">WorldPosition of the event</param>
+	/// <param name="release">Should the instance be released or we do that ourselves</param>
+	public static FMOD.Studio.EventInstance PlayOnce( string path, Vector3 position = default, bool release = true )
 	{
 		try
 		{
-			PlayOneShot( PathToGUID( path ), position );
+			return PlayOnce( PathToGUID( path ), position, release );
 		}
-		catch
+		catch ( EventNotFoundException )
 		{
-			Log.Error( "Could not play sound :(" );
+			throw new EventNotFoundException( path );
 		}
 	}
 
-	public static void PlayOneShot( FMOD.GUID guid, Vector3 position = new Vector3() )
+	/// <summary>
+	/// PlayOnObject a sound which is immediately released, making it innacessible (oneshot sound)
+	/// </summary>
+	/// <param name="guid">GUID of the event</param>
+	/// <param name="position">WorldPosition of the event</param>
+	/// <param name="release">Should the instance be released or we do that ourselves</param>
+	public static FMOD.Studio.EventInstance PlayOnce( GUID guid, Vector3 position = new Vector3(), bool release = true )
 	{
 		var instance = CreateInstance( guid );
 
 		instance.set3DAttributes( RuntimeUtils.To3DAttributes( position ) );
 		instance.start();
-		instance.release();
+		if ( release ) instance.release();
+
+		return instance;    // generally not a good idea to get the instance if its released buuuuut...
 	}
 
 	public static FMOD.GUID PathToGUID( string path )
@@ -158,8 +173,7 @@ public partial class FMODManager
 		}
 		catch ( EventNotFoundException )
 		{
-			Log.Warning( path );
-			throw new();
+			throw new EventNotFoundException( path );
 		}
 	}
 
@@ -187,31 +201,33 @@ public partial class FMODManager
 		return eventDesc;
 	}
 
-	public static void PlayOneShotAttached( EventReference eventReference, GameObject gameObject )
+	public static FMOD.Studio.EventInstance PlayOnObject( EventReference eventReference, GameObject gameObject = null, bool release = true )
 	{
 		try
 		{
-			PlayOneShotAttached( eventReference.Guid, gameObject );
+			PlayOnObject( eventReference.Guid, gameObject, out var eventInstance, release );
+			return eventInstance;
 		}
 		catch ( EventNotFoundException )
 		{
-			Log.Warning( "[FMOD] Event not found: " + eventReference );
+			throw new EventNotFoundException( eventReference );
 		}
 	}
 
-	public static void PlayOneShotAttached( string path, GameObject gameObject )
+	public static FMOD.Studio.EventInstance PlayOnObject( string path, GameObject gameObject, bool release = true )
 	{
 		try
 		{
-			PlayOneShotAttached( PathToGUID( path ), gameObject );
+			PlayOnObject( PathToGUID( path ), gameObject, out var instance, release );
+			return instance;
 		}
 		catch ( EventNotFoundException )
 		{
-			Log.Warning( "[FMOD] Event not found: " + path );
+			throw new EventNotFoundException( path );
 		}
 	}
 
-	public static void PlayOneShotAttached( FMOD.GUID guid, GameObject gameObject )
+	public static void PlayOnObject( FMOD.GUID guid, GameObject gameObject, out FMOD.Studio.EventInstance eventInstance, bool release = true )
 	{
 		if ( CreateInstanceWithinMaxDistance( guid, gameObject.WorldTransform.Position, out FMOD.Studio.EventInstance instance ) )
 		{
@@ -221,11 +237,13 @@ public partial class FMODManager
 				AttachInstanceToGameObject( instance, gameObject );
 
 			instance.start();
-			instance.release();
+			if ( release ) instance.release();
 		}
+
+		eventInstance = instance;
 	}
 
-	private static bool CreateInstanceWithinMaxDistance( FMOD.GUID guid, Vector3 position, out FMOD.Studio.EventInstance instance )
+	public static bool CreateInstanceWithinMaxDistance( FMOD.GUID guid, Vector3 position, out FMOD.Studio.EventInstance instance )
 	{
 		FMOD.Studio.EventDescription description = GetEventDescription( guid );
 		if ( fmodSettings.StopEventsOutsideMaxDistance )
@@ -243,13 +261,12 @@ public partial class FMODManager
 		}
 
 		description.createInstance( out instance );
-		Log.Info( instance );
 		return true;
 	}
 
 	private static AttachedInstance FindOrAddAttachedInstance( FMOD.Studio.EventInstance instance, GameObject gameObject, FMOD.ATTRIBUTES_3D attributes )
 	{
-		return FindOrAddAttachedInstance(instance, gameObject.WorldTransform, gameObject, attributes);
+		return FindOrAddAttachedInstance( instance, gameObject.WorldTransform, gameObject, attributes );
 	}
 
 	private static AttachedInstance FindOrAddAttachedInstance( FMOD.Studio.EventInstance instance, Transform transform, FMOD.ATTRIBUTES_3D attributes )
