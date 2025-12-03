@@ -14,7 +14,7 @@ public partial class StudioListener : Component
 	private Vector3 _lastFramePosition = Vector3.Zero;
 	private Rigidbody _rigidBody;
 
-	private static List<StudioListener> listeners = new List<StudioListener>();
+	private static List<StudioListener> listeners = [];
 	public static int ListenerCount { get => listeners.Count; }
 	public int ListenerNumber { get => listeners.IndexOf( this ); }
 
@@ -22,7 +22,7 @@ public partial class StudioListener : Component
 	{
 		RuntimeUtils.EnforceLibraryOrder();
 
-		_rigidBody = GameObject.GetComponent<Rigidbody>();
+		_rigidBody = GameObject.Components.Get<Rigidbody>( FindMode.EnabledInSelfAndChildren );
 
 		if ( NonRigidbodyVelocity && _rigidBody.IsValid() )
 		{
@@ -55,7 +55,7 @@ public partial class StudioListener : Component
 			if ( Time.Delta != 0 )
 			{
 				velocity = (position - _lastFramePosition) / Time.Delta;
-				velocity = velocity.Clamp( velocity, 20f);
+				velocity = velocity.Clamp( velocity, 20f );
 			}
 
 			_lastFramePosition = position;

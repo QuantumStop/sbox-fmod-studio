@@ -10,14 +10,7 @@ public partial class StudioListener : Component
 
 		for ( int i = 0; i < listeners.Count; i++ )
 		{
-			if ( listeners[i].AttenuationObject == null )
-			{
-				result = MathF.Min( result, position.Distance( listeners[i].WorldTransform.Position ) );
-			}
-			else
-			{
-				result = MathF.Min( result, position.Distance( listeners[i].AttenuationObject.WorldTransform.Position ) );
-			}
+			result = MathF.Min( result, position.Distance( listeners[i].AttenuationObject == null ? listeners[i].WorldTransform.Position : listeners[i].AttenuationObject.WorldTransform.Position ) );
 		}
 		return result;
 	}
@@ -27,14 +20,7 @@ public partial class StudioListener : Component
 		float result = float.MaxValue;
 		for ( int i = 0; i < listeners.Count; i++ )
 		{
-			if ( listeners[i].AttenuationObject == null )
-			{
-				result = MathF.Min( result, (position - listeners[i].WorldTransform.Position).LengthSquared );
-			}
-			else
-			{
-				result = MathF.Min( result, (position - listeners[i].AttenuationObject.WorldTransform.Position).LengthSquared );
-			}
+			result = MathF.Min( result, (position - (listeners[i].AttenuationObject == null ? listeners[i].WorldTransform.Position : listeners[i].AttenuationObject.WorldTransform.Position)).LengthSquared );
 		}
 
 		return result;
