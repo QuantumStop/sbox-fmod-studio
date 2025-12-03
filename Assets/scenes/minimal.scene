@@ -250,7 +250,7 @@
         },
         {
           "__type": "FMODSbox.StudioListener",
-          "__guid": "8b95b883-6926-4a89-83ac-e5506b911584",
+          "__guid": "a601f6c8-853e-4a80-b3f2-f489b5e19286",
           "__enabled": true,
           "AttenuationObject": null,
           "NonRigidbodyVelocity": true,

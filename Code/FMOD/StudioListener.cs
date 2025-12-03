@@ -43,9 +43,7 @@ public partial class StudioListener : Component
 	protected override void OnUpdate()
 	{
 		if ( ListenerNumber < 0 || ListenerNumber >= FMOD.CONSTANTS.MAX_LISTENERS )
-		{
 			return;
-		}
 
 		if ( NonRigidbodyVelocity )
 		{
@@ -65,15 +63,9 @@ public partial class StudioListener : Component
 		else
 		{
 			if ( _rigidBody.IsValid() )
-			{
 				FMODManager.SetListenerLocation( ListenerNumber, GameObject, _rigidBody, AttenuationObject );
-			}
 			else
-
-
-			{
 				FMODManager.SetListenerLocation( ListenerNumber, GameObject, AttenuationObject );
-			}
 		}
 	}
 

@@ -75,6 +75,7 @@ public partial class FMODManager : Component
 		}
 		else
 		{
+			RuntimeUtils.EnforceLibraryOrder();
 			Instance.Initialize();
 		}
 	}
@@ -180,7 +181,6 @@ public partial class FMODManager : Component
 			}
 		}
 
-		RuntimeUtils.EnforceLibraryOrder();
 
 		//currentPlatform.LoadPlugins( coreSystem, CheckInitResult );
 		LoadBanks( fmodSettings );
