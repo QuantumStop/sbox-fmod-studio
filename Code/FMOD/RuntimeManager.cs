@@ -11,15 +11,15 @@ public partial class FMODManager : Component
 {
 	public const string BankStubPrefix = "bank stub:";
 
-	private static SystemNotInitializedException initException = null;
+//	private static SystemNotInitializedException initException = null;
 	[Property, JsonIgnore, ReadOnly] private static FMODManager Instance;
 
-	[Property, JsonIgnore, ReadOnly] private FMOD.DEBUG_CALLBACK debugCallback;
+//	[Property, JsonIgnore, ReadOnly] private FMOD.DEBUG_CALLBACK debugCallback;
 	[Property, JsonIgnore, ReadOnly] private FMOD.SYSTEM_CALLBACK errorCallback;
 
 	[Property, JsonIgnore, ReadOnly] private FMOD.Studio.System studioSystem;
 	[Property, JsonIgnore, ReadOnly] private FMOD.System coreSystem;
-	[Property, JsonIgnore, ReadOnly] private FMOD.DSP mixerHead;
+//	[Property, JsonIgnore, ReadOnly] private FMOD.DSP mixerHead;
 
 	private bool isMuted = false;
 
@@ -190,7 +190,7 @@ public partial class FMODManager : Component
 		coreSystem.setCallback( null, 0 );
 		ReleaseStudioSystem();
 
-		initException = null;
+//		initException = null;
 		Instance = null;
 	}
 
