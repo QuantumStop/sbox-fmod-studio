@@ -15,4 +15,11 @@ public class DistancePrinter : Component
 	{
 		FMODSound.Play( "event:/Weapons/1P/Sniper/SniperA_1P" );
 	}
+
+	[Button]
+	void Test3DSound()
+	{
+		if ( Obj1.IsValid() )
+			FMODSound.Play( "event:/Videos/TrainRobbery", Obj1 );
+	}
 }
