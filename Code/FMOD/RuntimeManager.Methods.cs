@@ -1,3 +1,5 @@
+using System;
+
 namespace FMODSbox;
 
 public partial class FMODManager
@@ -183,5 +185,105 @@ public partial class FMODManager
 			}
 		}
 		return eventDesc;
+	}
+
+	public static void PlayOneShotAttached( EventReference eventReference, GameObject gameObject )
+	{
+		try
+		{
+			PlayOneShotAttached( eventReference.Guid, gameObject );
+		}
+		catch ( EventNotFoundException )
+		{
+			Log.Warning( "[FMOD] Event not found: " + eventReference );
+		}
+	}
+
+	public static void PlayOneShotAttached( string path, GameObject gameObject )
+	{
+		try
+		{
+			PlayOneShotAttached( PathToGUID( path ), gameObject );
+		}
+		catch ( EventNotFoundException )
+		{
+			Log.Warning( "[FMOD] Event not found: " + path );
+		}
+	}
+
+	public static void PlayOneShotAttached( FMOD.GUID guid, GameObject gameObject )
+	{
+		if ( CreateInstanceWithinMaxDistance( guid, gameObject.WorldTransform.Position, out FMOD.Studio.EventInstance instance ) )
+		{
+			if ( gameObject.Components.TryGet<Rigidbody>( out var rigid ) )
+				AttachInstanceToGameObject( instance, gameObject, rigid );
+			else
+				AttachInstanceToGameObject( instance, gameObject );
+
+			instance.start();
+			instance.release();
+		}
+	}
+
+	private static bool CreateInstanceWithinMaxDistance( FMOD.GUID guid, Vector3 position, out FMOD.Studio.EventInstance instance )
+	{
+		FMOD.Studio.EventDescription description = GetEventDescription( guid );
+		if ( fmodSettings.StopEventsOutsideMaxDistance )
+		{
+			description.is3D( out bool is3D );
+			if ( is3D )
+			{
+				description.getMinMaxDistance( out float min, out float max );
+				if ( StudioListener.DistanceSquaredToNearestListener( position ) > (max * max) )
+				{
+					instance = new FMOD.Studio.EventInstance();
+					return false;
+				}
+			}
+		}
+
+		description.createInstance( out instance );
+		Log.Info( instance );
+		return true;
+	}
+
+	private static AttachedInstance FindOrAddAttachedInstance( FMOD.Studio.EventInstance instance, GameObject gameObject, FMOD.ATTRIBUTES_3D attributes )
+	{
+		return FindOrAddAttachedInstance(instance, gameObject.WorldTransform, gameObject, attributes);
+	}
+
+	private static AttachedInstance FindOrAddAttachedInstance( FMOD.Studio.EventInstance instance, Transform transform, FMOD.ATTRIBUTES_3D attributes )
+	{
+		return FindOrAddAttachedInstance( instance, transform, null, attributes );
+	}
+
+	private static AttachedInstance FindOrAddAttachedInstance( FMOD.Studio.EventInstance instance, Transform transform, GameObject gameObject, FMOD.ATTRIBUTES_3D attributes )
+	{
+		AttachedInstance attachedInstance = Instance.attachedInstances.Find( x => x.Instance.handle == instance.handle );
+
+		if ( attachedInstance == null )
+		{
+			attachedInstance = new AttachedInstance();
+			Instance.attachedInstances.Add( attachedInstance );
+		}
+		attachedInstance.Instance = instance;
+		attachedInstance.transform = transform;
+		attachedInstance.attachedGameObject = gameObject;
+		attachedInstance.Instance.set3DAttributes( attributes );
+		return attachedInstance;
+	}
+
+	public static void AttachInstanceToGameObject( FMOD.Studio.EventInstance instance, GameObject gameObject )
+	{
+		AttachedInstance attachedInstance = FindOrAddAttachedInstance( instance, gameObject, RuntimeUtils.To3DAttributes( gameObject.WorldTransform ) );
+
+		attachedInstance.lastFramePosition = gameObject.WorldTransform.Position;
+	}
+
+	public static void AttachInstanceToGameObject( FMOD.Studio.EventInstance instance, GameObject gameObject, Rigidbody rigidBody )
+	{
+		AttachedInstance attachedInstance = FindOrAddAttachedInstance( instance, gameObject, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.WorldPosition ) );
+
+		attachedInstance.rigidBody = rigidBody;
 	}
 }

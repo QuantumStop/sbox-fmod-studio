@@ -11,15 +11,15 @@ public partial class FMODManager : Component
 {
 	public const string BankStubPrefix = "bank stub:";
 
-//	private static SystemNotInitializedException initException = null;
+	//	private static SystemNotInitializedException initException = null;
 	[Property, JsonIgnore, ReadOnly] private static FMODManager Instance;
 
-//	[Property, JsonIgnore, ReadOnly] private FMOD.DEBUG_CALLBACK debugCallback;
+	//	[Property, JsonIgnore, ReadOnly] private FMOD.DEBUG_CALLBACK debugCallback;
 	[Property, JsonIgnore, ReadOnly] private FMOD.SYSTEM_CALLBACK errorCallback;
 
 	[Property, JsonIgnore, ReadOnly] private FMOD.Studio.System studioSystem;
 	[Property, JsonIgnore, ReadOnly] private FMOD.System coreSystem;
-//	[Property, JsonIgnore, ReadOnly] private FMOD.DSP mixerHead;
+	//	[Property, JsonIgnore, ReadOnly] private FMOD.DSP mixerHead;
 
 	private bool isMuted = false;
 
@@ -34,10 +34,10 @@ public partial class FMODManager : Component
 	{
 		public FMOD.Studio.EventInstance Instance;
 		public Transform transform;
+		public GameObject attachedGameObject;
 		public Rigidbody rigidBody;
 
 		public Vector3 lastFramePosition;
-		public bool nonRigidbodyVelocity;
 	}
 
 	private int loadingBanksRef = 0;
@@ -130,7 +130,7 @@ public partial class FMODManager : Component
 		result = coreSystem.setSoftwareFormat( sampleRate, speakerMode, 0 );
 		CheckInitResult( result, "FMOD.System.setSoftwareFormat" );
 
-		result = coreSystem.set3DSettings( 1, METERS_TO_SOURCE_UNITS( 1 ), 1 );
+		result = coreSystem.set3DSettings( 1, 1, 1 );
 		CheckInitResult( result, "FMOD.System.set3DSettings" );
 
 		if ( dspBufferLength > 0 && dspBufferCount > 0 )
@@ -180,6 +180,8 @@ public partial class FMODManager : Component
 			}
 		}
 
+		RuntimeUtils.EnforceLibraryOrder();
+
 		//currentPlatform.LoadPlugins( coreSystem, CheckInitResult );
 		LoadBanks( fmodSettings );
 
@@ -190,7 +192,7 @@ public partial class FMODManager : Component
 		coreSystem.setCallback( null, 0 );
 		ReleaseStudioSystem();
 
-//		initException = null;
+		//		initException = null;
 		Instance = null;
 	}
 
@@ -198,6 +200,55 @@ public partial class FMODManager : Component
 	{
 		if ( studioSystem.isValid() )
 		{
+			for ( int i = 0; i < attachedInstances.Count; i++ )
+			{
+				FMOD.Studio.PLAYBACK_STATE playbackState = FMOD.Studio.PLAYBACK_STATE.STOPPED;
+				if ( attachedInstances[i].Instance.isValid() )
+				{
+					attachedInstances[i].Instance.getPlaybackState( out playbackState );
+				}
+
+				if ( playbackState == FMOD.Studio.PLAYBACK_STATE.STOPPED )
+				{
+					attachedInstances[i] = attachedInstances[attachedInstances.Count - 1];
+					attachedInstances.RemoveAt( attachedInstances.Count - 1 );
+					i--;
+					continue;
+				}
+
+
+				if ( attachedInstances[i].rigidBody.IsValid() )
+				{
+					attachedInstances[i].Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attachedInstances[i].transform, attachedInstances[i].rigidBody.Velocity ) );
+				}
+				else
+				{
+					// fucking why
+					//	if ( !attachedInstances[i].nonRigidbodyVelocity )
+					//	{
+					//		attachedInstances[i].Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attachedInstances[i].transform ) );
+					//	}
+					//	else
+					{
+						if ( attachedInstances[i].attachedGameObject.IsValid() )
+							attachedInstances[i].transform = attachedInstances[i].attachedGameObject.WorldTransform;
+
+						var position = attachedInstances[i].transform.Position;
+						var velocity = Vector3.Zero;
+
+						if ( Time.Delta != 0 )
+						{
+							velocity = (position - attachedInstances[i].lastFramePosition) / Time.Delta;
+							velocity = velocity.Clamp( velocity, 20f ); // Stops pitch fluttering when moving too quickly
+						}
+
+
+						attachedInstances[i].lastFramePosition = position;
+						attachedInstances[i].Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attachedInstances[i].transform, velocity ) );
+					}
+				}
+			}
+
 			studioSystem.update();
 		}
 	}
@@ -209,6 +260,13 @@ public partial class FMODManager : Component
 	}
 
 	[Property] string name { get; set; }
+	[Property] GameObject gameobj { get; set; }
+	[Button]
+	void Play3DSound()
+	{
+		if ( gameobj.IsValid() )
+			PlayOneShotAttached( name, gameobj );
+	}
 
 	private static FMOD.RESULT ERROR_CALLBACK( IntPtr system, FMOD.SYSTEM_CALLBACK_TYPE type, IntPtr commanddata1, IntPtr commanddata2, IntPtr userdata )
 	{

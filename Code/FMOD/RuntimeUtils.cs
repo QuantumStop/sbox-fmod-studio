@@ -272,6 +272,8 @@ namespace FMODSbox
 
 	public static class RuntimeUtils
 	{
+		private static float SOURCE_UNITS_TO_METERS( float x ) => MathX.InchToMeter( x );
+		private static float METERS_TO_SOURCE_UNITS( float x ) => MathX.MeterToInch( x );
 
 		public static string GetCommonPlatformPath( string path )
 		{
@@ -293,12 +295,20 @@ namespace FMODSbox
 			return temp;
 		}
 
-		public static FMOD.VECTOR SourceToFMODVector( this Vector3 vec )
+		public static FMOD.VECTOR SourceToFMODVector( this Vector3 vec, bool scale = false )
 		{
 			FMOD.VECTOR temp;
 			temp.x = -vec.x;
 			temp.y = vec.z;
 			temp.z = vec.y;
+
+			// setting 3D attributes on core init doesnt work, but this does, idk
+			if ( scale )
+			{
+				temp.x *= SOURCE_UNITS_TO_METERS( 1 );
+				temp.y *= SOURCE_UNITS_TO_METERS( 1 );
+				temp.z *= SOURCE_UNITS_TO_METERS( 1 );
+			}
 
 			return temp;
 		}
@@ -309,7 +319,7 @@ namespace FMODSbox
 			{
 				forward = SourceToFMODVector( Vector3.Forward ),
 				up = SourceToFMODVector( Vector3.Up ),
-				position = SourceToFMODVector( pos )
+				position = SourceToFMODVector( pos, true )
 			};
 			return attributes;
 		}
@@ -320,7 +330,7 @@ namespace FMODSbox
 			{
 				forward = transform.Forward.SourceToFMODVector(),
 				up = transform.Up.SourceToFMODVector(),
-				position = transform.Position.SourceToFMODVector()
+				position = transform.Position.SourceToFMODVector( true )
 			};
 
 			return attributes;
@@ -332,10 +342,9 @@ namespace FMODSbox
 			{
 				forward = transform.Forward.SourceToFMODVector(),
 				up = transform.Up.SourceToFMODVector(),
-				position = transform.Position.SourceToFMODVector(),
-				velocity = velocity.SourceToFMODVector()
+				position = transform.Position.SourceToFMODVector( true ),
+				velocity = velocity.SourceToFMODVector( true )
 			};
-
 			return attributes;
 		}
 
@@ -345,7 +354,7 @@ namespace FMODSbox
 			{
 				forward = go.Transform.World.Forward.SourceToFMODVector(),
 				up = go.Transform.World.Up.SourceToFMODVector(),
-				position = go.WorldPosition.SourceToFMODVector()
+				position = go.WorldPosition.SourceToFMODVector( true )
 			};
 
 			return attributes;

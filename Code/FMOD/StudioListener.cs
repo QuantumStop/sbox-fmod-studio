@@ -7,7 +7,7 @@ namespace FMODSbox;
 [Title( "FMOD Listener" )]
 public partial class StudioListener : Component
 {
-
+	// lowkey this is a stupid system, but I personally don't understand the concept of listeners (when there is more than one -> why would you need that)
 	[Property] public bool NonRigidbodyVelocity { get; set; } = false;
 	[Property] public GameObject AttenuationObject { get; set; }
 
