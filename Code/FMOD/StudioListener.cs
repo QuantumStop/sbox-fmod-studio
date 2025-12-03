@@ -14,9 +14,7 @@ public partial class StudioListener : Component
 	private Vector3 _lastFramePosition = Vector3.Zero;
 	private Rigidbody _rigidBody;
 
-	public bool PlayerListener { get; set; }
-
-	public int ListenerNumber { get => FMODManager.Listeners.IndexOf( this ); }
+	public int ListenerNumber { get => FMODManager.Instance.Listeners.IndexOf( this ); }
 
 	protected override void OnEnabled()
 	{
@@ -37,7 +35,9 @@ public partial class StudioListener : Component
 
 	protected override void OnDisabled()
 	{
-		if (!PlayerListener) FMODManager.RemoveListener( this );
+		//		if ( Game.IsPlaying ) FMODManager.RemoveListener( this );
+		// there will be only one
+		// so when game stops manager is recreated, list is dropped
 	}
 
 	protected override void OnUpdate()

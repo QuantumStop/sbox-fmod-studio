@@ -17,22 +17,23 @@ public class FMODSystem : GameObjectSystem
 
 	void SpawnManager()
 	{
-		GameObject gameObject = new() { Name = "FMOD Manager" };
-		gameObject.AddComponent<FMODManager>();
-		gameObject.Flags = GameObjectFlags.NotSaved | GameObjectFlags.Hidden;
-
-		var listener = Scene.Get<StudioListener>(); // should be created AFTER the manager
-
-		if ( listener == null )
+		if ( Game.IsPlaying ) // just in case
 		{
-			var listen = Scene.Camera.Components.Create<StudioListener>();
-			listen.NonRigidbodyVelocity = true;
-			listen.PlayerListener = true;
-		}
-		else
-		{
-			listener.NonRigidbodyVelocity = true;
-			listener.PlayerListener = true;
+			GameObject gameObject = new() { Name = "FMOD Manager" };
+			gameObject.AddComponent<FMODManager>();
+			gameObject.Flags = GameObjectFlags.NotSaved | GameObjectFlags.Hidden;
+
+			var listener = Scene.Get<StudioListener>(); // should be created AFTER the manager
+
+			if ( listener == null )
+			{
+				var listen = Scene.Camera.Components.Create<StudioListener>();
+				listen.NonRigidbodyVelocity = true;
+			}
+			else
+			{
+				listener.NonRigidbodyVelocity = true;
+			}
 		}
 	}
 }
@@ -41,7 +42,7 @@ public class FMODSystem : GameObjectSystem
 public partial class FMODManager : Component
 {
 	//	private static SystemNotInitializedException initException = null;
-	[Property, JsonIgnore, ReadOnly] private static FMODManager Instance;
+	[Property, JsonIgnore, ReadOnly] public static FMODManager Instance;
 
 	//	[Property, JsonIgnore, ReadOnly] private FMOD.DEBUG_CALLBACK debugCallback;
 	[Property, JsonIgnore, ReadOnly] private FMOD.SYSTEM_CALLBACK errorCallback;
