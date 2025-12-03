@@ -32,4 +32,21 @@ public partial class FMODManager
 			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.WorldPosition ) );
 		}
 	}
+
+	public static void SetListenerLocation( GameObject gameObject, Rigidbody rigidBody, GameObject attenuationObject = null )
+	{
+		SetListenerLocation( 0, gameObject, rigidBody, attenuationObject );
+	}
+
+	public static void SetListenerLocation( int listenerIndex, GameObject gameObject, Rigidbody rigidBody, GameObject attenuationObject = null )
+	{
+		if ( attenuationObject.IsValid() )
+		{
+			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.WorldPosition ), RuntimeUtils.ToFMODVector( attenuationObject.WorldTransform.Position ) );
+		}
+		else
+		{
+			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.WorldPosition ) );
+		}
+	}
 }
