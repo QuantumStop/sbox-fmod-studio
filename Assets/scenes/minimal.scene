@@ -151,7 +151,7 @@
       "Name": "Plane",
       "Position": "0,0,0",
       "Rotation": "0,0,0,1",
-      "Scale": "5,5,5",
+      "Scale": "10,10,10",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -219,7 +219,7 @@
       "__version": 1,
       "Flags": 0,
       "Name": "Sphere",
-      "Position": "192,96,32",
+      "Position": "384,416,32",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -233,7 +233,7 @@
         {
           "__type": "Sandbox.ModelRenderer",
           "__guid": "611f8cb0-42c9-4348-8aef-4b4c1f6f2465",
-          "__enabled": true,
+          "__enabled": false,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
           "LodOverride": null,
@@ -271,6 +271,101 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null
+        },
+        {
+          "__type": "Sandbox.SpriteRenderer",
+          "__guid": "faf24a24-ad51-48b4-a389-a487b30cf4e7",
+          "__enabled": true,
+          "__version": 2,
+          "Additive": false,
+          "Billboard": "Always",
+          "Color": "1,1,1,1",
+          "DepthFeather": 0,
+          "FlipHorizontal": false,
+          "FlipVertical": false,
+          "FogStrength": 1,
+          "IsSorted": false,
+          "Lighting": false,
+          "OnAnimationEnd": null,
+          "OnAnimationStart": null,
+          "OnBroadcastMessage": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Opaque": false,
+          "OverlayColor": "1,1,1,0",
+          "PlaybackSpeed": 1,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "Shadows": false,
+          "Size": "256,256",
+          "Sprite": {
+            "$compiler": "embed",
+            "$source": null,
+            "data": {
+              "Animations": [
+                {
+                  "Name": "Default",
+                  "FrameRate": 15,
+                  "Origin": "0.5,1",
+                  "LoopMode": "Loop",
+                  "Frames": [
+                    {
+                      "Texture": {
+                        "$compiler": "texture",
+                        "$source": "imagefile",
+                        "data": {
+                          "FilePath": "materials/textures/saul_2009.tga",
+                          "MaxSize": 4096,
+                          "ConvertHeightToNormals": false,
+                          "NormalScale": 1,
+                          "Rotate": 0,
+                          "FlipVertical": false,
+                          "FlipHorizontal": false,
+                          "Cropping": {
+                            "Left": 0,
+                            "Top": 0,
+                            "Right": 0,
+                            "Bottom": 0
+                          },
+                          "Padding": {
+                            "Left": 0,
+                            "Top": 0,
+                            "Right": 0,
+                            "Bottom": 0
+                          },
+                          "InvertColor": false,
+                          "Tint": "1,1,1,1",
+                          "Blur": 0,
+                          "Sharpen": 0,
+                          "Brightness": 1,
+                          "Contrast": 1,
+                          "Saturation": 1,
+                          "Hue": 0,
+                          "Colorize": false,
+                          "TargetColor": "1,1,1,1",
+                          "CacheToDisk": true
+                        },
+                        "compiled": null
+                      },
+                      "BroadcastMessages": []
+                    }
+                  ]
+                }
+              ],
+              "__references": null
+            },
+            "compiled": null
+          },
+          "StartingAnimationName": "Default",
+          "TextureFilter": "Bilinear"
         }
       ],
       "Children": []
@@ -596,6 +691,207 @@
           "Children": []
         }
       ]
+    },
+    {
+      "__guid": "50e21191-a94e-43e3-9723-69c71e693be9",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "New Movie Player",
+      "Position": "0,0,0",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.MovieMaker.MoviePlayer",
+          "__guid": "dfb2e8cb-84fd-4af7-83f6-95e4e76830b6",
+          "__enabled": true,
+          "Binder": {
+            "GameObjects": [
+              {
+                "Track": "d91ed374-098b-4252-9441-39e4c189f486",
+                "Reference": "558b5fd7-dcc7-4526-b3aa-26a76529659f"
+              }
+            ],
+            "Components": [
+              {
+                "Track": "2be945a3-4a7e-4f64-81f8-b3102c2d6b34",
+                "Reference": "611f8cb0-42c9-4348-8aef-4b4c1f6f2465"
+              }
+            ]
+          },
+          "IsLooping": true,
+          "IsPlaying": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "PositionSeconds": 0,
+          "Resource": {
+            "Compiled": {
+              "Tracks": [
+                {
+                  "Kind": "Reference",
+                  "Name": "Sphere",
+                  "Type": "Sandbox.GameObject",
+                  "Id": "d91ed374-098b-4252-9441-39e4c189f486",
+                  "ReferenceId": "558b5fd7-dcc7-4526-b3aa-26a76529659f",
+                  "Children": [
+                    {
+                      "Kind": "Property",
+                      "Name": "WorldPosition",
+                      "Type": "Vector3",
+                      "Blocks": [
+                        {
+                          "TimeRange": {
+                            "Start": 0,
+                            "End": 6240
+                          },
+                          "Value": "384,416,32"
+                        },
+                        {
+                          "TimeRange": {
+                            "Start": 6240,
+                            "End": 9120
+                          },
+                          "SampleRate": 30,
+                          "Samples": "H4sIAAAAAAACCpNkAIEDzhDM4ITJ3kAl9gIkdgMSWwGJzYDsBick9UhsBmT2IST1SGyHw0h6kdgTcLAXILE34GAfALMBYe4PqDABAAA="
+                        },
+                        {
+                          "TimeRange": {
+                            "Start": 9120,
+                            "End": 15000
+                          },
+                          "Value": "384,-384,32"
+                        },
+                        {
+                          "TimeRange": {
+                            "Start": 15000,
+                            "End": 32520
+                          },
+                          "SampleRate": 30,
+                          "Samples": "H4sIAAAAAAACCsXUzQmDQBDF8TnmmBIsRTSFWMqWsJAGLGFLWJIUYAmWsCXkQ4J/D4+MrJA9/RBRdt5jrvY+uTdL9xe6xSMc4RZu4HBb/Tnf593qDDc9vik8OBzguNMjnIRzhac/OYu7BDFn5rLJDplm5is6MLAPoj/s2ATPsD1Wn+CzMN8p4l/B0dsg+hlEZ1TWM1xgu/x2cWQ6OjI1la/Imvm2Yg+knc4VZl7sG+8yODJKBzmK/cM5c54mdmY8aLaebm+yFj3xzK1mv9XsH3PsH8/OWeb8BJn3BcPoBgAA"
+                        },
+                        {
+                          "TimeRange": {
+                            "Start": 32520,
+                            "End": 36960
+                          },
+                          "Value": "384,-320,32"
+                        },
+                        {
+                          "TimeRange": {
+                            "Start": 36960,
+                            "End": 58440
+                          },
+                          "SampleRate": 30,
+                          "Samples": "H4sIAAAAAAACCo2VMY7bMBBFB1sEwSJFSpcqXfoIzFLFlilTsswRtlSxB+AReAQWOQAh6gDuk8Lpkm5v4OiTHPFDsYMYEPwgjUaaxy/pm+AX7brlg8iTiC8shU3hh8Kycmj7sW28/rzyLDI1nlaWxmmux0oN9RhWTsS4htYPtvcxtl/L6X5sut/2/ajVehzXPsHWc8DR9ntItvZVnmaqyb2PISc6I+7dk4dAs2/7c6/HjFuf3Lw0FmK9T0NOyrmWepKriVx5cuXJlXIiLrM0duTQ77zpGgXyVnjufoT8uNzXxdN6R8pDIifKnhgutR7/2ieRQ/DQ+Jz72iXyGen6nvLmyCd6uBs+hVnIM2Uv/UcOHfksx4l1rR25NZRD1A6UN7ebR++T3UZyq4zztnxSJj35DJTJ0ls6T+RNZzF3MrnPYSBvgVwpD8Tw4CmHjnKo14qUyXgnk/7O8zvsMpnI4YWeTVn67O8Xqm2MWq2/UG7fKKtv5PZCbs/kNpHbSM+7J88T5dOQZ8znKbee/N/LrSHntzL513vyxrsxkdtAbj29Gx19R9JTdwXP6hM9DkvP3nF5t/lRhu+Py4/r9VM975y/b6zXKmsyk2fyuT2DyL/9Vc4t7x9lnGN/F4YnZcx+bixjz9lhRJ/HwqcRM9c+ZsTMlT+P8Pmh1HwBS+cpV34esfaVjyPmqYxrnRrD7XNj3OdXrcH6NsZcr40jMbL30hiO3fKz3NtxZdOcn9b/gVizjfpAbod8ra7ovTrtvlPqXP7xHa/8B7FbN8Z0CAAA"
+                        },
+                        {
+                          "TimeRange": {
+                            "Start": 58440,
+                            "End": 61800
+                          },
+                          "Value": "-64,160,32"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "EditorData": {
+              "SampleRate": 30,
+              "Duration": 61800,
+              "ExportConfig": null,
+              "Tracks": {
+                "d91ed374-098b-4252-9441-39e4c189f486": {
+                  "$type": "Reference",
+                  "ReferenceId": "558b5fd7-dcc7-4526-b3aa-26a76529659f",
+                  "Name": "Sphere",
+                  "TargetType": "Sandbox.GameObject"
+                },
+                "ad3860f9-343e-4791-ba56-603154fa03f7": {
+                  "$type": "Property",
+                  "Name": "WorldPosition",
+                  "TargetType": "Vector3",
+                  "ParentId": "d91ed374-098b-4252-9441-39e4c189f486",
+                  "Blocks": [
+                    {
+                      "TimeRange": {
+                        "Start": 0,
+                        "End": 61800
+                      },
+                      "Signal": {
+                        "$id": 1,
+                        "$type": "Source",
+                        "Source": "b0c99a9f-ad6b-4a76-b568-63574acea121",
+                        "TrackIndex": 1,
+                        "BlockIndex": 0
+                      }
+                    }
+                  ]
+                },
+                "2be945a3-4a7e-4f64-81f8-b3102c2d6b34": {
+                  "$type": "Reference",
+                  "ReferenceId": "611f8cb0-42c9-4348-8aef-4b4c1f6f2465",
+                  "Name": "ModelRenderer",
+                  "TargetType": "Sandbox.ModelRenderer",
+                  "ParentId": "d91ed374-098b-4252-9441-39e4c189f486"
+                }
+              },
+              "Sources": {
+                "b0c99a9f-ad6b-4a76-b568-63574acea121": {
+                  "Metadata": {
+                    "Date": "2025-12-03T23:06:03.3341934Z",
+                    "IsEditor": true,
+                    "SceneSource": "scenes/minimal.scene",
+                    "MoviePlayer": "dfb2e8cb-84fd-4af7-83f6-95e4e76830b6"
+                  },
+                  "Clip": {
+                    "Tracks": [
+                      {
+                        "Kind": "Reference",
+                        "Name": "Sphere",
+                        "Type": "Sandbox.GameObject",
+                        "Id": "d91ed374-098b-4252-9441-39e4c189f486",
+                        "Children": [
+                          {
+                            "Kind": "Property",
+                            "Name": "WorldPosition",
+                            "Type": "Vector3",
+                            "Blocks": [
+                              {
+                                "TimeRange": {
+                                  "Start": 0,
+                                  "End": 61800
+                                },
+                                "SampleRate": 30,
+                                "Samples": "H4sIAAAAAAACCu2XMY4TMRSGrRVCCFFsuWXKlDmCSVJsSUnpkiNQuuAAPoKP4COMkhwgPRShgy43WPI8eTPfhn2L0WbRIiVSlE+RxzP+/PvZ8+rKHT7dwrnt4evmF77wv+HO4HImzuAInoAdn2GO9mBHXqE92K9xLTgZnMHF4O7CFz4TFyN7zCQzPGGekfP6eWCNcO1wfXmDQwNzzaa/5NxQH7on8EuomcVw5Y2adm/ujDrmjAyEhvrGjG3BO7DbjPwGfG0w2+yNe8WG3EYjn9HIjDXXO/Ce+8jyz7xvmNPcMKfWnuWMubb2qZY96Dn2Js4X88axhIY5Otc5IRn1h57p0xk1M53JbUu27821kZMWb0+pb0+pP66h/rTUnHzh/5JLzflN5YTM+8pXfb7RXr4DuzEDkiPNRq33eq/VmDGHPmQNdeBh7azGfUH60QzLR2uC7CGac4da4ZH5iP0lY98pj9Rn3acK8h9RWzzzP8fY3ehE+hj+X4/tZYxDP+txrdX/wPqcHk7qtQv0CVcRrhJcJbga6irYo1YEOEwn3nSOMrxl1I0IVx61wqE+VKfIQwcnygksLrW9/A51Bg6FtQ7LGWc4Y8Bnwf0T8hbgU/oID/h0ZAfPyF7XkMMAnwF7REAmA9x65NBxr5nD7fz+uqPbArfKct2QT2QywWdGJmvfbuQIbzoWb2TyNIcZ3jJcKU/AAWeABJ8ZPgsyWYxMJmP9Tk4y2cHhDmtTz8bSdjj34n9pq+13yO0eWd3D7Q5ut3DbwW3Bek/wHJFPD88yvoTcJvi3cuvh/KFM/lYnjfcUdZvhNqE2Bp6d5qMr8aw+pY+bzZi96eb14EdZfF9vvt3dve+v266/Dqz3qnOygmf4HNag5H/xo15b64+yXLP4WTkuRi71fNWzvDdozm6W0s/byrOljLnvxy9lzD1/kPeMxbva5qOwGzmue75dytz3PF3KeHqWe82OLG5vjyzP+UnbyPweWcb15cgFLNn7fGRxHDbf67NND+yPzmeH3wlYsy3tM9xO1ne9K9TVeLJPqXP3yD5+4efgX5xcZ8c0GAAA"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "References": []
+            }
+          },
+          "TimeScale": 1
+        }
+      ],
+      "Children": []
     }
   ],
   "SceneProperties": {
