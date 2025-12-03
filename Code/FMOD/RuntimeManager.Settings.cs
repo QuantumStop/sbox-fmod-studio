@@ -48,6 +48,7 @@ public partial class FMODManager
 		[Property, ReadOnly] public FMOD.OUTPUTTYPE OutputType { get; init; }
 		[Property, ReadOnly] public ushort ProfilerPort { get; init; }
 		[Property, ReadOnly] public string BankFolder { get; init; }
+		[Property, ReadOnly] public bool StopEventsOutsideMaxDistance { get; init; }
 		[Property, ReadOnly] public ImportType ImportType { get; init; }
 		public string BankFolderLocation { get => Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" ); }
 
@@ -65,6 +66,7 @@ public partial class FMODManager
 			OutputType = FMOD.OUTPUTTYPE.AUTODETECT;
 			ProfilerPort = 9264;
 			BankFolder = "fmod";
+			StopEventsOutsideMaxDistance = false;
 		}
 	}
 }
