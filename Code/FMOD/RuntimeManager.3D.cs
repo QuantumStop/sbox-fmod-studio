@@ -1,4 +1,5 @@
 namespace FMODSbox;
+
 public partial class FMODManager
 {
 	public static void SetListenerLocation( int listenerIndex, GameObject gameObject, GameObject attenuationObject = null, Vector3 velocity = new Vector3() )

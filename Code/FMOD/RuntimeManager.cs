@@ -1,17 +1,41 @@
 namespace FMODSbox;
 
+using FMOD;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Runtime.InteropServices;
-using System.Globalization;
-using FMOD;
 
-[Title( "FMOD Manager" )]
+public class FMODSystem : GameObjectSystem
+{
+	public FMODSystem( Scene scene ) : base( scene )
+	{
+		Listen( Stage.SceneLoaded, 100, SpawnManager, "Spawn Manager" );
+	}
+
+	void SpawnManager()
+	{
+		GameObject gameObject = new() { Name = "FMOD Manager" };
+		gameObject.AddComponent<FMODManager>();
+		gameObject.Flags = GameObjectFlags.NotSaved | GameObjectFlags.Hidden;
+
+		var listener = Scene.Get<StudioListener>(); // should be created AFTER the manager
+
+		if ( !listener.IsValid() )
+		{
+			var listen = Scene.Camera.Components.Create<StudioListener>();
+			listen.NonRigidbodyVelocity = true;
+		}
+		else
+			listener.NonRigidbodyVelocity = true;
+	}
+}
+
+[Hide]
 public partial class FMODManager : Component
 {
-	public const string BankStubPrefix = "bank stub:";
-
 	//	private static SystemNotInitializedException initException = null;
 	[Property, JsonIgnore, ReadOnly] private static FMODManager Instance;
 
@@ -61,7 +85,6 @@ public partial class FMODManager : Component
 
 	public static bool IsMuted => Instance.isMuted;
 
-
 	protected override void OnAwake()
 	{
 		Instance = this;
@@ -76,7 +99,6 @@ public partial class FMODManager : Component
 		}
 		else
 		{
-			if ( !Scene.Get<StudioListener>().IsValid() ) Scene.Camera.Components.Create<StudioListener>().NonRigidbodyVelocity = true;
 			RuntimeUtils.EnforceLibraryOrder();
 			Instance.Initialize();
 		}

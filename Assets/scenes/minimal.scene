@@ -168,43 +168,6 @@
       "Children": []
     },
     {
-      "__guid": "e1c64523-58f0-4a03-894d-b047125414c1",
-      "__version": 1,
-      "Flags": 0,
-      "Name": "Balls",
-      "Position": "-126.4293,-187.5311,115.5769",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkInterpolation": true,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [
-        {
-          "__type": "FMODSbox.FMODManager",
-          "__guid": "12f5e07c-b254-4bad-b1e0-4d1c3b59fc39",
-          "__enabled": true,
-          "Banks": [],
-          "BanksToLoad": [],
-          "gameobj": {
-            "_type": "gameobject",
-            "go": "558b5fd7-dcc7-4526-b3aa-26a76529659f"
-          },
-          "name": "event:/Objects/Combine/Forcefield/ForcefieldMain",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null
-        }
-      ],
-      "Children": []
-    },
-    {
       "__guid": "38311e02-b522-4de7-aa2c-5b3125f55531",
       "__version": 1,
       "Flags": 0,
@@ -247,19 +210,6 @@
           "Viewport": "0,0,1,1",
           "ZFar": 10000,
           "ZNear": 10
-        },
-        {
-          "__type": "FMODSbox.StudioListener",
-          "__guid": "a601f6c8-853e-4a80-b3f2-f489b5e19286",
-          "__enabled": true,
-          "AttenuationObject": null,
-          "NonRigidbodyVelocity": true,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null
         }
       ],
       "Children": []

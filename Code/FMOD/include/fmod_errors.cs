@@ -13,9 +13,9 @@ namespace FMOD
 {
 	public class Error
 	{
-		public static string String(FMOD.RESULT errcode)
+		public static string String( FMOD.RESULT errcode )
 		{
-			switch (errcode)
+			switch ( errcode )
 			{
 				case FMOD.RESULT.OK: return "No errors.";
 				case FMOD.RESULT.ERR_BADCOMMAND: return "Tried to call a function on a data type that does not allow this type of functionality (ie calling Sound::lock on a streaming sound).";
