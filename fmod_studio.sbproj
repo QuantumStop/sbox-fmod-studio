@@ -22,7 +22,7 @@
     "RankType": "None",
     "PerMapRanking": false,
     "LeaderboardType": "None",
-    "CsProjName": "",
+    "ProjectSplash": "Editor/Media/splash.png",
     "StartupScene": "scenes/minimal.scene",
     "LaunchMode": "Normal",
     "Compiler": {
