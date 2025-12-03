@@ -2,6 +2,7 @@ namespace FMODSbox;
 
 public partial class FMODManager
 {
+	[ConVar( "debug_fmod_initresult", Help = "Show initialization results, if something doesn't show OK, then it's bad" )] static public bool DebugResult { get; set; } = false;
 	private void CheckInitResult( FMOD.RESULT result, string cause )
 	{
 		if ( result != FMOD.RESULT.OK )
@@ -9,9 +10,7 @@ public partial class FMODManager
 			ReleaseStudioSystem();
 			throw new SystemNotInitializedException( result, cause );
 		}
-#if DEBUG
-		else { Log.Info( cause + " is: " + result ); }
-#endif
+		else { if ( DebugResult ) Log.Info( cause + " is: " + result ); }
 	}
 
 	private void ReleaseStudioSystem()
