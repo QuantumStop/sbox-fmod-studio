@@ -71,6 +71,8 @@ public partial class FMODManager
 		return vca;
 	}
 
+	public static void SetVCAVolume( string vca, float volume ) => GetVCA(vca).setVolume( volume );
+
 	public static void PauseAllEvents( bool paused )
 	{
 		if ( StudioSystem.getBus( "bus:/", out FMOD.Studio.Bus masterBus ) == FMOD.RESULT.OK )
@@ -78,6 +80,9 @@ public partial class FMODManager
 			masterBus.setPaused( paused );
 		}
 	}
+
+	public static void PauseEventsOnBus( bool paused, string bus ) => GetBus(bus).setPaused( paused );
+	
 
 	public static void MuteAllEvents( bool muted )
 	{
