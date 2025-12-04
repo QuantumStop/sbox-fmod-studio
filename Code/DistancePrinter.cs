@@ -42,4 +42,18 @@ public class DistancePrinter : Component
 		FMODSound.SetPauseOnAll( pause );
 	}
 
+	[Button]
+	void TestDirtFootstep()
+	{
+		var instance = FMODSound.Play( "event:/Physics/StepLeft" );
+		FMODSound.SetParameter( instance, "parameter:/Physics/MaterialType", "Dirt" );
+	}
+
+	[Button]
+	void TestPlasterFootstep()
+	{
+		var instance = FMODSound.Play( "event:/Physics/StepLeft" );
+		FMODSound.SetParameter( instance, "parameter:/Physics/MaterialType", "Plaster" );
+	}
+
 }
