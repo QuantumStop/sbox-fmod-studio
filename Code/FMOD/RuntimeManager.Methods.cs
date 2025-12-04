@@ -1,6 +1,11 @@
 using FMOD;
+using FMOD.Studio;
+using Sandbox;
 using System;
+using System.ComponentModel;
 using System.IO;
+using System.Xml.Linq;
+using static Sandbox.Gizmo;
 
 namespace FMODSbox;
 
@@ -26,7 +31,29 @@ public partial class FMODManager
 		}
 	}
 
-	public static FMOD.Studio.Bus GetBus( string path )
+	public static void SetParameter( EventInstance instance, string param, float value, bool ignoreseekspeed )
+	{
+		SetParameterByName( instance, param, value, ignoreseekspeed );
+	}
+
+	public static void SetParameter( EventInstance instance, string param, string value, bool ignoreseekspeed )
+	{
+		SetParameterByName( instance, param, value, ignoreseekspeed );
+	}
+
+	private static void SetParameterByName( EventInstance instance, string name, float value, bool ignoreseekspeed )
+	{
+		if ( instance.isValid() && !string.IsNullOrEmpty(name) )
+			instance.setParameterByName( name, value, ignoreseekspeed );
+	}
+
+	private static void SetParameterByName( EventInstance instance, string name, string value, bool ignoreseekspeed )
+	{
+		if ( instance.isValid() && !string.IsNullOrEmpty( name ) && !string.IsNullOrEmpty( value ) )
+			instance.setParameterByNameWithLabel( name, value, ignoreseekspeed );
+	}
+
+	public static Bus GetBus( string path )
 	{
 		if ( StudioSystem.getBus( path, out FMOD.Studio.Bus bus ) != FMOD.RESULT.OK )
 		{
@@ -35,7 +62,7 @@ public partial class FMODManager
 		return bus;
 	}
 
-	public static FMOD.Studio.VCA GetVCA( string path )
+	public static VCA GetVCA( string path )
 	{
 		if ( StudioSystem.getVCA( path, out FMOD.Studio.VCA vca ) != FMOD.RESULT.OK )
 		{
@@ -302,5 +329,17 @@ public partial class FMODManager
 		AttachedInstance attachedInstance = FindOrAddAttachedInstance( instance, gameObject, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.WorldPosition ) );
 
 		attachedInstance.rigidBody = rigidBody;
+	}
+	public static void DetachInstanceFromGameObject( FMOD.Studio.EventInstance instance )
+	{
+		var manager = Instance;
+		foreach ( var attached in manager.attachedInstances)
+		{
+			if ( attached.Instance.handle == instance.handle )
+			{
+				manager.attachedInstances.Remove( attached );
+				return;
+			}
+		}
 	}
 }

@@ -1,9 +1,12 @@
-﻿using FMODSbox;
+﻿using FMOD.Studio;
+using FMODSbox;
 
 public class DistancePrinter : Component
 {
 	[Property] public GameObject Obj1 { get; set; }
 	[Property] public GameObject Obj2 { get; set; }
+	[Property] public ParamFloat TestFloat { get; set; }
+	private EventInstance instance { get; set; }
 
 	protected override void OnUpdate()
 	{
@@ -20,6 +23,15 @@ public class DistancePrinter : Component
 	void Test3DSound()
 	{
 		if ( Obj1.IsValid() )
-			FMODSound.Play( "event:/Videos/TrainRobbery", Obj1 );
+		{
+			instance = FMODSound.Play( "event:/Objects/Combine/Forcefield/ForcefieldMain", Obj1, true );
+		}
 	}
+
+	[Button]
+	void SetParam()
+	{
+		FMODSound.SetParameter( instance, TestFloat );
+	}
+
 }

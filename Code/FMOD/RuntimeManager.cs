@@ -109,15 +109,9 @@ public partial class FMODManager : Component
 		}
 	}
 
-	public static FMOD.Studio.System StudioSystem
-	{
-		get { return Instance.studioSystem; }
-	}
+	public static FMOD.Studio.System StudioSystem { get => Instance.studioSystem; }
 
-	public static FMOD.System CoreSystem
-	{
-		get { return Instance.coreSystem; }
-	}
+	public static System CoreSystem { get => Instance.coreSystem; }
 
 	private struct LoadedBank
 	{
@@ -160,6 +154,7 @@ public partial class FMODManager : Component
 		result = coreSystem.setSoftwareFormat( sampleRate, speakerMode, 0 );
 		CheckInitResult( result, "FMOD.System.setSoftwareFormat" );
 
+		// this is fucked, it doesnt affect the attenuation?
 		result = coreSystem.set3DSettings( 1, 1, 1 );
 		CheckInitResult( result, "FMOD.System.set3DSettings" );
 
@@ -229,26 +224,24 @@ public partial class FMODManager : Component
 	{
 		if ( studioSystem.isValid() )
 		{
-			for ( int i = 0; i < attachedInstances.Count; i++ )
+			foreach ( var attached in attachedInstances.ToList() ) // could be bad
 			{
 				FMOD.Studio.PLAYBACK_STATE playbackState = FMOD.Studio.PLAYBACK_STATE.STOPPED;
-				if ( attachedInstances[i].Instance.isValid() )
+				if ( attached.Instance.isValid() )
 				{
-					attachedInstances[i].Instance.getPlaybackState( out playbackState );
+					attached.Instance.getPlaybackState( out playbackState );
 				}
 
 				if ( playbackState == FMOD.Studio.PLAYBACK_STATE.STOPPED )
 				{
-					attachedInstances[i] = attachedInstances[attachedInstances.Count - 1];
-					attachedInstances.RemoveAt( attachedInstances.Count - 1 );
-					i--;
+					attachedInstances.Remove( attached );
 					continue;
 				}
 
 
-				if ( attachedInstances[i].rigidBody.IsValid() )
+				if ( attached.rigidBody.IsValid() )
 				{
-					attachedInstances[i].Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attachedInstances[i].transform, attachedInstances[i].rigidBody.Velocity ) );
+					attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.transform, attached.rigidBody.Velocity ) );
 				}
 				else
 				{
@@ -259,21 +252,21 @@ public partial class FMODManager : Component
 					//	}
 					//	else
 					{
-						if ( attachedInstances[i].attachedGameObject.IsValid() )
-							attachedInstances[i].transform = attachedInstances[i].attachedGameObject.WorldTransform;
+						if ( attached.attachedGameObject.IsValid() )
+							attached.transform = attached.attachedGameObject.WorldTransform;
 
-						var position = attachedInstances[i].transform.Position;
+						var position = attached.transform.Position;
 						var velocity = Vector3.Zero;
 
 						if ( Time.Delta != 0 )
 						{
-							velocity = (position - attachedInstances[i].lastFramePosition) / Time.Delta;
-							velocity = velocity.Clamp( velocity, 20f ); // Stops pitch fluttering when moving too quickly
+							velocity = (position - attached.lastFramePosition) / Time.Delta;
+							velocity = velocity.Clamp( velocity, 512f ); // Stops pitch fluttering when moving too quickly
 						}
 
 
-						attachedInstances[i].lastFramePosition = position;
-						attachedInstances[i].Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attachedInstances[i].transform, velocity ) );
+						attached.lastFramePosition = position;
+						attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.transform, velocity ) );
 					}
 				}
 			}

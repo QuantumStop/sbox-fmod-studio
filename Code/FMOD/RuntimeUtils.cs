@@ -149,38 +149,6 @@ namespace FMODSbox
 		}
 	}
 
-	public enum EmitterGameEvent : int
-	{
-		None,
-		ObjectStart,
-		ObjectDestroy,
-		TriggerEnter,
-		TriggerExit,
-		CollisionEnter,
-		CollisionExit,
-		ObjectEnable,
-		ObjectDisable,
-		ObjectMouseEnter,
-		ObjectMouseExit,
-		ObjectMouseDown,
-		ObjectMouseUp,
-		UIMouseEnter,
-		UIMouseExit,
-		UIMouseDown,
-		UIMouseUp,
-	}
-
-	public enum LoaderGameEvent : int
-	{
-		None,
-		ObjectStart,
-		ObjectDestroy,
-		TriggerEnter,
-		TriggerExit,
-		ObjectEnable,
-		ObjectDisable,
-	}
-
 	// We use our own enum to avoid serialization issues if FMOD.THREAD_TYPE changes
 	public enum ThreadType
 	{
@@ -360,65 +328,6 @@ namespace FMODSbox
 			return attributes;
 		}
 
-		public static FMOD.THREAD_TYPE ToFMODThreadType( ThreadType threadType )
-		{
-			return threadType switch
-			{
-				ThreadType.Mixer => FMOD.THREAD_TYPE.MIXER,
-				ThreadType.Feeder => FMOD.THREAD_TYPE.FEEDER,
-				ThreadType.Stream => FMOD.THREAD_TYPE.STREAM,
-				ThreadType.File => FMOD.THREAD_TYPE.FILE,
-				ThreadType.Nonblocking => FMOD.THREAD_TYPE.NONBLOCKING,
-				ThreadType.Record => FMOD.THREAD_TYPE.RECORD,
-				ThreadType.Geometry => FMOD.THREAD_TYPE.GEOMETRY,
-				ThreadType.Profiler => FMOD.THREAD_TYPE.PROFILER,
-				ThreadType.Studio_Update => FMOD.THREAD_TYPE.STUDIO_UPDATE,
-				ThreadType.Studio_Load_Bank => FMOD.THREAD_TYPE.STUDIO_LOAD_BANK,
-				ThreadType.Studio_Load_Sample => FMOD.THREAD_TYPE.STUDIO_LOAD_SAMPLE,
-				ThreadType.Convolution_1 => FMOD.THREAD_TYPE.CONVOLUTION1,
-				ThreadType.Convolution_2 => FMOD.THREAD_TYPE.CONVOLUTION2,
-				_ => throw new ArgumentException( "Unrecognised thread type '" + threadType.ToString() + "'" ),
-			};
-		}
-
-		public static string DisplayName( this ThreadType thread )
-		{
-			return thread.ToString().Replace( '_', ' ' );
-		}
-
-		public static FMOD.THREAD_AFFINITY ToFMODThreadAffinity( ThreadAffinity affinity )
-		{
-			FMOD.THREAD_AFFINITY fmodAffinity = FMOD.THREAD_AFFINITY.CORE_ALL;
-
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core0, FMOD.THREAD_AFFINITY.CORE_0, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core1, FMOD.THREAD_AFFINITY.CORE_1, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core2, FMOD.THREAD_AFFINITY.CORE_2, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core3, FMOD.THREAD_AFFINITY.CORE_3, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core4, FMOD.THREAD_AFFINITY.CORE_4, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core5, FMOD.THREAD_AFFINITY.CORE_5, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core6, FMOD.THREAD_AFFINITY.CORE_6, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core7, FMOD.THREAD_AFFINITY.CORE_7, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core8, FMOD.THREAD_AFFINITY.CORE_8, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core9, FMOD.THREAD_AFFINITY.CORE_9, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core10, FMOD.THREAD_AFFINITY.CORE_10, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core11, FMOD.THREAD_AFFINITY.CORE_11, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core12, FMOD.THREAD_AFFINITY.CORE_12, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core13, FMOD.THREAD_AFFINITY.CORE_13, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core14, FMOD.THREAD_AFFINITY.CORE_14, ref fmodAffinity );
-			SetFMODAffinityBit( affinity, ThreadAffinity.Core15, FMOD.THREAD_AFFINITY.CORE_15, ref fmodAffinity );
-
-			return fmodAffinity;
-		}
-
-		private static void SetFMODAffinityBit( ThreadAffinity affinity, ThreadAffinity mask,
-			FMOD.THREAD_AFFINITY fmodMask, ref FMOD.THREAD_AFFINITY fmodAffinity )
-		{
-			if ( (affinity & mask) != 0 )
-			{
-				fmodAffinity |= fmodMask;
-			}
-		}
-
 		public static void EnforceLibraryOrder()
 		{
 			// Call a function in fmod.dll to make sure it's loaded before fmodstudio.dll
@@ -427,4 +336,16 @@ namespace FMODSbox
 		}
 
 	}
+}
+
+public class ParamFloat
+{
+	[Property, KeyProperty] public string ParameterName { get; set; }
+	[Property, KeyProperty] public float Value { get; set; }
+}
+
+public class ParamLabel
+{
+	[Property, KeyProperty] public string ParameterName { get; set; }
+	[Property, KeyProperty] public string Value { get; set; }
 }

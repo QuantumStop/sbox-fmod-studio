@@ -11,9 +11,9 @@ public partial class FMODManager
 	{
 		float result = float.MaxValue;
 
-		for ( int i = 0; i < Instance.Listeners.Count; i++ )
+		foreach ( var listener in Instance.Listeners)
 		{
-			result = MathF.Min( result, position.Distance( Instance.Listeners[i].AttenuationObject == null ? Instance.Listeners[i].WorldTransform.Position : Instance.Listeners[i].AttenuationObject.WorldTransform.Position ) );
+			result = MathF.Min( result, position.Distance( listener.AttenuationObject == null ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position ) );
 		}
 		return result;
 	}
@@ -21,9 +21,10 @@ public partial class FMODManager
 	public static float DistanceSquaredToNearestListener( Vector3 position )
 	{
 		float result = float.MaxValue;
-		for ( int i = 0; i < Instance.Listeners.Count; i++ )
+
+		foreach (var listener in Instance.Listeners)
 		{
-			result = MathF.Min( result, (position - (Instance.Listeners[i].AttenuationObject == null ? Instance.Listeners[i].WorldTransform.Position : Instance.Listeners[i].AttenuationObject.WorldTransform.Position)).LengthSquared );
+			result = MathF.Min( result, (position - (listener.AttenuationObject == null ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position)).LengthSquared );
 		}
 
 		return result;

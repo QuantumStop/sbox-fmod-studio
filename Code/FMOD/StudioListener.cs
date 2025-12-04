@@ -35,7 +35,7 @@ public partial class StudioListener : Component
 
 	protected override void OnDisabled()
 	{
-		//		if ( Game.IsPlaying ) FMODManager.RemoveListener( this );
+		//	if ( Game.IsPlaying ) FMODManager.RemoveListener( this );
 		// there will be only one
 		// so when game stops manager is recreated, list is dropped
 	}

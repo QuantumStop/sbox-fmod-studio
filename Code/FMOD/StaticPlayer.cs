@@ -5,7 +5,7 @@ using System;
 namespace FMODSbox;
 
 /// <summary>
-/// The real entrance point
+/// The real entrance point to use FMOD everywhere, instead of referencing the Instance manually
 /// </summary>
 static public class FMODSound
 {
@@ -39,5 +39,35 @@ static public class FMODSound
 	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
 	static public FMOD.Studio.EventInstance Play( string path, GameObject gameObject, bool release = true ) => FMODManager.PlayOnObject( path, gameObject, release );
 
+	/// <summary>
+	/// Set parameter on a given EventInstance
+	/// </summary>
+	/// <param name="instance">The affected EventInstance</param>
+	/// <param name="param">Parameter name</param>
+	/// <param name="value">What do we set it to</param>
+	/// <param name="ignoreseekspeed">Ignore smooth transition (if exists)</param>
+	static public void SetParameter( FMOD.Studio.EventInstance instance, string param, float value, bool ignoreseekspeed = false ) => FMODManager.SetParameter( instance, param, value, ignoreseekspeed );
+	/// <summary>
+	/// Set parameter on a given EventInstance
+	/// </summary>
+	/// <param name="instance">The affected EventInstance</param>
+	/// <param name="param">Parameter name</param>
+	/// <param name="value">What do we set it to</param>
+	/// <param name="ignoreseekspeed">Ignore smooth transition (if exists)</param>
+	static public void SetParameter( FMOD.Studio.EventInstance instance, string param, string value, bool ignoreseekspeed = false ) => FMODManager.SetParameter( instance, param, value, ignoreseekspeed );
+	/// <summary>
+	/// Set parameter on a given EventInstance
+	/// </summary>
+	/// <param name="instance">The affected EventInstance</param>
+	/// <param name="param">Parameter shortcut, has both</param>
+	/// <param name="ignoreseekspeed">Ignore smooth transition (if exists)</param>
+	static public void SetParameter( FMOD.Studio.EventInstance instance, ParamFloat param, bool ignoreseekspeed = false ) => FMODManager.SetParameter( instance, param.ParameterName, param.Value, ignoreseekspeed );
+	/// <summary>
+	/// Set parameter on a given EventInstance
+	/// </summary>
+	/// <param name="instance">The affected EventInstance</param>
+	/// <param name="param">Parameter shortcut, has both</param>
+	/// <param name="ignoreseekspeed">Ignore smooth transition (if exists)</param>
+	static public void SetParameter( FMOD.Studio.EventInstance instance, ParamLabel param, bool ignoreseekspeed = false ) => FMODManager.SetParameter( instance, param.ParameterName, param.Value, ignoreseekspeed );
 
 }
