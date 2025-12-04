@@ -24,7 +24,7 @@ public class DistancePrinter : Component
 	{
 		if ( Obj1.IsValid() )
 		{
-			instance = FMODSound.Play( "event:/Objects/Combine/Forcefield/ForcefieldMain", Obj1, true );
+			instance = FMODSound.Play( "event:/Objects/Combine/Forcefield/ForcefieldMain", Obj1 );
 		}
 	}
 
@@ -32,6 +32,14 @@ public class DistancePrinter : Component
 	void SetParam()
 	{
 		FMODSound.SetParameter( instance, TestFloat );
+	}
+
+	bool pause = false;
+	[Button]
+	void TestPause()
+	{
+		pause = !pause;
+		FMODSound.SetPauseOnAll( pause );
 	}
 
 }
