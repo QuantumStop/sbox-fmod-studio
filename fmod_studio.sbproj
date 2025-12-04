@@ -1,6 +1,6 @@
 {
   "Title": "FMOD Studio",
-  "Type": "game",
+  "Type": "library",
   "Org": "local",
   "Ident": "fmod_studio",
   "Schema": 1,
