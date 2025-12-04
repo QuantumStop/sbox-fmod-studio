@@ -11,7 +11,7 @@ public partial class FMODManager
 	{
 		float result = float.MaxValue;
 
-		foreach ( var listener in Instance.Listeners)
+		foreach ( var listener in Instance.Listeners )
 		{
 			result = MathF.Min( result, position.Distance( listener.AttenuationObject == null ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position ) );
 		}
@@ -22,7 +22,7 @@ public partial class FMODManager
 	{
 		float result = float.MaxValue;
 
-		foreach (var listener in Instance.Listeners)
+		foreach ( var listener in Instance.Listeners )
 		{
 			result = MathF.Min( result, (position - (listener.AttenuationObject == null ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position)).LengthSquared );
 		}

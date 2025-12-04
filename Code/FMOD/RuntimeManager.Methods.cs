@@ -4,6 +4,7 @@ using Sandbox;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Xml.Linq;
 using static Sandbox.Gizmo;
 
@@ -43,7 +44,7 @@ public partial class FMODManager
 
 	private static void SetParameterByName( EventInstance instance, string name, float value, bool ignoreseekspeed )
 	{
-		if ( instance.isValid() && !string.IsNullOrEmpty(name) )
+		if ( instance.isValid() && !string.IsNullOrEmpty( name ) )
 			instance.setParameterByName( name, value, ignoreseekspeed );
 	}
 
@@ -51,6 +52,45 @@ public partial class FMODManager
 	{
 		if ( instance.isValid() && !string.IsNullOrEmpty( name ) && !string.IsNullOrEmpty( value ) )
 			instance.setParameterByNameWithLabel( name, value, ignoreseekspeed );
+	}
+
+	private static void SetParameterByID( PARAMETER_ID id, string value, bool ignoreseekspeed )
+	{
+		if ( !string.IsNullOrEmpty( value ) )
+			StudioSystem.setParameterByIDWithLabel( id, value, ignoreseekspeed );
+	}
+
+	private static void SetParameterByID( PARAMETER_ID id, float value, bool ignoreseekspeed )
+	{
+		StudioSystem.setParameterByID( id, value, ignoreseekspeed );
+	}
+
+	public static void SetParameterGlobal( string param, float value, bool ignoreseekspeed )
+	{
+		FMOD.RESULT result = FMOD.RESULT.OK;
+		result = StudioSystem.getParameterDescriptionByName( param, out var parameterDescription );
+
+		if ( result != FMOD.RESULT.OK )
+		{
+			Log.Warning( string.Format( ("[FMOD] StudioGlobalParameterTrigger failed to lookup parameter {0} : result = {1}"), param, result ) );
+			return;
+		}
+
+		SetParameterByID( parameterDescription.id, value, ignoreseekspeed );
+	}
+
+	public static void SetParameterGlobal( string param, string value, bool ignoreseekspeed )
+	{
+		FMOD.RESULT result = FMOD.RESULT.OK;
+		result = StudioSystem.getParameterDescriptionByName( param, out var parameterDescription );
+
+		if ( result != FMOD.RESULT.OK )
+		{
+			Log.Warning( string.Format( ("[FMOD] StudioGlobalParameterTrigger failed to lookup parameter {0} : result = {1}"), param, result ) );
+			return;
+		}
+
+		SetParameterByID( parameterDescription.id, value, ignoreseekspeed );
 	}
 
 	public static Bus GetBus( string path )
@@ -71,7 +111,7 @@ public partial class FMODManager
 		return vca;
 	}
 
-	public static void SetVCAVolume( string vca, float volume ) => GetVCA(vca).setVolume( volume );
+	public static void SetVCAVolume( string vca, float volume ) => GetVCA( vca ).setVolume( volume );
 
 	public static void PauseAllEvents( bool paused )
 	{
@@ -81,8 +121,8 @@ public partial class FMODManager
 		}
 	}
 
-	public static void PauseEventsOnBus( bool paused, string bus ) => GetBus(bus).setPaused( paused );
-	
+	public static void PauseEventsOnBus( bool paused, string bus ) => GetBus( bus ).setPaused( paused );
+
 
 	public static void MuteAllEvents( bool muted )
 	{
@@ -338,7 +378,7 @@ public partial class FMODManager
 	public static void DetachInstanceFromGameObject( FMOD.Studio.EventInstance instance )
 	{
 		var manager = Instance;
-		foreach ( var attached in manager.attachedInstances)
+		foreach ( var attached in manager.attachedInstances )
 		{
 			if ( attached.Instance.handle == instance.handle )
 			{

@@ -233,7 +233,7 @@
         {
           "__type": "Sandbox.ModelRenderer",
           "__guid": "611f8cb0-42c9-4348-8aef-4b4c1f6f2465",
-          "__enabled": false,
+          "__enabled": true,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
           "LodOverride": null,
@@ -270,102 +270,11 @@
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
-        },
-        {
-          "__type": "Sandbox.SpriteRenderer",
-          "__guid": "faf24a24-ad51-48b4-a389-a487b30cf4e7",
-          "__enabled": true,
-          "__version": 2,
-          "Additive": false,
-          "Billboard": "Always",
-          "Color": "1,1,1,1",
-          "DepthFeather": 0,
-          "FlipHorizontal": false,
-          "FlipVertical": false,
-          "FogStrength": 1,
-          "IsSorted": false,
-          "Lighting": false,
-          "OnAnimationEnd": null,
-          "OnAnimationStart": null,
-          "OnBroadcastMessage": null,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "Opaque": false,
-          "OverlayColor": "1,1,1,0",
-          "PlaybackSpeed": 1,
-          "RenderOptions": {
-            "GameLayer": true,
-            "OverlayLayer": false,
-            "BloomLayer": false,
-            "AfterUILayer": false
-          },
-          "Shadows": false,
-          "Size": "256,256",
-          "Sprite": {
-            "$compiler": "embed",
-            "$source": null,
-            "data": {
-              "Animations": [
-                {
-                  "Name": "Default",
-                  "FrameRate": 15,
-                  "Origin": "0.5,1",
-                  "LoopMode": "Loop",
-                  "Frames": [
-                    {
-                      "Texture": {
-                        "$compiler": "texture",
-                        "$source": "imagefile",
-                        "data": {
-                          "FilePath": "materials/textures/saul_2009.tga",
-                          "MaxSize": 4096,
-                          "ConvertHeightToNormals": false,
-                          "NormalScale": 1,
-                          "Rotate": 0,
-                          "FlipVertical": false,
-                          "FlipHorizontal": false,
-                          "Cropping": {
-                            "Left": 0,
-                            "Top": 0,
-                            "Right": 0,
-                            "Bottom": 0
-                          },
-                          "Padding": {
-                            "Left": 0,
-                            "Top": 0,
-                            "Right": 0,
-                            "Bottom": 0
-                          },
-                          "InvertColor": false,
-                          "Tint": "1,1,1,1",
-                          "Blur": 0,
-                          "Sharpen": 0,
-                          "Brightness": 1,
-                          "Contrast": 1,
-                          "Saturation": 1,
-                          "Hue": 0,
-                          "Colorize": false,
-                          "TargetColor": "1,1,1,1",
-                          "CacheToDisk": true
-                        },
-                        "compiled": null
-                      },
-                      "BroadcastMessages": []
-                    }
-                  ]
-                }
-              ],
-              "__references": null
-            },
-            "compiled": null
-          },
-          "StartingAnimationName": "Default",
-          "TextureFilter": "Bilinear"
+          "TestFloat": {
+            "ParameterName": null,
+            "Value": 0
+          }
         }
       ],
       "Children": []
