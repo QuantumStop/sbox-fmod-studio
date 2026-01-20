@@ -14,7 +14,7 @@ public partial class StudioListener : Component
 	private Vector3 _lastFramePosition = Vector3.Zero;
 	private Rigidbody _rigidBody;
 
-	public int ListenerNumber { get => FMODManager.Instance.Listeners.IndexOf( this ); }
+	public int ListenerNumber { get => FMODManagerSystem.Current.Listeners.IndexOf( this ); }
 
 	protected override void OnEnabled()
 	{
@@ -28,7 +28,7 @@ public partial class StudioListener : Component
 			NonRigidbodyVelocity = false;
 		}
 
-		FMODManager.AddListener( this );
+		FMODManagerSystem.AddListener( this );
 
 		_lastFramePosition = WorldTransform.Position;
 	}
@@ -58,14 +58,14 @@ public partial class StudioListener : Component
 
 			_lastFramePosition = position;
 
-			FMODManager.SetListenerLocation( ListenerNumber, GameObject, AttenuationObject, velocity );
+			FMODManagerSystem.SetListenerLocation( ListenerNumber, GameObject, AttenuationObject, velocity );
 		}
 		else
 		{
 			if ( _rigidBody.IsValid() )
-				FMODManager.SetListenerLocation( ListenerNumber, GameObject, _rigidBody, AttenuationObject );
+				FMODManagerSystem.SetListenerLocation( ListenerNumber, GameObject, _rigidBody, AttenuationObject );
 			else
-				FMODManager.SetListenerLocation( ListenerNumber, GameObject, AttenuationObject );
+				FMODManagerSystem.SetListenerLocation( ListenerNumber, GameObject, AttenuationObject );
 		}
 	}
 

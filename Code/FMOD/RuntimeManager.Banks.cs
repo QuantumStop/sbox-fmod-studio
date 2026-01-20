@@ -3,7 +3,7 @@ using System;
 
 namespace FMODSbox;
 
-public partial class FMODManager
+public partial class FMODManagerSystem
 {
 	public static void LoadBank( string bankName, bool loadSamples = false )
 	{
@@ -12,7 +12,7 @@ public partial class FMODManager
 
 	private static void LoadBank( string bankName, bool loadSamples, string bankId )
 	{
-		if ( Instance.loadedBanks.ContainsKey( bankId ) )
+		if ( Current.loadedBanks.ContainsKey( bankId ) )
 		{
 			ReferenceLoadedBank( bankId, loadSamples );
 		}
@@ -32,25 +32,25 @@ public partial class FMODManager
 				bankPath = string.Format( "{0}\\{1}", assetsFolder, bankName );
 			}
 
-			Instance.loadingBanksRef++;
+			Current.loadingBanksRef++;
 
 			LoadedBank loadedBank = new();
-			FMOD.RESULT loadResult = Instance.studioSystem.loadBankFile( bankPath, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out loadedBank.Bank );
-			Instance.RegisterLoadedBank( loadedBank, bankPath, bankId, loadSamples, loadResult );
+			FMOD.RESULT loadResult = Current.studioSystem.loadBankFile( bankPath, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out loadedBank.Bank );
+			Current.RegisterLoadedBank( loadedBank, bankPath, bankId, loadSamples, loadResult );
 
-			Instance.loadingBanksRef--;
+			Current.loadingBanksRef--;
 		}
 	}
-	public static bool IsInitialized => Instance != null && Instance.studioSystem.isValid();
+	public static bool IsInitialized => Current != null && Current.studioSystem.isValid();
 
-	public static bool HaveAllBanksLoaded => Instance.loadingBanksRef == 0;
+	public static bool HaveAllBanksLoaded => Current.loadingBanksRef == 0;
 
 	/*
 	public static bool HaveMasterBanksLoaded
 	{
 		get
 		{
-			var banks = Instance.Banks;
+			var banks = Current.Banks;
 			foreach ( var bank in banks )
 			{
 				if ( !HasBankLoaded( bank. ) ) return false;
@@ -61,12 +61,12 @@ public partial class FMODManager
 	*/
 	public static bool HasBankLoaded( string loadedBank )
 	{
-		return Instance.loadedBanks.ContainsKey( loadedBank );
+		return Current.loadedBanks.ContainsKey( loadedBank );
 	}
 
 	private static void ReferenceLoadedBank( string bankName, bool loadSamples )
 	{
-		LoadedBank loadedBank = Instance.loadedBanks[bankName];
+		LoadedBank loadedBank = Current.loadedBanks[bankName];
 		loadedBank.RefCount++;
 
 		if ( loadSamples )
@@ -74,7 +74,7 @@ public partial class FMODManager
 			loadedBank.Bank.loadSampleData();
 		}
 
-		Instance.loadedBanks[bankName] = loadedBank; // Save the incremented reference count
+		Current.loadedBanks[bankName] = loadedBank; // Save the incremented reference count
 	}
 
 	private void RegisterLoadedBank( LoadedBank loadedBank, string bankPath, string bankName, bool loadSamples, FMOD.RESULT loadResult )
@@ -88,7 +88,7 @@ public partial class FMODManager
 				loadedBank.Bank.loadSampleData();
 			}
 
-			Instance.loadedBanks.Add( bankName, loadedBank );
+			Current.loadedBanks.Add( bankName, loadedBank );
 		}
 		else if ( loadResult == FMOD.RESULT.ERR_EVENT_ALREADY_LOADED )
 		{
@@ -198,6 +198,6 @@ public partial class FMODManager
 
 	public static void WaitForAllSampleLoading()
 	{
-		Instance.studioSystem.flushSampleLoading();
+		Current.studioSystem.flushSampleLoading();
 	}
 }

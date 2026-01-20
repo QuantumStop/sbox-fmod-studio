@@ -10,12 +10,12 @@ using static Sandbox.Gizmo;
 
 namespace FMODSbox;
 
-public partial class FMODManager
+public partial class FMODManagerSystem
 {
 	[ConVar( "debug_fmod_initresult", Help = "Show initialization results, if something doesn't show OK, then it's bad" )] static public bool DebugResult { get; set; } = false;
 	private void CheckInitResult( FMOD.RESULT result, string cause )
 	{
-		if ( result != FMOD.RESULT.OK )
+		if ( result != RESULT.OK )
 		{
 			ReleaseStudioSystem();
 			throw new SystemNotInitializedException( result, cause );
@@ -67,10 +67,10 @@ public partial class FMODManager
 
 	public static void SetParameterGlobal( string param, float value, bool ignoreseekspeed )
 	{
-		FMOD.RESULT result = FMOD.RESULT.OK;
+		RESULT result = RESULT.OK;
 		result = StudioSystem.getParameterDescriptionByName( param, out var parameterDescription );
 
-		if ( result != FMOD.RESULT.OK )
+		if ( result != RESULT.OK )
 		{
 			Log.Warning( string.Format( ("[FMOD] StudioGlobalParameterTrigger failed to lookup parameter {0} : result = {1}"), param, result ) );
 			return;
@@ -81,10 +81,10 @@ public partial class FMODManager
 
 	public static void SetParameterGlobal( string param, string value, bool ignoreseekspeed )
 	{
-		FMOD.RESULT result = FMOD.RESULT.OK;
+		RESULT result = RESULT.OK;
 		result = StudioSystem.getParameterDescriptionByName( param, out var parameterDescription );
 
-		if ( result != FMOD.RESULT.OK )
+		if ( result != RESULT.OK )
 		{
 			Log.Warning( string.Format( ("[FMOD] StudioGlobalParameterTrigger failed to lookup parameter {0} : result = {1}"), param, result ) );
 			return;
@@ -95,7 +95,7 @@ public partial class FMODManager
 
 	public static Bus GetBus( string path )
 	{
-		if ( StudioSystem.getBus( path, out FMOD.Studio.Bus bus ) != FMOD.RESULT.OK )
+		if ( StudioSystem.getBus( path, out Bus bus ) != RESULT.OK )
 		{
 			throw new BusNotFoundException( path );
 		}
@@ -104,7 +104,7 @@ public partial class FMODManager
 
 	public static VCA GetVCA( string path )
 	{
-		if ( StudioSystem.getVCA( path, out FMOD.Studio.VCA vca ) != FMOD.RESULT.OK )
+		if ( StudioSystem.getVCA( path, out VCA vca ) != RESULT.OK )
 		{
 			throw new VCANotFoundException( path );
 		}
@@ -115,7 +115,7 @@ public partial class FMODManager
 
 	public static void PauseAllEvents( bool paused )
 	{
-		if ( StudioSystem.getBus( "bus:/", out FMOD.Studio.Bus masterBus ) == FMOD.RESULT.OK )
+		if ( StudioSystem.getBus( "bus:/", out Bus masterBus ) == RESULT.OK )
 		{
 			masterBus.setPaused( paused );
 		}
@@ -126,16 +126,16 @@ public partial class FMODManager
 
 	public static void MuteAllEvents( bool muted )
 	{
-		Instance.isMuted = muted;
+		Current.isMuted = muted;
 
 		ApplyMuteState();
 	}
 
 	private static void ApplyMuteState()
 	{
-		if ( StudioSystem.getBus( "bus:/", out FMOD.Studio.Bus masterBus ) == FMOD.RESULT.OK )
+		if ( StudioSystem.getBus( "bus:/", out Bus masterBus ) == RESULT.OK )
 		{
-			masterBus.setMute( Instance.isMuted );
+			masterBus.setMute( Current.isMuted );
 		}
 	}
 	/// <summary>
@@ -144,7 +144,7 @@ public partial class FMODManager
 	/// <param name="path">Path string of the event</param>
 	/// <param name="position">WorldPosition of the event</param>
 	/// <param name="release">Should the instance be released or we do that ourselves</param>
-	public static FMOD.Studio.EventInstance PlayOnce( string path, Vector3 position = default, bool release = true )
+	public static EventInstance PlayOnce( string path, Vector3 position = default, bool release = true )
 	{
 		try
 		{
@@ -162,7 +162,7 @@ public partial class FMODManager
 	/// <param name="guid">GUID of the event</param>
 	/// <param name="position">WorldPosition of the event</param>
 	/// <param name="release">Should the instance be released or we do that ourselves</param>
-	public static FMOD.Studio.EventInstance PlayOnce( GUID guid, Vector3 position = new Vector3(), bool release = true )
+	public static EventInstance PlayOnce( GUID guid, Vector3 position = new Vector3(), bool release = true )
 	{
 		var instance = CreateInstance( guid );
 
@@ -173,17 +173,17 @@ public partial class FMODManager
 		return instance;    // generally not a good idea to get the instance if its released buuuuut...
 	}
 
-	public static FMOD.GUID PathToGUID( string path )
+	public static GUID PathToGUID( string path )
 	{
-		FMOD.GUID guid;
+		GUID guid;
 		if ( path.StartsWith( "{" ) )
 		{
-			FMOD.Studio.Util.parseID( path, out guid );
+			Util.parseID( path, out guid );
 		}
 		else
 		{
-			var result = Instance.studioSystem.lookupID( path, out guid );
-			if ( result == FMOD.RESULT.ERR_EVENT_NOTFOUND )
+			var result = Current.studioSystem.lookupID( path, out guid );
+			if ( result == RESULT.ERR_EVENT_NOTFOUND )
 			{
 				throw new EventNotFoundException( path );
 			}
@@ -191,7 +191,7 @@ public partial class FMODManager
 		return guid;
 	}
 
-	public static FMOD.Studio.EventInstance CreateInstance( EventReference eventReference )
+	public static EventInstance CreateInstance( EventReference eventReference )
 	{
 		try
 		{
@@ -203,7 +203,7 @@ public partial class FMODManager
 		}
 	}
 
-	public static FMOD.Studio.EventInstance CreateInstance( string path )
+	public static EventInstance CreateInstance( string path )
 	{
 		try
 		{
@@ -216,16 +216,16 @@ public partial class FMODManager
 		}
 	}
 
-	public static FMOD.Studio.EventInstance CreateInstance( FMOD.GUID guid )
+	public static EventInstance CreateInstance( GUID guid )
 	{
-		FMOD.Studio.EventDescription eventDesc = GetEventDescription( guid );
-		FMOD.Studio.EventInstance newInstance;
+		EventDescription eventDesc = GetEventDescription( guid );
+		EventInstance newInstance;
 		eventDesc.createInstance( out newInstance );
 
 		return newInstance;
 	}
 
-	public static FMOD.Studio.EventDescription GetEventDescription( EventReference eventReference )
+	public static EventDescription GetEventDescription( EventReference eventReference )
 	{
 		try
 		{
@@ -237,7 +237,7 @@ public partial class FMODManager
 		}
 	}
 
-	public static FMOD.Studio.EventDescription GetEventDescription( string path )
+	public static EventDescription GetEventDescription( string path )
 	{
 		try
 		{
@@ -249,31 +249,31 @@ public partial class FMODManager
 		}
 	}
 
-	public static FMOD.Studio.EventDescription GetEventDescription( FMOD.GUID guid )
+	public static EventDescription GetEventDescription( GUID guid )
 	{
-		FMOD.Studio.EventDescription eventDesc;
-		if ( Instance.cachedDescriptions.ContainsKey( guid ) && Instance.cachedDescriptions[guid].isValid() )
+		EventDescription eventDesc;
+		if ( Current.cachedDescriptions.TryGetValue( guid, out EventDescription value ) && value.isValid() )
 		{
-			eventDesc = Instance.cachedDescriptions[guid];
+			eventDesc = value;
 		}
 		else
 		{
-			var result = Instance.studioSystem.getEventByID( guid, out eventDesc );
+			var result = Current.studioSystem.getEventByID( guid, out eventDesc );
 
-			if ( result != FMOD.RESULT.OK )
+			if ( result != RESULT.OK )
 			{
 				Log.Error( guid );
 			}
 
 			if ( eventDesc.isValid() )
 			{
-				Instance.cachedDescriptions[guid] = eventDesc;
+				Current.cachedDescriptions[guid] = eventDesc;
 			}
 		}
 		return eventDesc;
 	}
 
-	public static FMOD.Studio.EventInstance PlayOnObject( EventReference eventReference, GameObject gameObject = null, bool release = true )
+	public static EventInstance PlayOnObject( EventReference eventReference, GameObject gameObject = null, bool release = true )
 	{
 		try
 		{
@@ -286,7 +286,7 @@ public partial class FMODManager
 		}
 	}
 
-	public static FMOD.Studio.EventInstance PlayOnObject( string path, GameObject gameObject, bool release = true )
+	public static EventInstance PlayOnObject( string path, GameObject gameObject, bool release = true )
 	{
 		try
 		{
@@ -299,9 +299,9 @@ public partial class FMODManager
 		}
 	}
 
-	public static void PlayOnObject( FMOD.GUID guid, GameObject gameObject, out FMOD.Studio.EventInstance eventInstance, bool release = true )
+	public static void PlayOnObject( GUID guid, GameObject gameObject, out EventInstance eventInstance, bool release = true )
 	{
-		if ( CreateInstanceWithinMaxDistance( guid, gameObject.WorldTransform.Position, out FMOD.Studio.EventInstance instance ) )
+		if ( CreateInstanceWithinMaxDistance( guid, gameObject.WorldTransform.Position, out EventInstance instance ) )
 		{
 			if ( gameObject.Components.TryGet<Rigidbody>( out var rigid ) )
 				AttachInstanceToGameObject( instance, gameObject, rigid );
@@ -315,9 +315,9 @@ public partial class FMODManager
 		eventInstance = instance;
 	}
 
-	public static bool CreateInstanceWithinMaxDistance( FMOD.GUID guid, Vector3 position, out FMOD.Studio.EventInstance instance )
+	public static bool CreateInstanceWithinMaxDistance( GUID guid, Vector3 position, out EventInstance instance )
 	{
-		FMOD.Studio.EventDescription description = GetEventDescription( guid );
+		EventDescription description = GetEventDescription( guid );
 		if ( fmodSettings.StopEventsOutsideMaxDistance )
 		{
 			description.is3D( out bool is3D );
@@ -326,7 +326,7 @@ public partial class FMODManager
 				description.getMinMaxDistance( out float min, out float max );
 				if ( DistanceSquaredToNearestListener( position ) > (max * max) )
 				{
-					instance = new FMOD.Studio.EventInstance();
+					instance = new EventInstance();
 					return false;
 				}
 			}
@@ -336,24 +336,24 @@ public partial class FMODManager
 		return true;
 	}
 
-	private static AttachedInstance FindOrAddAttachedInstance( FMOD.Studio.EventInstance instance, GameObject gameObject, FMOD.ATTRIBUTES_3D attributes )
+	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, GameObject gameObject, ATTRIBUTES_3D attributes )
 	{
 		return FindOrAddAttachedInstance( instance, gameObject.WorldTransform, gameObject, attributes );
 	}
 
-	private static AttachedInstance FindOrAddAttachedInstance( FMOD.Studio.EventInstance instance, Transform transform, FMOD.ATTRIBUTES_3D attributes )
+	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, Transform transform, ATTRIBUTES_3D attributes )
 	{
 		return FindOrAddAttachedInstance( instance, transform, null, attributes );
 	}
 
-	private static AttachedInstance FindOrAddAttachedInstance( FMOD.Studio.EventInstance instance, Transform transform, GameObject gameObject, FMOD.ATTRIBUTES_3D attributes )
+	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, Transform transform, GameObject gameObject, ATTRIBUTES_3D attributes )
 	{
-		AttachedInstance attachedInstance = Instance.attachedInstances.Find( x => x.Instance.handle == instance.handle );
+		AttachedInstance attachedInstance = Current.attachedInstances.Find( x => x.Instance.handle == instance.handle );
 
 		if ( attachedInstance == null )
 		{
 			attachedInstance = new AttachedInstance();
-			Instance.attachedInstances.Add( attachedInstance );
+			Current.attachedInstances.Add( attachedInstance );
 		}
 		attachedInstance.Instance = instance;
 		attachedInstance.transform = transform;
@@ -362,27 +362,26 @@ public partial class FMODManager
 		return attachedInstance;
 	}
 
-	public static void AttachInstanceToGameObject( FMOD.Studio.EventInstance instance, GameObject gameObject )
+	public static void AttachInstanceToGameObject( EventInstance instance, GameObject gameObject )
 	{
 		AttachedInstance attachedInstance = FindOrAddAttachedInstance( instance, gameObject, RuntimeUtils.To3DAttributes( gameObject.WorldTransform ) );
 
 		attachedInstance.lastFramePosition = gameObject.WorldTransform.Position;
 	}
 
-	public static void AttachInstanceToGameObject( FMOD.Studio.EventInstance instance, GameObject gameObject, Rigidbody rigidBody )
+	public static void AttachInstanceToGameObject( EventInstance instance, GameObject gameObject, Rigidbody rigidBody )
 	{
 		AttachedInstance attachedInstance = FindOrAddAttachedInstance( instance, gameObject, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.WorldPosition ) );
 
 		attachedInstance.rigidBody = rigidBody;
 	}
-	public static void DetachInstanceFromGameObject( FMOD.Studio.EventInstance instance )
+	public static void DetachInstanceFromGameObject( EventInstance instance )
 	{
-		var manager = Instance;
-		foreach ( var attached in manager.attachedInstances )
+		foreach ( var attached in Current.attachedInstances )
 		{
 			if ( attached.Instance.handle == instance.handle )
 			{
-				manager.attachedInstances.Remove( attached );
+				Current.attachedInstances.Remove( attached );
 				return;
 			}
 		}

@@ -24,7 +24,7 @@ public enum EventLinkage
 }
 
 
-public partial class FMODManager
+public partial class FMODManagerSystem
 {
 	private static Settings fmodSettings => new();
 

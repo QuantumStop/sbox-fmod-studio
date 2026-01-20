@@ -7,22 +7,25 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json.Serialization;
-
-public class FMODSystem : GameObjectSystem
+public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 {
-	public FMODSystem( Scene scene ) : base( scene )
+	public FMODManagerSystem( Scene scene ) : base( scene )
 	{
-		Listen( Stage.SceneLoaded, 100, SpawnManager, "Spawn Manager" );
+		Listen( Stage.SceneLoaded, 0, SceneLoaded, "FMOD OnStart" );
+		Listen( Stage.StartUpdate, 0, StartUpdate, "FMOD OnUpdate" );
 	}
 
-	void SpawnManager()
+	public override void Dispose()
+	{
+		coreSystem.setCallback( null, 0 );
+		ReleaseStudioSystem();
+		base.Dispose();
+	}
+
+	private void SpawnListenerOnCamera()
 	{
 		if ( Game.IsPlaying ) // just in case
 		{
-			GameObject gameObject = new() { Name = "FMOD Manager" };
-			gameObject.AddComponent<FMODManager>();
-			gameObject.Flags = GameObjectFlags.NotSaved | GameObjectFlags.Hidden;
-
 			var listener = Scene.Get<StudioListener>(); // should be created AFTER the manager
 
 			if ( listener == null )
@@ -36,19 +39,14 @@ public class FMODSystem : GameObjectSystem
 			}
 		}
 	}
-}
 
-[Hide]
-public partial class FMODManager : Component
-{
 	//	private static SystemNotInitializedException initException = null;
-	[Property, JsonIgnore, ReadOnly] public static FMODManager Instance;
 
 	//	[Property, JsonIgnore, ReadOnly] private FMOD.DEBUG_CALLBACK debugCallback;
-	[Property, JsonIgnore, ReadOnly] private FMOD.SYSTEM_CALLBACK errorCallback;
+	[Property, JsonIgnore, ReadOnly] private SYSTEM_CALLBACK errorCallback;
 
 	[Property, JsonIgnore, ReadOnly] private FMOD.Studio.System studioSystem;
-	[Property, JsonIgnore, ReadOnly] private FMOD.System coreSystem;
+	[Property, JsonIgnore, ReadOnly] private System coreSystem;
 	//	[Property, JsonIgnore, ReadOnly] private FMOD.DSP mixerHead;
 
 	private bool isMuted = false;
@@ -79,7 +77,7 @@ public partial class FMODManager : Component
 	[Property, ReadOnly] public List<string> Banks { get; set; }
 	[Property, ReadOnly] public List<string> BanksToLoad { get; set; }
 
-	static FMODManager()
+	static FMODManagerSystem()
 	{
 		UTF8Encoding encoding = new();
 
@@ -88,13 +86,11 @@ public partial class FMODManager : Component
 		systemGetBus = encoding.GetBytes( "System::getBus" );
 	}
 
-	public static bool IsMuted => Instance.isMuted;
+	public static bool IsMuted => Current.isMuted;
 
-	protected override void OnAwake()
+	private void SceneLoaded()
 	{
-		Instance = this;
-
-		if ( Instance == null )
+		if ( Current == null ) // will never happen
 		{
 			if ( !Game.IsPlaying )
 			{
@@ -105,13 +101,14 @@ public partial class FMODManager : Component
 		else
 		{
 			RuntimeUtils.EnforceLibraryOrder();
-			Instance.Initialize();
+			Current.Initialize();
+			Current.SpawnListenerOnCamera();
 		}
 	}
 
-	public static FMOD.Studio.System StudioSystem { get => Instance.studioSystem; }
+	public static FMOD.Studio.System StudioSystem { get => Current.studioSystem; }
 
-	public static System CoreSystem { get => Instance.coreSystem; }
+	public static System CoreSystem { get => Current.coreSystem; }
 
 	private struct LoadedBank
 	{
@@ -211,16 +208,8 @@ public partial class FMODManager : Component
 
 		return initResult;
 	}
-	protected override void OnDestroy()
-	{
-		coreSystem.setCallback( null, 0 );
-		ReleaseStudioSystem();
 
-		//		initException = null;
-		Instance = null;
-	}
-
-	protected override void OnUpdate()
+	private void StartUpdate()
 	{
 		if ( studioSystem.isValid() )
 		{

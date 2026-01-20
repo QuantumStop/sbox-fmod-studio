@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace FMODSbox;
 
-public partial class FMODManager
+public partial class FMODManagerSystem
 {
 	public List<StudioListener> Listeners = [];
 
@@ -11,7 +11,7 @@ public partial class FMODManager
 	{
 		float result = float.MaxValue;
 
-		foreach ( var listener in Instance.Listeners )
+		foreach ( var listener in Current.Listeners )
 		{
 			result = MathF.Min( result, position.Distance( listener.AttenuationObject == null ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position ) );
 		}
@@ -22,7 +22,7 @@ public partial class FMODManager
 	{
 		float result = float.MaxValue;
 
-		foreach ( var listener in Instance.Listeners )
+		foreach ( var listener in Current.Listeners )
 		{
 			result = MathF.Min( result, (position - (listener.AttenuationObject == null ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position)).LengthSquared );
 		}
@@ -33,25 +33,25 @@ public partial class FMODManager
 	public static void AddListener( StudioListener listener )
 	{
 		// Is the listener already in the list?
-		if ( Instance.Listeners.Contains( listener ) )
+		if ( Current.Listeners.Contains( listener ) )
 		{
 			Log.Warning( string.Format( ("[FMOD] Listener has already been added at index {0}."), listener.ListenerNumber ) );
 			return;
 		}
 
 		// If already at the max numListeners
-		if ( Instance.Listeners.Count >= FMOD.CONSTANTS.MAX_LISTENERS )
+		if ( Current.Listeners.Count >= FMOD.CONSTANTS.MAX_LISTENERS )
 		{
 			Log.Warning( string.Format( ("[FMOD] Max number of Listeners reached : {0}."), FMOD.CONSTANTS.MAX_LISTENERS ) );
 		}
 
-		Instance.Listeners.Add( listener );
-		StudioSystem.setNumListeners( Math.Clamp( Instance.Listeners.Count, 1, FMOD.CONSTANTS.MAX_LISTENERS ) );
+		Current.Listeners.Add( listener );
+		StudioSystem.setNumListeners( Math.Clamp( Current.Listeners.Count, 1, FMOD.CONSTANTS.MAX_LISTENERS ) );
 	}
 
 	public static void RemoveListener( StudioListener listener )
 	{
-		Instance.Listeners.Remove( listener );
-		StudioSystem.setNumListeners( Math.Clamp( Instance.Listeners.Count, 1, FMOD.CONSTANTS.MAX_LISTENERS ) );
+		Current.Listeners.Remove( listener );
+		StudioSystem.setNumListeners( Math.Clamp( Current.Listeners.Count, 1, FMOD.CONSTANTS.MAX_LISTENERS ) );
 	}
 }
