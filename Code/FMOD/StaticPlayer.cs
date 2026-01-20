@@ -39,4 +39,9 @@ static public partial class FMODSound
 	/// <param name="release"></param>
 	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
 	static public FMOD.Studio.EventInstance Play( string path, GameObject gameObject, bool release = true ) => FMODManager.PlayOnObject( path, gameObject, release );
+	/// <summary>
+	/// Shortcut to play a null sound so theres something to return in case of null or default
+	/// </summary>
+	/// <returns>1ms of silence</returns>
+	static public EventInstance Null() => Play( "event:/null" );
 }

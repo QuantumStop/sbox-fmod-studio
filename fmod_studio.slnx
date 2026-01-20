@@ -5,10 +5,10 @@
   <Project Path="Code/fmod_studio.csproj" />
   <Project Path="Editor/fmod_studio.editor.csproj" />
   <Folder Name="/Addons/">
-    <Project Path="G:/Sandbox/chaos-box/game/addons/base/Code/Base Library.csproj" />
+    <Project Path="G:/Sandbox/chaos-box/game/addons/base_override/Code/Base Library.csproj" />
   </Folder>
   <Folder Name="/Tools/">
-    <Project Path="G:/Sandbox/chaos-box/game/addons/tools/Code/Base Editor Library.csproj" />
+    <Project Path="G:/Sandbox/chaos-box/game/addons/tools_override/Code/Base Editor Library.csproj" />
     <Project Path="G:/Sandbox/chaos-box/game/editor/ActionGraph/Code/actiongraph.csproj" />
     <Project Path="G:/Sandbox/chaos-box/game/editor/Hammer/Code/hammer.csproj" />
     <Project Path="G:/Sandbox/chaos-box/game/editor/MovieMaker/Code/moviemaker.csproj" />
