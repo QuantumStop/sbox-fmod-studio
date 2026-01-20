@@ -24,9 +24,9 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 
 	private void SpawnListenerOnCamera()
 	{
-		if ( Game.IsPlaying ) // just in case
+		if ( Game.IsPlaying )
 		{
-			var listener = Scene.Get<StudioListener>(); // should be created AFTER the manager
+			var listener = Scene.Get<StudioListener>();
 
 			if ( listener == null )
 			{
@@ -40,9 +40,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		}
 	}
 
-	//	private static SystemNotInitializedException initException = null;
 
-	//	[Property, JsonIgnore, ReadOnly] private FMOD.DEBUG_CALLBACK debugCallback;
 	[Property, JsonIgnore, ReadOnly] private SYSTEM_CALLBACK errorCallback;
 
 	[Property, JsonIgnore, ReadOnly] private FMOD.Studio.System studioSystem;
