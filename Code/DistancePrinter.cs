@@ -52,7 +52,7 @@ public class DistancePrinter : Component
 	[Button]
 	void TestPlasterFootstep()
 	{
-		var instance = FMODSound.Play( "event:/Physics/StepLeft" );
+		var instance = FMODSound.Play( "event:/Physics/StepLeft", Obj1.WorldPosition );
 		FMODSound.SetParameter( instance, "parameter:/Physics/MaterialType", "Plaster" );
 	}
 
