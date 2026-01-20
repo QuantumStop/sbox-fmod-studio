@@ -119,19 +119,19 @@ public partial class FMODManager : Component
 		public int RefCount;
 	}
 
-	private FMOD.RESULT Initialize()
+	private RESULT Initialize()
 	{
-		FMOD.RESULT result = FMOD.RESULT.OK;
-		FMOD.RESULT initResult = FMOD.RESULT.OK;
+		RESULT result = RESULT.OK;
+		RESULT initResult = RESULT.OK;
 
 		int sampleRate = fmodSettings.SampleRate;
 		int realChannels = fmodSettings.RealChannels;
 		int virtualChannels = fmodSettings.VirtualChannels;
 		uint dspBufferLength = fmodSettings.DSPBufferLength;
 		int dspBufferCount = fmodSettings.DSPBufferCount;
-		FMOD.SPEAKERMODE speakerMode = fmodSettings.SpeakerMode;
-		FMOD.OUTPUTTYPE outputType = fmodSettings.OutputType;
-		FMOD.ADVANCEDSETTINGS advancedSettings = new();
+		SPEAKERMODE speakerMode = fmodSettings.SpeakerMode;
+		OUTPUTTYPE outputType = fmodSettings.OutputType;
+		ADVANCEDSETTINGS advancedSettings = new();
 
 		FMOD.Studio.INITFLAGS studioInitFlags = FMOD.Studio.INITFLAGS.NORMAL | FMOD.Studio.INITFLAGS.ALLOW_MISSING_PLUGINS | FMOD.Studio.INITFLAGS.LIVEUPDATE;
 
