@@ -31,8 +31,8 @@ public partial class FMODManager
 	public static void SetListenerLocation( int listenerIndex, GameObject gameObject, Rigidbody rigidBody, GameObject attenuationObject = null )
 	{
 		if ( attenuationObject.IsValid() )
-			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.WorldPosition ), RuntimeUtils.SourceToFMODVector( attenuationObject.WorldTransform.Position ) );
+			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.Velocity ), RuntimeUtils.SourceToFMODVector( attenuationObject.WorldTransform.Position ) );
 		else
-			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.WorldPosition ) );
+			Instance.studioSystem.setListenerAttributes( listenerIndex, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.Velocity ) );
 	}
 }
