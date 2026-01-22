@@ -5,7 +5,7 @@
   "Ident": "fmod_studio",
   "Schema": 1,
   "IncludeSourceFiles": false,
-  "Resources": null,
+  "Resources": "fmod/*",
   "PackageReferences": [],
   "EditorReferences": null,
   "Mounts": [],
