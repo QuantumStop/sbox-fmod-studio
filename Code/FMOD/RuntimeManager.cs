@@ -62,7 +62,6 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		public Transform transform;
 		public GameObject attachedGameObject;
 		public Rigidbody rigidBody;
-
 		public Vector3 lastFramePosition;
 	}
 
@@ -225,36 +224,27 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 					continue;
 				}
 
-
 				if ( attached.rigidBody.IsValid() )
 				{
 					attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.transform, attached.rigidBody.Velocity ) );
 				}
 				else
 				{
-					// fucking why
-					//	if ( !attachedInstances[i].nonRigidbodyVelocity )
-					//	{
-					//		attachedInstances[i].Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attachedInstances[i].transform ) );
-					//	}
-					//	else
+					if ( attached.attachedGameObject.IsValid() )
+						attached.transform = attached.attachedGameObject.WorldTransform;
+
+					var position = attached.transform.Position;
+					var velocity = Vector3.Zero;
+
+					if ( Time.Delta != 0 )
 					{
-						if ( attached.attachedGameObject.IsValid() )
-							attached.transform = attached.attachedGameObject.WorldTransform;
-
-						var position = attached.transform.Position;
-						var velocity = Vector3.Zero;
-
-						if ( Time.Delta != 0 )
-						{
-							velocity = (position - attached.lastFramePosition) / Time.Delta;
-							velocity = velocity.Clamp( velocity, 512f ); // Stops pitch fluttering when moving too quickly
-						}
-
-
-						attached.lastFramePosition = position;
-						attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.transform, velocity ) );
+						velocity = (position - attached.lastFramePosition) / Time.Delta;
+						velocity = velocity.Clamp( velocity, 512f ); // Stops pitch fluttering when moving too quickly
 					}
+
+
+					attached.lastFramePosition = position;
+					attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.transform, velocity ) );
 				}
 			}
 
@@ -270,24 +260,24 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		if ( (callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.CHANNEL || callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.CHANNELCONTROL)
 			&& (callbackInfo.result == FMOD.RESULT.ERR_INVALID_HANDLE || callbackInfo.result == FMOD.RESULT.ERR_CHANNEL_STOLEN) )
 		{
-			return FMOD.RESULT.OK;
+			return RESULT.OK;
 		}
 		if ( callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.STUDIO_EVENTINSTANCE
 			&& callbackInfo.functionname.Equals( eventSet3DAttributes )
 			&& callbackInfo.result == FMOD.RESULT.ERR_INVALID_HANDLE )
 		{
-			return FMOD.RESULT.OK;
+			return RESULT.OK;
 		}
 		if ( callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.STUDIO_SYSTEM
 			&& callbackInfo.functionname.Equals( systemGetBus )
 			&& callbackInfo.result == FMOD.RESULT.ERR_EVENT_NOTFOUND
 			&& callbackInfo.functionparams.StartsWith( masterBusPrefix ) )
 		{
-			return FMOD.RESULT.OK;
+			return RESULT.OK;
 		}
 
 		Log.Error( string.Format( "[FMOD] {0}({1}) returned {2} for {3} (0x{4}).",
 			(string)callbackInfo.functionname, (string)callbackInfo.functionparams, callbackInfo.result, callbackInfo.instancetype, callbackInfo.instance.ToString( "X" ) ) );
-		return FMOD.RESULT.OK;
+		return RESULT.OK;
 	}
 }
