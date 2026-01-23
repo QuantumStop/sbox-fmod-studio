@@ -201,7 +201,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		}
 
 
-		//currentPlatform.LoadPlugins( coreSystem, CheckInitResult );
+		LoadPlugins( coreSystem, CheckInitResult );
 		LoadBanks( fmodSettings );
 
 		return initResult;
