@@ -38,7 +38,7 @@ FMODSound.Play( "event:/Weapons/1P/Sniper/SniperA_1P" );
 
 By default all event instances are immediately released, but in case this is not desired, it can be done manually.
 ```cs
-var instance = FMODSound.Play( "event:/Physics/StepLeft" );
+var instance = FMODSound.Play( "event:/Physics/StepLeft", false );
 FMODSound.Release( instance );
 ```
 
