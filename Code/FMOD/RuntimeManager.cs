@@ -3,10 +3,12 @@ namespace FMODSbox;
 using FMOD;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json.Serialization;
+/// <summary>
+/// Main handler for everything FMOD
+/// </summary>
 public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 {
 	public FMODManagerSystem( Scene scene ) : base( scene )
@@ -45,16 +47,16 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 
 	[Property, JsonIgnore, ReadOnly] private FMOD.Studio.System studioSystem;
 	[Property, JsonIgnore, ReadOnly] private System coreSystem;
-	//	[Property, JsonIgnore, ReadOnly] private FMOD.DSP mixerHead;
+
 
 	private bool isMuted = false;
 
-	private Dictionary<FMOD.GUID, FMOD.Studio.EventDescription> cachedDescriptions = [];
+	private Dictionary<GUID, FMOD.Studio.EventDescription> cachedDescriptions = [];
 
-	[Property, JsonIgnore, ReadOnly] private Dictionary<string, LoadedBank> loadedBanks = [];
-	[Property, JsonIgnore, ReadOnly] private List<string> sampleLoadRequests = [];
+	[Property, JsonIgnore, ReadOnly] private readonly Dictionary<string, LoadedBank> loadedBanks = [];
+	[Property, JsonIgnore, ReadOnly] private readonly List<string> sampleLoadRequests = [];
 
-	[Property, JsonIgnore, ReadOnly] private List<AttachedInstance> attachedInstances = new( 128 );
+	[Property, JsonIgnore, ReadOnly] private readonly List<AttachedInstance> attachedInstances = new( 128 );
 
 	private class AttachedInstance
 	{
@@ -67,9 +69,9 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 
 	private int loadingBanksRef = 0;
 
-	private static byte[] masterBusPrefix;
-	private static byte[] eventSet3DAttributes;
-	private static byte[] systemGetBus;
+	private static readonly byte[] masterBusPrefix;
+	private static readonly byte[] eventSet3DAttributes;
+	private static readonly byte[] systemGetBus;
 
 	[Property, ReadOnly] public List<string> Banks { get; set; }
 	[Property, ReadOnly] public List<string> BanksToLoad { get; set; }
@@ -158,7 +160,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 			CheckInitResult( result, "FMOD.System.setDSPBufferSize" );
 		}
 
-		errorCallback = new FMOD.SYSTEM_CALLBACK( ERROR_CALLBACK );
+		errorCallback = new SYSTEM_CALLBACK( ERROR_CALLBACK );
 		result = coreSystem.setCallback( errorCallback, FMOD.SYSTEM_CALLBACK_TYPE.ERROR );
 		CheckInitResult( result, "FMOD.System.setCallback" );
 
@@ -187,7 +189,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 			studioSystem.flushCommands(); // Any error will be returned through Studio.System.update
 
 			result = studioSystem.update();
-			if ( result == FMOD.RESULT.ERR_NET_SOCKET_ERROR )
+			if ( result == RESULT.ERR_NET_SOCKET_ERROR )
 			{
 				studioInitFlags &= ~FMOD.Studio.INITFLAGS.LIVEUPDATE;
 				Log.Info( "[FMOD] Cannot open network port for Live Update (in-use), restarting with Live Update disabled." );
@@ -252,25 +254,25 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		}
 	}
 
-	private static FMOD.RESULT ERROR_CALLBACK( IntPtr system, FMOD.SYSTEM_CALLBACK_TYPE type, IntPtr commanddata1, IntPtr commanddata2, IntPtr userdata )
+	private static RESULT ERROR_CALLBACK( IntPtr system, SYSTEM_CALLBACK_TYPE type, IntPtr commanddata1, IntPtr commanddata2, IntPtr userdata )
 	{
-		FMOD.ERRORCALLBACK_INFO callbackInfo = Marshal.PtrToStructure<FMOD.ERRORCALLBACK_INFO>( commanddata1 );
+		ERRORCALLBACK_INFO callbackInfo = Marshal.PtrToStructure<ERRORCALLBACK_INFO>( commanddata1 );
 
 		// Filter out benign expected errors.
-		if ( (callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.CHANNEL || callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.CHANNELCONTROL)
-			&& (callbackInfo.result == FMOD.RESULT.ERR_INVALID_HANDLE || callbackInfo.result == FMOD.RESULT.ERR_CHANNEL_STOLEN) )
+		if ( (callbackInfo.instancetype == ERRORCALLBACK_INSTANCETYPE.CHANNEL || callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.CHANNELCONTROL)
+			&& (callbackInfo.result == RESULT.ERR_INVALID_HANDLE || callbackInfo.result == RESULT.ERR_CHANNEL_STOLEN) )
 		{
 			return RESULT.OK;
 		}
-		if ( callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.STUDIO_EVENTINSTANCE
+		if ( callbackInfo.instancetype == ERRORCALLBACK_INSTANCETYPE.STUDIO_EVENTINSTANCE
 			&& callbackInfo.functionname.Equals( eventSet3DAttributes )
-			&& callbackInfo.result == FMOD.RESULT.ERR_INVALID_HANDLE )
+			&& callbackInfo.result == RESULT.ERR_INVALID_HANDLE )
 		{
 			return RESULT.OK;
 		}
-		if ( callbackInfo.instancetype == FMOD.ERRORCALLBACK_INSTANCETYPE.STUDIO_SYSTEM
+		if ( callbackInfo.instancetype == ERRORCALLBACK_INSTANCETYPE.STUDIO_SYSTEM
 			&& callbackInfo.functionname.Equals( systemGetBus )
-			&& callbackInfo.result == FMOD.RESULT.ERR_EVENT_NOTFOUND
+			&& callbackInfo.result == RESULT.ERR_EVENT_NOTFOUND
 			&& callbackInfo.functionparams.StartsWith( masterBusPrefix ) )
 		{
 			return RESULT.OK;
