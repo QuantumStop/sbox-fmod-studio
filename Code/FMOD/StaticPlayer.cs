@@ -16,6 +16,13 @@ static public partial class FMODSound
 	/// <param name="instance"></param>
 	static public void Release( EventInstance instance ) => instance.release();
 	/// <summary>
+	/// Play an FMOD sound the easy way, without specified position (for 2D sounds).
+	/// </summary>
+	/// <param name="path">Full path string of the event</param>
+	/// <param name="release">Should the instance be released?</param>
+	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
+	static public EventInstance Play( string path, bool release = true ) => FMODManagerSystem.PlayOnce( path, Vector3.Zero, release );
+	/// <summary>
 	/// Play an FMOD sound the easy way. 
 	/// </summary>
 	/// <param name="guid">GUID of the event</param>
@@ -30,13 +37,13 @@ static public partial class FMODSound
 	/// <param name="pos">Static position of the event</param>
 	/// <param name="release">Should the instance be released?</param>
 	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
-	static public EventInstance Play( string path, Vector3 pos = default, bool release = true ) => FMODManagerSystem.PlayOnce( path, pos, release );
+	static public EventInstance Play( string path, Vector3 pos, bool release = true ) => FMODManagerSystem.PlayOnce( path, pos, release );
 	/// <summary>
 	/// Play the sound and attach it to the game object (or the rigidbody)
 	/// </summary>
-	/// <param name="path"></param>
-	/// <param name="gameObject"></param>
-	/// <param name="release"></param>
+	/// <param name="path">Full path string of the event</param>
+	/// <param name="gameObject">GameObject to attach the event to</param>
+	/// <param name="release">Should the instance be released?</param>
 	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
 	static public EventInstance Play( string path, GameObject gameObject, bool release = true ) => FMODManagerSystem.PlayOnObject( path, gameObject, release );
 	/// <summary>

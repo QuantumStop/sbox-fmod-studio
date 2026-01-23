@@ -1,4 +1,4 @@
-# FMOD For S&Box
+# FMOD Studio For S&Box
 
 This repository contains the source code for the FMOD Studio S&Box integration. Native binaries that are required for this to work have been removed and must be acquired from the FMOD downloads page.
 
@@ -36,6 +36,12 @@ Use the static class `FMODSound`, akin to the regular S&Box's `Sound`, to play s
 FMODSound.Play( "event:/Weapons/1P/Sniper/SniperA_1P" );
 ```
 
+By default all event instances are immediately released, but in case this is not desired, it can be done manually.
+```cs
+var instance = FMODSound.Play( "event:/Physics/StepLeft" );
+FMODSound.Release( instance );
+```
+
 You can also play sounds at location, or attach a sound to a GameObject.
 ```cs
 FMODSound.Play( "event:/SpatialSound", Obj1 );
@@ -57,6 +63,8 @@ void TestPause()
 	FMODSound.SetPauseOnAll( pause );
 }
 ```
+
+There are more functions that are not mentioned here.
 ## Links
 * Packages which include binaries can be downloaded from the FMOD [download page](https://fmod.com/download#fmodengine).
 * For getting started information, up-to-date documentation and compatibility details check the [FMOD Engine Documentation](https://fmod.com/docs/2.03/api).
