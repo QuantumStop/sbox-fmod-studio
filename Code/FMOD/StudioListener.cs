@@ -21,7 +21,7 @@ public partial class StudioListener : Component
 
 		if ( NonRigidbodyVelocity && _rigidBody.IsValid() )
 		{
-			Log.Info( string.Format( "[FMOD] Non-Rigidbody Velocity is enabled on Listener attached to GameObject \"{0}\", which also has a Rigidbody component attached - this will be disabled in favor of velocity from Rigidbody component.", this.GameObject.Name ) );
+			Log.Warning( string.Format( "[FMOD] Non-Rigidbody Velocity is enabled on Listener attached to GameObject \"{0}\", which also has a Rigidbody component attached - this will be disabled in favor of velocity from Rigidbody component.", this.GameObject.Name ) );
 			NonRigidbodyVelocity = false;
 		}
 

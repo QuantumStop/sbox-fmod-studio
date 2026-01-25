@@ -35,14 +35,14 @@ public partial class FMODManagerSystem
 		// Is the listener already in the list?
 		if ( Current.Listeners.Contains( listener ) )
 		{
-			Log.Warning( string.Format( ("[FMOD] Listener has already been added at index {0}."), listener.ListenerNumber ) );
+			Log.Warning( string.Format( "[FMOD] Listener has already been added at index {0}.", listener.ListenerNumber ) );
 			return;
 		}
 
 		// If already at the max numListeners
 		if ( Current.Listeners.Count >= FMOD.CONSTANTS.MAX_LISTENERS )
 		{
-			Log.Warning( string.Format( ("[FMOD] Max number of Listeners reached : {0}."), FMOD.CONSTANTS.MAX_LISTENERS ) );
+			Log.Warning( string.Format( "[FMOD] Max number of Listeners reached : {0}.", FMOD.CONSTANTS.MAX_LISTENERS ) );
 		}
 
 		Current.Listeners.Add( listener );
