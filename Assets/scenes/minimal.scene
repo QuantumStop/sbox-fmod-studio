@@ -801,6 +801,55 @@
         }
       ],
       "Children": []
+    },
+    {
+      "__guid": "dc649a80-1bcb-4193-a6b3-17a6a7664f11",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Point Player",
+      "Position": "-874.5665,508.6788,498.98",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "FMODSbox.StudioSoundPoint",
+          "__guid": "856a4523-4ed4-4b1d-a189-09adbe0aabc1",
+          "__enabled": true,
+          "AttachTarget": null,
+          "AttachToObject": false,
+          "AutoPlay": true,
+          "Event": null,
+          "FloatParameters": [
+            {
+              "ParameterName": null,
+              "Value": 0
+            }
+          ],
+          "HasFloats": false,
+          "HasLabels": false,
+          "LabelParameters": [
+            {
+              "ParameterName": null,
+              "Value": null
+            }
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "ReleaseEvent": true
+        }
+      ],
+      "Children": []
     }
   ],
   "SceneProperties": {
