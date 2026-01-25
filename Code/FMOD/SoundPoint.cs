@@ -94,6 +94,5 @@ public class StudioSoundPoint : Component
 	public void StopSound( bool allowfade = true )
 	{
 		if ( Instance.isValid() ) FMODSound.Stop( Instance, allowfade );
-		else return;
 	}
 }
