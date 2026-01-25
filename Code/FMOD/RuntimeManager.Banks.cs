@@ -151,7 +151,7 @@ public partial class FMODManagerSystem
 			}
 			catch ( BankLoadException e )
 			{
-				Log.Error( e );
+				Log.Warning( e );
 			}
 		}
 	}

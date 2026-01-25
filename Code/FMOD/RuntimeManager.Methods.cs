@@ -262,7 +262,7 @@ public partial class FMODManagerSystem
 
 			if ( result != RESULT.OK )
 			{
-				Log.Error( guid );
+				Log.Warning( guid );
 			}
 
 			if ( eventDesc.isValid() )

@@ -89,20 +89,9 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 
 	private void SceneLoaded()
 	{
-		if ( Current == null ) // will never happen
-		{
-			if ( !Game.IsPlaying )
-			{
-				Log.Error( "[FMOD] RuntimeManager accessed outside of runtime. Do not use RuntimeManager for Editor-only functionality, create your own System objects instead." );
-				return;
-			}
-		}
-		else
-		{
-			RuntimeUtils.EnforceLibraryOrder();
-			Current.Initialize();
-			Current.SpawnListenerOnCamera();
-		}
+		RuntimeUtils.EnforceLibraryOrder();
+		Current.Initialize();
+		Current.SpawnListenerOnCamera();
 	}
 
 	public static FMOD.Studio.System StudioSystem { get => Current.studioSystem; }
@@ -278,7 +267,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 			return RESULT.OK;
 		}
 
-		Log.Error( string.Format( "[FMOD] {0}({1}) returned {2} for {3} (0x{4}).",
+		Log.Warning( string.Format( "[FMOD] {0}({1}) returned {2} for {3} (0x{4}).",
 			(string)callbackInfo.functionname, (string)callbackInfo.functionparams, callbackInfo.result, callbackInfo.instancetype, callbackInfo.instance.ToString( "X" ) ) );
 		return RESULT.OK;
 	}

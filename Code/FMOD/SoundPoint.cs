@@ -1,9 +1,6 @@
 ﻿using FMOD.Studio;
-using Sandbox;
-using System;
 
 namespace FMODSbox;
-
 
 [Title( "FMOD Sound Point" ), Category( "FMOD" ), Tint( EditorTint.Green )]
 public class StudioSoundPoint : Component
