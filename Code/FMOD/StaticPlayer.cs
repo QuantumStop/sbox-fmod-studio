@@ -47,8 +47,20 @@ static public partial class FMODSound
 	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
 	static public EventInstance Play( string path, GameObject gameObject, bool release = true ) => FMODManagerSystem.PlayOnObject( path, gameObject, release );
 	/// <summary>
-	/// Shortcut to play a null sound so theres something to return in case of null or default
+	/// Shortcut to play a null sound so theres something to return in case of null or default.
 	/// </summary>
 	/// <returns>1ms of silence</returns>
 	static public EventInstance Null() => Play( "event:/null" );
+	/// <summary>
+	/// Force stop this event, you have to release it if you haven't.
+	/// </summary>
+	/// <param name="Instance">What do we pause</param>
+	/// <param name="AllowFadeOut">Do we fade out if the event has AHDSR configured</param>
+	static public void Stop( EventInstance Instance, bool AllowFadeOut = true ) => Instance.stop( AllowFadeOut ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE );
+	/// <summary>
+	/// Pause/Unpause the event
+	/// </summary>
+	/// <param name="Instance">What do we commit pausing on</param>
+	/// <param name="pause">Do we pause or unpause</param>
+	static public void SetPause( EventInstance Instance, bool pause ) => Instance.setPaused( pause );
 }
