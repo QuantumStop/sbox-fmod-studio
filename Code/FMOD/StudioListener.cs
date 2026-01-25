@@ -4,17 +4,14 @@ using System;
 namespace FMODSbox;
 
 
-[Title( "FMOD Listener" )]
+[Title( "FMOD Listener" ), Category( "FMOD" )]
 public partial class StudioListener : Component
 {
-	// lowkey this is a stupid system, but I personally don't understand the concept of Listeners (when there is more than one -> why would you need that)
 	[Property] public bool NonRigidbodyVelocity { get; set; } = false;
 	[Property] public GameObject AttenuationObject { get; set; }
-
 	private Vector3 _lastFramePosition = Vector3.Zero;
 	private Rigidbody _rigidBody;
-
-	public int ListenerNumber { get => FMODManagerSystem.Current.Listeners.IndexOf( this ); }
+	public int ListenerNumber => FMODManagerSystem.Current.Listeners.IndexOf( this );
 
 	protected override void OnEnabled()
 	{
