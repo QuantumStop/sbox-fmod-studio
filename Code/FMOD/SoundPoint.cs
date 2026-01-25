@@ -65,6 +65,7 @@ public class StudioSoundPoint : Component
 		{
 			foreach ( var floater in FloatParameters )
 			{
+				if ( string.IsNullOrEmpty( floater.ParameterName ) ) continue;
 				FMODSound.SetParameter( Instance, floater );
 			}
 		}
@@ -73,6 +74,7 @@ public class StudioSoundPoint : Component
 		{
 			foreach ( var labeler in LabelParameters )
 			{
+				if ( string.IsNullOrEmpty( labeler.ParameterName ) || string.IsNullOrEmpty( labeler.Value ) ) continue;
 				FMODSound.SetParameter( Instance, labeler );
 			}
 		}
