@@ -16,7 +16,7 @@ public class StudioSoundPoint : Component
 	/// <summary>
 	/// Start playing when the component is enabled
 	/// </summary>
-	[Property, Title( "Play OnEnable" )] public bool AutoPlay { get; set; } = true;
+	[Property, Title( "Play OnEnabled" )] public bool AutoPlay { get; set; } = true;
 	/// <summary>
 	/// Do we attach to a GO or we are static on the position of this component's GO?
 	/// </summary>
