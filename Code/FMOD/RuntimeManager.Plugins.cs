@@ -8,7 +8,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 	/// <summary>
 	/// The list of plugins to load
 	/// </summary>
-	[Property] public List<string> Plugins { get; set; } = ["phonon_fmod.dll"]; // hardcode steam audio for now, but otherwise it should be definable as soon as we have a widget
+	[Property] public List<string> Plugins { get; set; }
 
 	/// <summary>
 	/// Load Dynamic plugins, platforms that want Static plugins are niche even by Unreal standards, so we don't care about statics. 
