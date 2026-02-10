@@ -3,7 +3,7 @@
 namespace FMODSbox;
 
 [Title( "FMOD Sound Point" ), Category( "FMOD" ), Tint( EditorTint.Green )]
-public class StudioSoundPoint : Component
+public class StudioSoundPoint : Component, IFMODEvents
 {
 	/// <summary>
 	/// EventInstance of this sound point
@@ -77,7 +77,18 @@ public class StudioSoundPoint : Component
 		}
 	}
 
+	/// <summary>
+	/// Compoent was NOT enabled when the scene started, but was enabled some time after, when FMOD system was already initialized
+	/// </summary>
 	protected override void OnEnabled()
+	{
+		if ( FMODManagerSystem.Current.SceneInitialized && AutoPlay ) StartSound();
+	}
+
+	/// <summary>
+	/// Component was enabled when the scene started, but FMOD systems initialize after OnEnabled is fired
+	/// </summary>
+	void IFMODEvents.OnAfterInit()
 	{
 		if ( AutoPlay ) StartSound();
 	}

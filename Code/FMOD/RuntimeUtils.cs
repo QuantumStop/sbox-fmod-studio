@@ -349,3 +349,14 @@ public class ParamLabel
 	[Property, KeyProperty] public string ParameterName { get; set; }
 	[Property, KeyProperty] public string Value { get; set; }
 }
+
+/// <summary>
+/// Interface containing certain hooks to play sounds in, as GameObjectSystem hooks are too late
+/// </summary>
+public interface IFMODEvents
+{
+	/// <summary>
+	/// After both FMOD systems were initialized
+	/// </summary>
+	abstract public void OnAfterInit();
+}

@@ -11,6 +11,8 @@ using System.Text.Json.Serialization;
 /// </summary>
 public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 {
+	[Property, ReadOnly, Hide] public bool SceneInitialized { get; set; } = false;
+
 	public FMODManagerSystem( Scene scene ) : base( scene )
 	{
 		Listen( Stage.SceneLoaded, 0, SceneLoaded, "FMOD OnStart" );
@@ -43,10 +45,10 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 	}
 
 
-	[Property, JsonIgnore, ReadOnly] private SYSTEM_CALLBACK errorCallback;
+	[Property, JsonIgnore, ReadOnly, Hide] private SYSTEM_CALLBACK errorCallback;
 
-	[Property, JsonIgnore, ReadOnly] private FMOD.Studio.System studioSystem;
-	[Property, JsonIgnore, ReadOnly] private System coreSystem;
+	[Property, JsonIgnore, ReadOnly, Hide] private FMOD.Studio.System studioSystem;
+	[Property, JsonIgnore, ReadOnly, Hide] private System coreSystem;
 
 
 	private bool isMuted = false;
@@ -73,8 +75,8 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 	private static readonly byte[] eventSet3DAttributes;
 	private static readonly byte[] systemGetBus;
 
-	[Property, ReadOnly] public List<string> Banks { get; set; }
-	[Property, ReadOnly] public List<string> BanksToLoad { get; set; }
+	[Property, ReadOnly, Hide] public List<string> Banks { get; set; }
+	[Property, ReadOnly, Hide] public List<string> BanksToLoad { get; set; }
 
 	static FMODManagerSystem()
 	{
@@ -92,6 +94,22 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		RuntimeUtils.EnforceLibraryOrder();
 		Current.Initialize();
 		Current.SpawnListenerOnCamera();
+		Current.AfterInit();
+	}
+
+	/// <summary>
+	/// SceneLoaded is too late for us to do stuff in OnEnabled, do it ourselves
+	/// </summary>
+	private void AfterInit()
+	{
+		if ( Scene.IsEditor ) return;
+
+		SceneInitialized = true;
+
+		foreach ( var init in Scene.GetAll<IFMODEvents>() )
+		{
+			init.OnAfterInit();
+		}
 	}
 
 	public static FMOD.Studio.System StudioSystem { get => Current.studioSystem; }

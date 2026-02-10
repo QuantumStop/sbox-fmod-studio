@@ -3,7 +3,7 @@
   "GameObjects": [
     {
       "__guid": "f455a7cf-8e75-4636-a2ac-3859e498c4bf",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Camera",
       "Position": "192,96,32",
@@ -12,7 +12,7 @@
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
       "NetworkTransmit": true,
       "OwnerTransfer": 1,
@@ -21,6 +21,7 @@
           "__type": "Sandbox.CameraComponent",
           "__guid": "86c86a0d-9ff8-4f1d-9ae1-a008276dd162",
           "__enabled": true,
+          "Flags": 0,
           "BackgroundColor": "0.33333,0.46275,0.52157,1",
           "ClearFlags": "All",
           "EnablePostProcessing": true,
@@ -50,7 +51,7 @@
     },
     {
       "__guid": "bfc59c12-1ed2-4f91-8956-a95a315eac3c",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Sun",
       "Position": "0,0,0",
@@ -59,7 +60,7 @@
       "Tags": "light_directional,light",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
       "NetworkTransmit": true,
       "OwnerTransfer": 1,
@@ -68,6 +69,7 @@
           "__type": "Sandbox.DirectionalLight",
           "__guid": "d3659344-a90d-48fa-927a-095f70fe041f",
           "__enabled": true,
+          "Flags": 0,
           "FogMode": "Enabled",
           "FogStrength": 1,
           "LightColor": "0.94419,0.97767,1,1",
@@ -85,7 +87,7 @@
     },
     {
       "__guid": "00344a8c-fa5e-45ae-b12a-10bb781a1dc3",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "2D Skybox",
       "Position": "0,0,0",
@@ -94,7 +96,7 @@
       "Tags": "skybox",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
       "NetworkTransmit": true,
       "OwnerTransfer": 1,
@@ -103,6 +105,7 @@
           "__type": "Sandbox.SkyBox2D",
           "__guid": "de79e9e0-5c37-4c54-ac67-bfcdb1d5483b",
           "__enabled": true,
+          "Flags": 0,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -117,6 +120,9 @@
           "__type": "Sandbox.EnvmapProbe",
           "__guid": "f3e304db-baab-4c1a-a4ec-8442585c2d62",
           "__enabled": true,
+          "Flags": 0,
+          "__version": 1,
+          "BakedTexture": null,
           "Bounds": {
             "Mins": "-512,-512,-512",
             "Maxs": "512,512,512"
@@ -125,6 +131,7 @@
           "Feathering": 0.02,
           "FrameInterval": 5,
           "MaxDistance": 512,
+          "Mode": "CustomTexture",
           "MultiBounce": false,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -132,8 +139,8 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
+          "Priority": 0,
           "Projection": "Sphere",
-          "RenderDynamically": false,
           "Resolution": "Small",
           "Texture": "textures/cubemaps/default2.vtex",
           "TintColor": "1,1,1,1",
@@ -146,7 +153,7 @@
     },
     {
       "__guid": "6ad70641-3c6c-4402-9c85-9a4969af4764",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Plane",
       "Position": "0,0,0",
@@ -155,7 +162,7 @@
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
       "NetworkTransmit": true,
       "OwnerTransfer": 1,
@@ -164,6 +171,7 @@
           "__type": "Sandbox.ModelRenderer",
           "__guid": "0b6a18bf-fdb8-4661-970e-ef635bfa9baa",
           "__enabled": true,
+          "Flags": 0,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
           "LodOverride": null,
@@ -190,6 +198,7 @@
           "__type": "Sandbox.BoxCollider",
           "__guid": "0715cb55-1733-4f5e-8560-c288b8695631",
           "__enabled": true,
+          "Flags": 0,
           "Center": "0,0,-5",
           "ColliderFlags": 0,
           "Elasticity": null,
@@ -216,7 +225,7 @@
     },
     {
       "__guid": "558b5fd7-dcc7-4526-b3aa-26a76529659f",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Sphere",
       "Position": "384,416,32",
@@ -225,7 +234,7 @@
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
       "NetworkTransmit": true,
       "OwnerTransfer": 1,
@@ -234,6 +243,7 @@
           "__type": "Sandbox.ModelRenderer",
           "__guid": "611f8cb0-42c9-4348-8aef-4b4c1f6f2465",
           "__enabled": true,
+          "Flags": 0,
           "BodyGroups": 18446744073709551615,
           "CreateAttachments": false,
           "LodOverride": null,
@@ -260,6 +270,7 @@
           "__type": "DistancePrinter",
           "__guid": "3d07ebc2-45a6-44e8-b72f-5fb5612a5b2c",
           "__enabled": true,
+          "Flags": 0,
           "Obj1": {
             "_type": "gameobject",
             "go": "558b5fd7-dcc7-4526-b3aa-26a76529659f"
@@ -281,7 +292,7 @@
     },
     {
       "__guid": "a5027e98-1aab-4929-b61d-60b2ea23d3a5",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Player Controller",
       "Position": "-250.2074,63.72749,143.6803",
@@ -290,7 +301,7 @@
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
       "NetworkTransmit": true,
       "OwnerTransfer": 1,
@@ -299,6 +310,7 @@
           "__type": "Sandbox.PlayerController",
           "__guid": "783ca726-de0d-4c24-b4f1-48e10a4c773e",
           "__enabled": true,
+          "Flags": 0,
           "AccelerationTime": 0,
           "AimStrengthBody": 1,
           "AimStrengthEyes": 1,
@@ -356,7 +368,7 @@
           "RunSpeed": 320,
           "ShowColliderComponents": false,
           "ShowRigidbodyComponent": false,
-          "ThirdPerson": false,
+          "ThirdPerson": true,
           "ToggleCameraModeButton": "view",
           "UseAnimatorControls": true,
           "UseButton": "use",
@@ -370,8 +382,10 @@
           "__type": "Sandbox.Rigidbody",
           "__guid": "0ec3e975-e4cc-4975-aaf3-c3e16800f1c7",
           "__enabled": true,
+          "Flags": 1,
           "AngularDamping": 1,
           "EnableImpactDamage": true,
+          "EnhancedCcd": false,
           "Gravity": true,
           "GravityScale": 1,
           "ImpactDamage": 0,
@@ -402,6 +416,7 @@
           "__type": "Sandbox.Movement.MoveModeWalk",
           "__guid": "01996898-3097-48a4-8dfb-1bb73edd80bc",
           "__enabled": true,
+          "Flags": 0,
           "GroundAngle": 45,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -417,6 +432,7 @@
           "__type": "Sandbox.Movement.MoveModeSwim",
           "__guid": "7c9849e7-2600-4e94-9f6f-72434d13a59b",
           "__enabled": true,
+          "Flags": 0,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -430,6 +446,7 @@
           "__type": "Sandbox.Movement.MoveModeLadder",
           "__guid": "fac7a25d-9864-48bf-a150-74bcb1cfce9e",
           "__enabled": true,
+          "Flags": 0,
           "ClimbableTags": "ladder",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -444,6 +461,7 @@
           "__type": "Sandbox.Dresser",
           "__guid": "93aeac51-b690-4a7b-b0b1-99da43615d84",
           "__enabled": true,
+          "Flags": 0,
           "ApplyHeightScale": true,
           "BodyTarget": {
             "_type": "component",
@@ -468,7 +486,7 @@
       "Children": [
         {
           "__guid": "87fa2f63-dae0-46ce-b40c-2b4a4528f149",
-          "__version": 1,
+          "__version": 2,
           "Flags": 0,
           "Name": "Body",
           "Position": "0,0,0",
@@ -477,7 +495,7 @@
           "Tags": "",
           "Enabled": true,
           "NetworkMode": 2,
-          "NetworkInterpolation": true,
+          "NetworkFlags": 0,
           "NetworkOrphaned": 0,
           "NetworkTransmit": true,
           "OwnerTransfer": 1,
@@ -486,6 +504,7 @@
               "__type": "Sandbox.SkinnedModelRenderer",
               "__guid": "253f3804-8b8e-444a-9fe3-29b308366937",
               "__enabled": true,
+              "Flags": 0,
               "AnimationGraph": null,
               "BodyGroups": 341,
               "BoneMergeTarget": null,
@@ -531,7 +550,7 @@
         },
         {
           "__guid": "9c2524cb-abb1-4f77-a527-7ad9e4712e5e",
-          "__version": 1,
+          "__version": 2,
           "Flags": 1,
           "Name": "Colliders",
           "Position": "0,0,0",
@@ -540,7 +559,7 @@
           "Tags": "",
           "Enabled": true,
           "NetworkMode": 2,
-          "NetworkInterpolation": true,
+          "NetworkFlags": 0,
           "NetworkOrphaned": 0,
           "NetworkTransmit": true,
           "OwnerTransfer": 1,
@@ -549,6 +568,7 @@
               "__type": "Sandbox.CapsuleCollider",
               "__guid": "63630a9b-ad95-4a27-a18e-aa28de04238c",
               "__enabled": true,
+              "Flags": 1,
               "ColliderFlags": 0,
               "Elasticity": null,
               "End": "0,0,36",
@@ -575,6 +595,7 @@
               "__type": "Sandbox.BoxCollider",
               "__guid": "35e4b3b5-b466-401b-b5e3-d7dbb0121db0",
               "__enabled": true,
+              "Flags": 1,
               "Center": "0,0,18",
               "ColliderFlags": 0,
               "Elasticity": null,
@@ -603,7 +624,7 @@
     },
     {
       "__guid": "50e21191-a94e-43e3-9723-69c71e693be9",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "New Movie Player",
       "Position": "0,0,0",
@@ -612,7 +633,7 @@
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
       "NetworkTransmit": true,
       "OwnerTransfer": 1,
@@ -621,6 +642,7 @@
           "__type": "Sandbox.MovieMaker.MoviePlayer",
           "__guid": "dfb2e8cb-84fd-4af7-83f6-95e4e76830b6",
           "__enabled": true,
+          "Flags": 0,
           "Binder": {
             "GameObjects": [
               {
@@ -672,7 +694,7 @@
                             "End": 9120
                           },
                           "SampleRate": 30,
-                          "Samples": "H4sIAAAAAAACCpNkAIEDzhDM4ITJ3kAl9gIkdgMSWwGJzYDsBick9UhsBmT2IST1SGyHw0h6kdgTcLAXILE34GAfALMBYe4PqDABAAA="
+                          "Samples": "H4sIAAAAAAAACpNkAIEDzhDM4ITJ3kAl9gIkdgMSWwGJzYDsBick9UhsEA1nH0JSj8R2OIykF4k9AQd7ARJ7Aw72ATAbAGHuD6gwAQAA"
                         },
                         {
                           "TimeRange": {
@@ -687,7 +709,7 @@
                             "End": 32520
                           },
                           "SampleRate": 30,
-                          "Samples": "H4sIAAAAAAACCsXUzQmDQBDF8TnmmBIsRTSFWMqWsJAGLGFLWJIUYAmWsCXkQ4J/D4+MrJA9/RBRdt5jrvY+uTdL9xe6xSMc4RZu4HBb/Tnf593qDDc9vik8OBzguNMjnIRzhac/OYu7BDFn5rLJDplm5is6MLAPoj/s2ATPsD1Wn+CzMN8p4l/B0dsg+hlEZ1TWM1xgu/x2cWQ6OjI1la/Imvm2Yg+knc4VZl7sG+8yODJKBzmK/cM5c54mdmY8aLaebm+yFj3xzK1mv9XsH3PsH8/OWeb8BJn3BcPoBgAA"
+                          "Samples": "H4sIAAAAAAAACsXUzQ2CQBDF8Tl6tARKIayFbClbAokNUMKWsFELoARK2BKMEsOfxBeH7EFOvxDCx7zHXO11lGCW72Y2rJ7gEe7hDk63ze/jc37YXOAu4J7C0eEEjwc9wVm4NHj+k4v4liTmzFx22SHTwnxFByL7IPrDjs3wAttj8wk+C/OaKp6VHL1Nop9JdEZlvcAVtstvV0emkyNTU/mKrJlvL/ZAPujSYObFvvFb1B7w/NdHzb0RxZw5T75zL/6Fltl6ur3LOnzviWduLfutZf+YY/94ds465yeZ9wXD6AYAAA=="
                         },
                         {
                           "TimeRange": {
@@ -702,7 +724,7 @@
                             "End": 58440
                           },
                           "SampleRate": 30,
-                          "Samples": "H4sIAAAAAAACCo2VMY7bMBBFB1sEwSJFSpcqXfoIzFLFlilTsswRtlSxB+AReAQWOQAh6gDuk8Lpkm5v4OiTHPFDsYMYEPwgjUaaxy/pm+AX7brlg8iTiC8shU3hh8Kycmj7sW28/rzyLDI1nlaWxmmux0oN9RhWTsS4htYPtvcxtl/L6X5sut/2/ajVehzXPsHWc8DR9ntItvZVnmaqyb2PISc6I+7dk4dAs2/7c6/HjFuf3Lw0FmK9T0NOyrmWepKriVx5cuXJlXIiLrM0duTQ77zpGgXyVnjufoT8uNzXxdN6R8pDIifKnhgutR7/2ieRQ/DQ+Jz72iXyGen6nvLmyCd6uBs+hVnIM2Uv/UcOHfksx4l1rR25NZRD1A6UN7ebR++T3UZyq4zztnxSJj35DJTJ0ls6T+RNZzF3MrnPYSBvgVwpD8Tw4CmHjnKo14qUyXgnk/7O8zvsMpnI4YWeTVn67O8Xqm2MWq2/UG7fKKtv5PZCbs/kNpHbSM+7J88T5dOQZ8znKbee/N/LrSHntzL513vyxrsxkdtAbj29Gx19R9JTdwXP6hM9DkvP3nF5t/lRhu+Py4/r9VM975y/b6zXKmsyk2fyuT2DyL/9Vc4t7x9lnGN/F4YnZcx+bixjz9lhRJ/HwqcRM9c+ZsTMlT+P8Pmh1HwBS+cpV34esfaVjyPmqYxrnRrD7XNj3OdXrcH6NsZcr40jMbL30hiO3fKz3NtxZdOcn9b/gVizjfpAbod8ra7ovTrtvlPqXP7xHa/8B7FbN8Z0CAAA"
+                          "Samples": "H4sIAAAAAAAACo2VMY7bMBBFBymCIEiR0qVLlz6Cs1SxZcqUKnOElCpyAB3BR9giBxAkHcD9pki63W5v4MUfzh/+OHYQA4YeqOFw5vOT+mH4PRSzh2Vjdmc2OpvzwfmNsxWzY4zjn2xmI3k2G4KH2cyCJ/AcMZJju5hNwliD8dvS8qAOrtVzHH+OlzaOWMbjPfMcS50DRr+sYQJbY6+bMewFOUUT9ojas3drmiBHji8tHj1mHvQea/mYMOv08SJzWTdiRCuyrytakZGP7DWLVpzbi4bjhW7cI7ApR82eQ/Tp2XsRHaCp+GESTcijMLRkPJ7MM4mGYPfNndkJmkQ9noP7KOt7/uBe9ESO/oqe7mfRc7jivek/fNiLnv5emHvNebkvPC+YK35LbdV785/akjGPjHnpT/HkKHoexZOe2xpnndCcPd7w5KUP6ZtBPYT7hPoLQwfOxZO64D3Xwtmcrpxl9eR44/xuLzxJv2HeLzmbtrbe360SG4xYxuPJPC/iVfBBY+bm1bxzRFvfK/YuOmOv0leiM/rLcy2aD//wbXr+hif/uiev3I1+Z9Izoi3Wp6+QMz0Z/VNn6okcm7V5b7e+TX3I0Pvj+vN8/lTnnZbHZK7lezKLzqJnnkH4vzz5XL9/yJhTnp2hExm9n4Ktaz7bdMjz3nnfoeea59Ch58qfO+j5wWO+gK3xsFS+77D3lXcd+qmMtfbB0PY+GHV+ZQz2Nxh9fQ9Gv2R471swNO7X317bbjU7hOb71WwrTG8jPr/viFnOVSu5V/0Oke8UNXdf3PiOV34FsVs3xnQIAAA="
                         },
                         {
                           "TimeRange": {
@@ -804,7 +826,7 @@
     },
     {
       "__guid": "dc649a80-1bcb-4193-a6b3-17a6a7664f11",
-      "__version": 1,
+      "__version": 2,
       "Flags": 0,
       "Name": "Point Player",
       "Position": "-874.5665,508.6788,498.98",
@@ -813,7 +835,7 @@
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
-      "NetworkInterpolation": true,
+      "NetworkFlags": 0,
       "NetworkOrphaned": 0,
       "NetworkTransmit": true,
       "OwnerTransfer": 1,
@@ -822,10 +844,11 @@
           "__type": "FMODSbox.StudioSoundPoint",
           "__guid": "856a4523-4ed4-4b1d-a189-09adbe0aabc1",
           "__enabled": true,
+          "Flags": 0,
           "AttachTarget": null,
           "AttachToObject": false,
           "AutoPlay": true,
-          "Event": null,
+          "Event": "event:/Timeline",
           "FloatParameters": [
             {
               "ParameterName": null,
