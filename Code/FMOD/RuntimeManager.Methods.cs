@@ -34,30 +34,30 @@ public partial class FMODManagerSystem
 
 	public static void SetParameter( EventInstance instance, string param, float value, bool ignoreseekspeed )
 	{
-		SetParameterByName( instance, param, value, ignoreseekspeed );
+		SetParameterByName( instance, param.Trim(), value, ignoreseekspeed );
 	}
 
 	public static void SetParameter( EventInstance instance, string param, string value, bool ignoreseekspeed )
 	{
-		SetParameterByName( instance, param, value, ignoreseekspeed );
+		SetParameterByName( instance, param.Trim(), value.Trim(), ignoreseekspeed );
 	}
 
 	private static void SetParameterByName( EventInstance instance, string name, float value, bool ignoreseekspeed )
 	{
-		if ( instance.isValid() && !string.IsNullOrEmpty( name ) )
-			instance.setParameterByName( name, value, ignoreseekspeed );
+		if ( instance.isValid() && !string.IsNullOrEmpty( name.Trim() ) )
+			instance.setParameterByName( name.Trim(), value, ignoreseekspeed );
 	}
 
 	private static void SetParameterByName( EventInstance instance, string name, string value, bool ignoreseekspeed )
 	{
-		if ( instance.isValid() && !string.IsNullOrEmpty( name ) && !string.IsNullOrEmpty( value ) )
-			instance.setParameterByNameWithLabel( name, value, ignoreseekspeed );
+		if ( instance.isValid() && !string.IsNullOrEmpty( name.Trim() ) && !string.IsNullOrEmpty( value.Trim() ) )
+			instance.setParameterByNameWithLabel( name.Trim(), value.Trim(), ignoreseekspeed );
 	}
 
 	private static void SetParameterByID( PARAMETER_ID id, string value, bool ignoreseekspeed )
 	{
-		if ( !string.IsNullOrEmpty( value ) )
-			StudioSystem.setParameterByIDWithLabel( id, value, ignoreseekspeed );
+		if ( !string.IsNullOrEmpty( value.Trim() ) )
+			StudioSystem.setParameterByIDWithLabel( id, value.Trim(), ignoreseekspeed );
 	}
 
 	private static void SetParameterByID( PARAMETER_ID id, float value, bool ignoreseekspeed )
@@ -68,11 +68,11 @@ public partial class FMODManagerSystem
 	public static void SetParameterGlobal( string param, float value, bool ignoreseekspeed )
 	{
 		RESULT result = RESULT.OK;
-		result = StudioSystem.getParameterDescriptionByName( param, out var parameterDescription );
+		result = StudioSystem.getParameterDescriptionByName( param.Trim(), out var parameterDescription );
 
 		if ( result != RESULT.OK )
 		{
-			Log.Warning( string.Format( ("[FMOD] StudioGlobalParameterTrigger failed to lookup parameter {0} : result = {1}"), param, result ) );
+			Log.Warning( string.Format( "[FMOD] StudioGlobalParameterTrigger failed to lookup parameter {0} : result = {1}", param, result ) );
 			return;
 		}
 
@@ -82,20 +82,20 @@ public partial class FMODManagerSystem
 	public static void SetParameterGlobal( string param, string value, bool ignoreseekspeed )
 	{
 		RESULT result = RESULT.OK;
-		result = StudioSystem.getParameterDescriptionByName( param, out var parameterDescription );
+		result = StudioSystem.getParameterDescriptionByName( param.Trim(), out var parameterDescription );
 
 		if ( result != RESULT.OK )
 		{
-			Log.Warning( string.Format( ("[FMOD] StudioGlobalParameterTrigger failed to lookup parameter {0} : result = {1}"), param, result ) );
+			Log.Warning( string.Format( "[FMOD] StudioGlobalParameterTrigger failed to lookup parameter {0} : result = {1}", param.Trim(), result ) );
 			return;
 		}
 
-		SetParameterByID( parameterDescription.id, value, ignoreseekspeed );
+		SetParameterByID( parameterDescription.id, value.Trim(), ignoreseekspeed );
 	}
 
 	public static Bus GetBus( string path )
 	{
-		if ( StudioSystem.getBus( path, out Bus bus ) != RESULT.OK )
+		if ( StudioSystem.getBus( path.Trim(), out Bus bus ) != RESULT.OK )
 		{
 			throw new BusNotFoundException( path );
 		}
@@ -104,14 +104,14 @@ public partial class FMODManagerSystem
 
 	public static VCA GetVCA( string path )
 	{
-		if ( StudioSystem.getVCA( path, out VCA vca ) != RESULT.OK )
+		if ( StudioSystem.getVCA( path.Trim(), out VCA vca ) != RESULT.OK )
 		{
 			throw new VCANotFoundException( path );
 		}
 		return vca;
 	}
 
-	public static void SetVCAVolume( string vca, float volume ) => GetVCA( vca ).setVolume( volume );
+	public static void SetVCAVolume( string vca, float volume ) => GetVCA( vca.Trim() ).setVolume( volume );
 
 	public static void PauseAllEvents( bool paused )
 	{
@@ -148,11 +148,11 @@ public partial class FMODManagerSystem
 	{
 		try
 		{
-			return PlayOnce( PathToGUID( path ), position, release );
+			return PlayOnce( PathToGUID( path.Trim() ), position, release );
 		}
 		catch ( EventNotFoundException )
 		{
-			throw new EventNotFoundException( path );
+			throw new EventNotFoundException( path.Trim() );
 		}
 	}
 
@@ -176,16 +176,16 @@ public partial class FMODManagerSystem
 	public static GUID PathToGUID( string path )
 	{
 		GUID guid;
-		if ( path.StartsWith( "{" ) )
+		if ( path.StartsWith( '{' ) )
 		{
-			Util.parseID( path, out guid );
+			Util.parseID( path.Trim(), out guid );
 		}
 		else
 		{
 			var result = Current.studioSystem.lookupID( path, out guid );
 			if ( result == RESULT.ERR_EVENT_NOTFOUND )
 			{
-				throw new EventNotFoundException( path );
+				throw new EventNotFoundException( path.Trim() );
 			}
 		}
 		return guid;
@@ -207,20 +207,19 @@ public partial class FMODManagerSystem
 	{
 		try
 		{
-			return CreateInstance( PathToGUID( path ) );
+			return CreateInstance( PathToGUID( path.Trim() ) );
 		}
 		catch ( EventNotFoundException )
 		{
 			// Switch from exception with GUID to exception with path
-			throw new EventNotFoundException( path );
+			throw new EventNotFoundException( path.Trim() );
 		}
 	}
 
 	public static EventInstance CreateInstance( GUID guid )
 	{
 		EventDescription eventDesc = GetEventDescription( guid );
-		EventInstance newInstance;
-		eventDesc.createInstance( out newInstance );
+		eventDesc.createInstance( out EventInstance newInstance );
 
 		return newInstance;
 	}
@@ -241,11 +240,11 @@ public partial class FMODManagerSystem
 	{
 		try
 		{
-			return GetEventDescription( PathToGUID( path ) );
+			return GetEventDescription( PathToGUID( path.Trim() ) );
 		}
 		catch ( EventNotFoundException )
 		{
-			throw new EventNotFoundException( path );
+			throw new EventNotFoundException( path.Trim() );
 		}
 	}
 
@@ -290,7 +289,7 @@ public partial class FMODManagerSystem
 	{
 		try
 		{
-			PlayOnObject( PathToGUID( path ), gameObject, out var instance, release );
+			PlayOnObject( PathToGUID( path.Trim() ), gameObject, out var instance, release );
 			return instance;
 		}
 		catch ( EventNotFoundException )
