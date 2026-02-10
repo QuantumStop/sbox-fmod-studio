@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.03.00">
-	<object class="Platform" id="{f989a3c4-186c-43b2-9b55-983cf6240ca7}">
+	<object class="Platform" id="{fe788e1b-7713-4900-b3cb-f5286f9513f9}">
 		<property name="hardwareType">
 			<value>0</value>
 		</property>
 		<property name="name">
-			<value>ChaosTheory</value>
+			<value>TestProject</value>
 		</property>
 		<property name="subDirectory">
-			<value>G:/Sandbox/chaos-box/game/fmod</value>
+			<value>G:/Sandbox/fmod_studio/Assets/fmod</value>
 		</property>
 		<property name="speakerFormat">
-			<value>1</value>
+			<value>5</value>
 		</property>
 	</object>
 </objects>
