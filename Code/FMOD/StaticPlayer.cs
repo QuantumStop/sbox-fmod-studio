@@ -1,7 +1,5 @@
 ﻿using FMOD;
 using FMOD.Studio;
-using Sandbox;
-using System;
 
 namespace FMODSbox;
 

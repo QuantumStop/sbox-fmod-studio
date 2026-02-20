@@ -1,6 +1,3 @@
-using FMOD.Studio;
-using System;
-
 namespace FMODSbox;
 
 public partial class FMODManagerSystem

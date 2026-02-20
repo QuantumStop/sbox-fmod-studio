@@ -1,7 +1,4 @@
-﻿using Sandbox;
-using System;
-
-namespace FMODSbox;
+﻿namespace FMODSbox;
 
 
 [Title( "FMOD Listener" ), Category( "FMOD" )]

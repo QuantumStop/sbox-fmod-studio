@@ -1,31 +1,30 @@
 using System;
 
-namespace FMODSbox
+namespace FMODSbox;
+
+[Serializable]
+public struct EventReference
 {
-	[Serializable]
-	public struct EventReference
+	public FMOD.GUID Guid;
+
+	public string Path;
+
+	public static Func<string, FMOD.GUID> GuidLookupDelegate;
+
+	public override readonly string ToString()
 	{
-		public FMOD.GUID Guid;
+		return string.Format( "{0} ({1})", Guid, Path );
+	}
 
-		public string Path;
+	public readonly bool IsNull => string.IsNullOrEmpty( Path ) && Guid.IsNull;
 
-		public static Func<string, FMOD.GUID> GuidLookupDelegate;
-
-		public override readonly string ToString()
+	public static EventReference Find( string path )
+	{
+		if ( GuidLookupDelegate == null )
 		{
-			return string.Format( "{0} ({1})", Guid, Path );
+			throw new InvalidOperationException( "EventReference.Find called before EventManager was initialized" );
 		}
 
-		public readonly bool IsNull => string.IsNullOrEmpty( Path ) && Guid.IsNull;
-
-		public static EventReference Find( string path )
-		{
-			if ( GuidLookupDelegate == null )
-			{
-				throw new InvalidOperationException( "EventReference.Find called before EventManager was initialized" );
-			}
-
-			return new EventReference { Path = path, Guid = GuidLookupDelegate( path ) };
-		}
+		return new EventReference { Path = path, Guid = GuidLookupDelegate( path ) };
 	}
 }
