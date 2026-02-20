@@ -19,32 +19,6 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		Listen( Stage.StartUpdate, 0, StartUpdate, "FMOD OnUpdate" );
 	}
 
-	public override void Dispose()
-	{
-		coreSystem.setCallback( null, 0 );
-		ReleaseStudioSystem();
-		base.Dispose();
-	}
-
-	private void SpawnListenerOnCamera()
-	{
-		if ( Game.IsPlaying )
-		{
-			var listener = Scene.Get<StudioListener>();
-
-			if ( listener == null )
-			{
-				var listen = Scene.Camera.Components.Create<StudioListener>();
-				listen.NonRigidbodyVelocity = true;
-			}
-			else
-			{
-				listener.NonRigidbodyVelocity = true;
-			}
-		}
-	}
-
-
 	[Property, JsonIgnore, ReadOnly, Hide] private SYSTEM_CALLBACK errorCallback;
 
 	[Property, JsonIgnore, ReadOnly, Hide] private FMOD.Studio.System studioSystem;
@@ -91,11 +65,27 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 
 	private void SceneLoaded()
 	{
+		if ( NotDisposed ) return;
+
 		RuntimeUtils.EnforceLibraryOrder();
 		Current.Initialize();
 		Current.SpawnListenerOnCamera();
 		Current.AfterInit();
 	}
+
+	public override void Dispose()
+	{
+		NotDisposed = false;
+		coreSystem.setCallback( null, 0 );
+		ReleaseStudioSystem();
+		base.Dispose();
+	}
+
+	/// <summary>
+	/// Because GOS dont dispose on scene switching, SceneLoaded initializes a new FMOD system on top of the one that was supposed to be destroyed, so we check if we need one inited first
+	/// </summary>
+	static private bool NotDisposed { get; set; } = false;
+
 
 	/// <summary>
 	/// SceneLoaded is too late for us to do stuff in OnEnabled, do it ourselves
@@ -105,6 +95,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		if ( Scene.IsEditor ) return;
 
 		SceneInitialized = true;
+		NotDisposed = true;
 
 		foreach ( var init in Scene.GetAll<IFMODEvents>() )
 		{
@@ -258,6 +249,9 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 			}
 
 			studioSystem.update();
+#if CHAOS
+			MuteAllEvents( Sandbox.Audio.AudioEngine.Mute || (!Sandbox.Audio.AudioEngine.IsFocused && Sandbox.Audio.AudioEngine.MuteLoseFocus) );
+#endif
 		}
 	}
 

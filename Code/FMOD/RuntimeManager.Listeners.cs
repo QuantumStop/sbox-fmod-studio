@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace FMODSbox;
 
@@ -53,5 +52,23 @@ public partial class FMODManagerSystem
 	{
 		Current.Listeners.Remove( listener );
 		StudioSystem.setNumListeners( Math.Clamp( Current.Listeners.Count, 1, FMOD.CONSTANTS.MAX_LISTENERS ) );
+	}
+
+	private void SpawnListenerOnCamera()
+	{
+		if ( !Scene.IsEditor )
+		{
+			var listener = Scene.Get<StudioListener>();
+
+			if ( listener == null )
+			{
+				var listen = Scene.Camera.Components.Create<StudioListener>();
+				listen.NonRigidbodyVelocity = true;
+			}
+			else
+			{
+				listener.NonRigidbodyVelocity = true;
+			}
+		}
 	}
 }
