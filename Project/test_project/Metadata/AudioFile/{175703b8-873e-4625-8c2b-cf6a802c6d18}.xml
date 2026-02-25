@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.03.00">
-	<object class="AudioFile" id="{c271fcfd-ed87-47c9-80bb-1277f40a8bfa}">
+	<object class="AudioFile" id="{175703b8-873e-4625-8c2b-cf6a802c6d18}">
 		<property name="assetPath">
-			<value>AAA/blue monday.mp3</value>
+			<value>AAA/midnight club 2.ogg</value>
 		</property>
 		<property name="isStreaming">
 			<value>true</value>
 		</property>
 		<property name="frequencyInKHz">
-			<value>44.0999985</value>
+			<value>48</value>
 		</property>
 		<property name="channelCount">
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>385.88081632653063</value>
+			<value>223.75941666666668</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{eb90a16e-558b-4d9e-8b72-02547f5bc8de}</destination>
