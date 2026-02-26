@@ -18,9 +18,17 @@ public class StudioSoundPoint : Component, IFMODEvents
 	/// </summary>
 	[Property, Title( "Play OnEnabled" )] public bool AutoPlay { get; set; } = true;
 	/// <summary>
+	/// Do we want to override the volume of the chosen event?
+	/// </summary>
+	[Property, Title( "Override Volume" ), Space] public bool OverrideVolumeBool { get; set; } = false;
+	/// <summary>
+	/// Scaling factor for the event volume, doesn't override.
+	/// </summary>
+	[Property, MakeDirty, ShowIf( nameof( OverrideVolumeBool ), true ), Range( 0, 10 )] public float OverrideVolumeScale { get; set; } = 1f;
+	/// <summary>
 	/// Do we attach to a GO or we are static on the position of this component's GO?
 	/// </summary>
-	[Property, Title( "Attach to a GameObject" )] public bool AttachToObject { get; set; } = true;
+	[Property, Title( "Attach to a GameObject" ), Space] public bool AttachToObject { get; set; } = true;
 	[Property, ShowIf( nameof( AttachToObject ), true )] GameObject AttachTarget { get; set; }
 	/// <summary>
 	/// Do we immediately release the event instance, or do we want to hold it for a bit?
@@ -57,6 +65,8 @@ public class StudioSoundPoint : Component, IFMODEvents
 		Instance = AttachToObject && AttachTarget.IsValid() ?
 		FMODSound.Play( Event, AttachTarget, ReleaseEvent ) :
 		FMODSound.Play( Event, GameObject.WorldPosition, ReleaseEvent );
+
+		if ( OverrideVolumeBool ) Instance.setVolume( OverrideVolumeScale );
 
 		if ( HasFloats && FloatParameters.Count > 0 )
 		{
@@ -105,5 +115,18 @@ public class StudioSoundPoint : Component, IFMODEvents
 	public void StopSound( bool allowfade = true )
 	{
 		if ( Instance.isValid() ) FMODSound.Stop( Instance, allowfade );
+	}
+
+	protected override void OnDirty()
+	{
+		if ( Scene.IsEditor ) return; // don't do this if the game is not playing
+
+		if ( ReleaseEvent )
+		{
+			Log.Warning( "To change volume at runtime, event must be not released!" );
+			return;
+		}
+
+		if ( Instance.isValid() ) Instance.setVolume( OverrideVolumeBool ? OverrideVolumeScale : 1f );
 	}
 }

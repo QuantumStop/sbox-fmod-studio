@@ -869,7 +869,9 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "ReleaseEvent": true
+          "OverrideVolumeBool": true,
+          "OverrideVolumeScale": 0.25,
+          "ReleaseEvent": false
         }
       ],
       "Children": []
