@@ -86,6 +86,7 @@ public partial class FMODManagerSystem
 			}
 
 			Current.loadedBanks.Add( bankName, loadedBank );
+			MarkEventCacheDirty();
 		}
 		else if ( loadResult == FMOD.RESULT.ERR_EVENT_ALREADY_LOADED )
 		{

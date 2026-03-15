@@ -37,10 +37,10 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 	private class AttachedInstance
 	{
 		public FMOD.Studio.EventInstance Instance;
-		public Transform transform;
-		public GameObject attachedGameObject;
-		public Rigidbody rigidBody;
-		public Vector3 lastFramePosition;
+		public Transform Transform;
+		public GameObject AttachedGameObject;
+		public Rigidbody RigidBody;
+		public Vector3 LastFramePosition;
 	}
 
 	private int loadingBanksRef = 0;
@@ -97,10 +97,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		SceneInitialized = true;
 		NotDisposed = true;
 
-		foreach ( var init in Scene.GetAll<IFMODEvents>() )
-		{
-			init.OnAfterInit();
-		}
+		IFMODEvents.Post( x => x.OnAfterInit() );
 	}
 
 	public static FMOD.Studio.System StudioSystem { get => Current.studioSystem; }
@@ -224,27 +221,27 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 					continue;
 				}
 
-				if ( attached.rigidBody.IsValid() )
+				if ( attached.RigidBody.IsValid() )
 				{
-					attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.transform, attached.rigidBody.Velocity ) );
+					attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.Transform, attached.RigidBody.Velocity ) );
 				}
 				else
 				{
-					if ( attached.attachedGameObject.IsValid() )
-						attached.transform = attached.attachedGameObject.WorldTransform;
+					if ( attached.AttachedGameObject.IsValid() )
+						attached.Transform = attached.AttachedGameObject.WorldTransform;
 
-					var position = attached.transform.Position;
+					var position = attached.Transform.Position;
 					var velocity = Vector3.Zero;
 
 					if ( Time.Delta != 0 )
 					{
-						velocity = (position - attached.lastFramePosition) / Time.Delta;
+						velocity = (position - attached.LastFramePosition) / Time.Delta;
 						velocity = velocity.Clamp( velocity, 512f ); // Stops pitch fluttering when moving too quickly
 					}
 
 
-					attached.lastFramePosition = position;
-					attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.transform, velocity ) );
+					attached.LastFramePosition = position;
+					attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.Transform, velocity ) );
 				}
 			}
 

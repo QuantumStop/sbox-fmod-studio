@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{84b5ff25-60a7-4c4f-bb37-5073010a8179}">
+		<property name="assetPath">
+			<value>ProgrammerLines/wax.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>13.336009070294784</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{eb90a16e-558b-4d9e-8b72-02547f5bc8de}</destination>
+		</relationship>
+	</object>
+</objects>

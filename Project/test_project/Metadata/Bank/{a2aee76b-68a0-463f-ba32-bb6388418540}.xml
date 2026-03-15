@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="Bank" id="{a2aee76b-68a0-463f-ba32-bb6388418540}">
+		<property name="name">
+			<value>Program</value>
+		</property>
+		<relationship name="folder">
+			<destination>{82980f3e-4785-47fc-9dcc-119b71e31454}</destination>
+		</relationship>
+		<relationship name="audioTable">
+			<destination>{27cf182b-0826-490c-ba3c-289f8eecdafe}</destination>
+		</relationship>
+	</object>
+	<object class="AudioTable" id="{27cf182b-0826-490c-ba3c-289f8eecdafe}">
+		<property name="name">
+			<value>Audio Table</value>
+		</property>
+		<property name="sourceDirectory">
+			<value>Assets/ProgrammerLines</value>
+		</property>
+		<property name="includeSubDirectories">
+			<value>true</value>
+		</property>
+	</object>
+</objects>

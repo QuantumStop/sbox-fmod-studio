@@ -1,7 +1,9 @@
 ﻿using FMOD.Studio;
+using System;
 
 namespace FMODSbox;
 
+[Icon( "volume_down" )]
 [Title( "FMOD Sound Point" ), Category( "FMOD" ), Tint( EditorTint.Green )]
 public class StudioSoundPoint : Component, IFMODEvents
 {
@@ -9,10 +11,22 @@ public class StudioSoundPoint : Component, IFMODEvents
 	/// EventInstance of this sound point
 	/// </summary>
 	public EventInstance Instance { get; set; }
+
 	/// <summary>
 	/// The event to be played by this sound point
 	/// </summary>
-	[Property] public string Event { get; set; }
+	[Property, Editor( "fmod_event_ref" )] public string Event { get; set; }
+
+	/// <summary>
+	/// When enabled, uses <see cref="EventResource"/> instead of the raw <see cref="Event"/> path.
+	/// </summary>
+	public bool UseEventResource { get; set; }
+
+	/// <summary>
+	/// Optional FMOD event resource reference. Runtime resolves to <see cref="FMODEventResource.EventPath"/>.
+	/// </summary>
+	public FMODEventResource EventResource { get; set; }
+
 	/// <summary>
 	/// Start playing when the component is enabled
 	/// </summary>
@@ -21,10 +35,12 @@ public class StudioSoundPoint : Component, IFMODEvents
 	/// Do we want to override the volume of the chosen event?
 	/// </summary>
 	[Property, Title( "Override Volume" ), Space] public bool OverrideVolumeBool { get; set; } = false;
+
 	/// <summary>
 	/// Scaling factor for the event volume, doesn't override.
 	/// </summary>
 	[Property, MakeDirty, ShowIf( nameof( OverrideVolumeBool ), true ), Range( 0, 10 )] public float OverrideVolumeScale { get; set; } = 1f;
+
 	/// <summary>
 	/// Do we attach to a GO or we are static on the position of this component's GO?
 	/// </summary>
@@ -56,15 +72,16 @@ public class StudioSoundPoint : Component, IFMODEvents
 			return;
 		}
 
-		if ( string.IsNullOrEmpty( Event ) )
+		var resolvedEvent = ResolveEventPath();
+		if ( string.IsNullOrEmpty( resolvedEvent ) )
 		{
 			Log.Warning( $"No event given for {this}" );
 			return;
 		}
 
 		Instance = AttachToObject && AttachTarget.IsValid() ?
-		FMODSound.Play( Event, AttachTarget, ReleaseEvent ) :
-		FMODSound.Play( Event, GameObject.WorldPosition, ReleaseEvent );
+		FMODSound.Play( resolvedEvent, AttachTarget, ReleaseEvent ) :
+		FMODSound.Play( resolvedEvent, GameObject.WorldPosition, ReleaseEvent );
 
 		if ( OverrideVolumeBool ) Instance.setVolume( OverrideVolumeScale );
 
@@ -93,6 +110,35 @@ public class StudioSoundPoint : Component, IFMODEvents
 	protected override void OnEnabled()
 	{
 		if ( FMODManagerSystem.Current.SceneInitialized && AutoPlay ) StartSound();
+	}
+
+	protected override void DrawGizmos()
+	{
+		base.DrawGizmos();
+
+		Gizmo.Draw.Color = Color.Parse( "#4dfd7c" ).Value;
+
+		Model model = Model.Load( "models/editor/soundpoint_helper.vmdl" );
+
+		Gizmo.Hitbox.Model( model );
+		Gizmo.Draw.Model( model );
+
+		Gizmo.Draw.Color = Gizmo.IsSelected
+			? Color.Yellow
+			: Gizmo.IsHovered
+				? Color.White.WithAlpha( PulseAlpha() )
+				: Color.White;
+
+		if ( Gizmo.IsSelected || Gizmo.IsHovered )
+			Gizmo.Draw.LineBBox( model.Bounds );
+
+		return;
+
+	}
+
+	private static float PulseAlpha()
+	{
+		return 0.7f + MathF.Sin( Time.Now * 20f ) * 0.3f;
 	}
 
 	/// <summary>
@@ -128,5 +174,13 @@ public class StudioSoundPoint : Component, IFMODEvents
 		}
 
 		if ( Instance.isValid() ) Instance.setVolume( OverrideVolumeBool ? OverrideVolumeScale : 1f );
+	}
+
+	private string ResolveEventPath()
+	{
+		if ( UseEventResource && EventResource is not null && !string.IsNullOrWhiteSpace( EventResource ) )
+			return EventResource;
+
+		return Event;
 	}
 }

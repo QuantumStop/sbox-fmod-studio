@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{13aa25de-0b1f-4397-806e-11835af1858d}">
+		<property name="assetPath">
+			<value>ProgrammerLines/test_subdir/behind01.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.96378684807256232</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{eb90a16e-558b-4d9e-8b72-02547f5bc8de}</destination>
+		</relationship>
+	</object>
+</objects>

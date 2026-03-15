@@ -348,8 +348,8 @@ public partial class FMODManagerSystem
 			Current.attachedInstances.Add( attachedInstance );
 		}
 		attachedInstance.Instance = instance;
-		attachedInstance.transform = transform;
-		attachedInstance.attachedGameObject = gameObject;
+		attachedInstance.Transform = transform;
+		attachedInstance.AttachedGameObject = gameObject;
 		attachedInstance.Instance.set3DAttributes( attributes );
 		return attachedInstance;
 	}
@@ -358,14 +358,14 @@ public partial class FMODManagerSystem
 	{
 		AttachedInstance attachedInstance = FindOrAddAttachedInstance( instance, gameObject, RuntimeUtils.To3DAttributes( gameObject.WorldTransform ) );
 
-		attachedInstance.lastFramePosition = gameObject.WorldTransform.Position;
+		attachedInstance.LastFramePosition = gameObject.WorldTransform.Position;
 	}
 
 	public static void AttachInstanceToGameObject( EventInstance instance, GameObject gameObject, Rigidbody rigidBody )
 	{
 		AttachedInstance attachedInstance = FindOrAddAttachedInstance( instance, gameObject, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.WorldPosition ) );
 
-		attachedInstance.rigidBody = rigidBody;
+		attachedInstance.RigidBody = rigidBody;
 	}
 	public static void DetachInstanceFromGameObject( EventInstance instance )
 	{

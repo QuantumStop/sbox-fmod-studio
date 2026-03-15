@@ -353,7 +353,7 @@ public class ParamLabel
 /// <summary>
 /// Interface containing certain hooks to play sounds in, as GameObjectSystem hooks are too late
 /// </summary>
-public interface IFMODEvents
+public interface IFMODEvents : ISceneEvent<IFMODEvents>
 {
 	/// <summary>
 	/// After both FMOD systems were initialized

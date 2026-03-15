@@ -62,12 +62,12 @@ public partial class FMODManagerSystem
 
 			if ( listener == null )
 			{
-				var listen = Scene.Camera.Components.Create<StudioListener>();
-				listen.NonRigidbodyVelocity = true;
+				var listen = Scene.Camera?.Components.Create<StudioListener>();
+				listen?.NonRigidbodyVelocity = true;
 			}
 			else
 			{
-				listener.NonRigidbodyVelocity = true;
+				listener?.NonRigidbodyVelocity = true;
 			}
 		}
 	}

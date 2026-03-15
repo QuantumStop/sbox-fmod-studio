@@ -1,7 +1,0 @@
-{a9b8b63a-3d7a-441c-8931-019efac2a227} bank:/Master
-{31a596ee-4c01-085e-0f78-8b600b31a4bf} bank:/Master.strings
-{c9779652-03dc-4885-9bf4-938a45001690} bank:/TestA
-{49b38c27-afed-4c32-9540-f19384846305} bus:/
-{32b70dab-cda7-4cce-9c48-efb24201cd43} bus:/Reverb
-{8fd4cb6d-949c-4a13-811c-d96732d47f74} event:/Action
-{34213eb2-8c3b-4655-bf25-950734744f06} event:/Timeline
