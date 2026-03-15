@@ -1,6 +1,7 @@
 namespace FMODSbox;
 
 using FMOD;
+using Sandbox.ActionGraphs;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -27,12 +28,12 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 
 	private bool isMuted = false;
 
-	private Dictionary<GUID, FMOD.Studio.EventDescription> cachedDescriptions = [];
+	private Dictionary<GUID, FMOD.Studio.EventDescription> _cachedDescriptions = [];
 
-	[Property, JsonIgnore, ReadOnly] private readonly Dictionary<string, LoadedBank> loadedBanks = [];
-	[Property, JsonIgnore, ReadOnly] private readonly List<string> sampleLoadRequests = [];
+	[Property, JsonIgnore, ReadOnly] private readonly Dictionary<string, LoadedBank> _loadedBanks = [];
+	[Property, JsonIgnore, ReadOnly] private readonly List<string> _sampleLoadRequests = [];
 
-	[Property, JsonIgnore, ReadOnly] private readonly List<AttachedInstance> attachedInstances = new( 128 );
+	[Property, JsonIgnore, ReadOnly] private readonly List<AttachedInstance> _attachedInstances = new( 128 );
 
 	private class AttachedInstance
 	{
@@ -41,6 +42,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		public GameObject AttachedGameObject;
 		public Rigidbody RigidBody;
 		public Vector3 LastFramePosition;
+		public FMOD.Studio.EVENT_CALLBACK Callback;
 	}
 
 	private int loadingBanksRef = 0;
@@ -78,6 +80,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		NotDisposed = false;
 		coreSystem.setCallback( null, 0 );
 		ReleaseStudioSystem();
+		GC.SuppressFinalize( this );
 		base.Dispose();
 	}
 
@@ -207,7 +210,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 	{
 		if ( studioSystem.isValid() )
 		{
-			foreach ( var attached in attachedInstances.ToList() ) // could be bad
+			foreach ( var attached in _attachedInstances.ToList() ) // could be bad
 			{
 				FMOD.Studio.PLAYBACK_STATE playbackState = FMOD.Studio.PLAYBACK_STATE.STOPPED;
 				if ( attached.Instance.isValid() )
@@ -217,7 +220,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 
 				if ( playbackState == FMOD.Studio.PLAYBACK_STATE.STOPPED )
 				{
-					attachedInstances.Remove( attached );
+					_attachedInstances.Remove( attached );
 					continue;
 				}
 

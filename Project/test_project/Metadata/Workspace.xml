@@ -32,5 +32,9 @@
 			<destination>{f989a3c4-186c-43b2-9b55-983cf6240ca7}</destination>
 			<destination>{fe788e1b-7713-4900-b3cb-f5286f9513f9}</destination>
 		</relationship>
+		<relationship name="locales">
+			<destination>{ac5092ea-ce74-4d93-a0a2-a60864730c30}</destination>
+			<destination>{68ec420d-5a5d-4fd2-971b-b2774397cc86}</destination>
+		</relationship>
 	</object>
 </objects>

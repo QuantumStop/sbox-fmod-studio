@@ -37,7 +37,7 @@ public partial class FMODManagerSystem
 
 			var unique = new HashSet<string>( StringComparer.OrdinalIgnoreCase );
 
-			foreach ( var kv in Current.loadedBanks )
+			foreach ( var kv in Current._loadedBanks )
 			{
 				var bank = kv.Value.Bank;
 				if ( !bank.isValid() )

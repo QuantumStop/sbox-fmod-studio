@@ -9,7 +9,7 @@ public partial class FMODManagerSystem
 
 	private static void LoadBank( string bankName, bool loadSamples, string bankId )
 	{
-		if ( Current.loadedBanks.ContainsKey( bankId ) )
+		if ( Current._loadedBanks.ContainsKey( bankId ) )
 		{
 			ReferenceLoadedBank( bankId, loadSamples );
 		}
@@ -58,12 +58,12 @@ public partial class FMODManagerSystem
 	*/
 	public static bool HasBankLoaded( string loadedBank )
 	{
-		return Current.loadedBanks.ContainsKey( loadedBank );
+		return Current._loadedBanks.ContainsKey( loadedBank );
 	}
 
 	private static void ReferenceLoadedBank( string bankName, bool loadSamples )
 	{
-		LoadedBank loadedBank = Current.loadedBanks[bankName];
+		LoadedBank loadedBank = Current._loadedBanks[bankName];
 		loadedBank.RefCount++;
 
 		if ( loadSamples )
@@ -71,7 +71,7 @@ public partial class FMODManagerSystem
 			loadedBank.Bank.loadSampleData();
 		}
 
-		Current.loadedBanks[bankName] = loadedBank; // Save the incremented reference count
+		Current._loadedBanks[bankName] = loadedBank; // Save the incremented reference count
 	}
 
 	private void RegisterLoadedBank( LoadedBank loadedBank, string bankPath, string bankName, bool loadSamples, FMOD.RESULT loadResult )
@@ -85,7 +85,7 @@ public partial class FMODManagerSystem
 				loadedBank.Bank.loadSampleData();
 			}
 
-			Current.loadedBanks.Add( bankName, loadedBank );
+			Current._loadedBanks.Add( bankName, loadedBank );
 			MarkEventCacheDirty();
 		}
 		else if ( loadResult == FMOD.RESULT.ERR_EVENT_ALREADY_LOADED )
@@ -102,11 +102,11 @@ public partial class FMODManagerSystem
 
 	private void ExecuteSampleLoadRequestsIfReady()
 	{
-		if ( sampleLoadRequests.Count > 0 )
+		if ( _sampleLoadRequests.Count > 0 )
 		{
-			foreach ( string bankName in sampleLoadRequests )
+			foreach ( string bankName in _sampleLoadRequests )
 			{
-				if ( !loadedBanks.ContainsKey( bankName ) )
+				if ( !_loadedBanks.ContainsKey( bankName ) )
 				{
 					// Not ready
 					return;
@@ -114,14 +114,14 @@ public partial class FMODManagerSystem
 			}
 
 			// All requested banks are loaded, so we can now load sample data
-			foreach ( string bankName in sampleLoadRequests )
+			foreach ( string bankName in _sampleLoadRequests )
 			{
-				LoadedBank loadedBank = loadedBanks[bankName];
+				LoadedBank loadedBank = _loadedBanks[bankName];
 				CheckInitResult( loadedBank.Bank.loadSampleData(),
 					string.Format( "Loading sample data for bank: {0}", bankName ) );
 			}
 
-			sampleLoadRequests.Clear();
+			_sampleLoadRequests.Clear();
 		}
 	}
 
@@ -131,7 +131,7 @@ public partial class FMODManagerSystem
 		{
 			if ( fmodSettings.AutomaticSampleLoading )
 			{
-				sampleLoadRequests.AddRange( WhichBanksToLoad( fmodSettings ) );
+				_sampleLoadRequests.AddRange( WhichBanksToLoad( fmodSettings ) );
 			}
 
 			try

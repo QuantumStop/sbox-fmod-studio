@@ -16,7 +16,7 @@ public class DistancePrinter : Component
 	[Button]
 	void TestSound()
 	{
-		FMODSound.Play( "event:/Weapons/1P/Sniper/SniperA_1P" );
+		FMODSound.Play( "event:/Action" );
 	}
 
 	[Button]
@@ -24,7 +24,7 @@ public class DistancePrinter : Component
 	{
 		if ( Obj1.IsValid() )
 		{
-			instance = FMODSound.Play( "event:/Objects/Combine/Forcefield/ForcefieldMain", Obj1 );
+			instance = FMODSound.Play( "event:/Action", Obj1 );
 		}
 	}
 
@@ -41,19 +41,4 @@ public class DistancePrinter : Component
 		pause = !pause;
 		FMODSound.SetPauseOnAll( pause );
 	}
-
-	[Button]
-	void TestDirtFootstep()
-	{
-		var instance = FMODSound.Play( "event:/Physics/StepLeft" );
-		FMODSound.SetParameter( instance, "parameter:/Physics/MaterialType", "Dirt" );
-	}
-
-	[Button]
-	void TestPlasterFootstep()
-	{
-		var instance = FMODSound.Play( "event:/Physics/StepLeft", Obj1.WorldPosition );
-		FMODSound.SetParameter( instance, "parameter:/Physics/MaterialType", "Plaster" );
-	}
-
 }

@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.InteropServices;
 using FMOD;
 using FMOD.Studio;
 
@@ -166,6 +168,43 @@ public partial class FMODManagerSystem
 		return instance;    // generally not a good idea to get the instance if its released buuuuut...
 	}
 
+	public static EventInstance PlayProgrammerOnce( string path, string key, EVENT_CALLBACK callback, Vector3 position = new Vector3(), bool release = true )
+	{
+		try
+		{
+			return PlayProgrammerOnce( PathToGUID( path.Trim() ), key, callback, position, release );
+		}
+		catch ( EventNotFoundException )
+		{
+			throw new EventNotFoundException( path.Trim() );
+		}
+	}
+
+	/// <summary>
+	/// Programmer Instrument version of regular PlayOnce, so we can have more things than in the Unity example (like 3D attributes)
+	/// </summary>
+	/// <param name="guid">GUID of the event</param>
+	/// <param name="key">The string for the audio table</param>
+	/// <param name="callback">The callback that needs to be created separately</param>
+	/// <param name="position">WorldPosition of the event</param>
+	/// <param name="release">Should the instance be released or we do that ourselves</param>
+	public static EventInstance PlayProgrammerOnce( GUID guid, string key, EVENT_CALLBACK callback, Vector3 position = new Vector3(), bool release = true )
+	{
+		var instance = CreateInstance( guid );
+
+		// Pin the key string in memory and pass a pointer through the user data
+		GCHandle stringHandle = GCHandle.Alloc( key );
+		instance.setUserData( GCHandle.ToIntPtr( stringHandle ) );
+
+		instance.setCallback( callback );
+
+		instance.set3DAttributes( RuntimeUtils.To3DAttributes( position ) );
+		instance.start();
+		if ( release ) instance.release();
+
+		return instance;    // generally not a good idea to get the instance if its released buuuuut...
+	}
+
 	public static GUID PathToGUID( string path )
 	{
 		GUID guid;
@@ -244,7 +283,7 @@ public partial class FMODManagerSystem
 	public static EventDescription GetEventDescription( GUID guid )
 	{
 		EventDescription eventDesc;
-		if ( Current.cachedDescriptions.TryGetValue( guid, out EventDescription value ) && value.isValid() )
+		if ( Current._cachedDescriptions.TryGetValue( guid, out EventDescription value ) && value.isValid() )
 		{
 			eventDesc = value;
 		}
@@ -259,7 +298,7 @@ public partial class FMODManagerSystem
 
 			if ( eventDesc.isValid() )
 			{
-				Current.cachedDescriptions[guid] = eventDesc;
+				Current._cachedDescriptions[guid] = eventDesc;
 			}
 		}
 		return eventDesc;
@@ -291,6 +330,19 @@ public partial class FMODManagerSystem
 		}
 	}
 
+	public static EventInstance PlayProgrammerOnObject( string path, string key, GameObject gameObject, EVENT_CALLBACK callback, bool release = true )
+	{
+		try
+		{
+			PlayProgrammerOnObject( PathToGUID( path.Trim() ), key, gameObject, callback, out var instance, release );
+			return instance;
+		}
+		catch ( EventNotFoundException )
+		{
+			throw new EventNotFoundException( path );
+		}
+	}
+
 	public static void PlayOnObject( GUID guid, GameObject gameObject, out EventInstance eventInstance, bool release = true )
 	{
 		if ( CreateInstanceWithinMaxDistance( guid, gameObject.WorldTransform.Position, out EventInstance instance ) )
@@ -300,6 +352,26 @@ public partial class FMODManagerSystem
 			else
 				AttachInstanceToGameObject( instance, gameObject );
 
+			instance.start();
+			if ( release ) instance.release();
+		}
+
+		eventInstance = instance;
+	}
+
+	public static void PlayProgrammerOnObject( GUID guid, string key, GameObject gameObject, EVENT_CALLBACK callback, out EventInstance eventInstance, bool release = true )
+	{
+		if ( CreateInstanceWithinMaxDistance( guid, gameObject.WorldTransform.Position, out EventInstance instance ) )
+		{
+			if ( gameObject.Components.TryGet<Rigidbody>( out var rigid ) )
+				AttachInstanceToGameObject( instance, gameObject, rigid, callback );
+			else
+				AttachInstanceToGameObject( instance, gameObject, callback );
+
+			GCHandle stringHandle = GCHandle.Alloc( key );
+			instance.setUserData( GCHandle.ToIntPtr( stringHandle ) );
+
+			instance.setCallback( callback );
 			instance.start();
 			if ( release ) instance.release();
 		}
@@ -333,24 +405,43 @@ public partial class FMODManagerSystem
 		return FindOrAddAttachedInstance( instance, gameObject.WorldTransform, gameObject, attributes );
 	}
 
-	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, Transform transform, ATTRIBUTES_3D attributes )
+	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, GameObject gameObject, ATTRIBUTES_3D attributes, EVENT_CALLBACK callback )
 	{
-		return FindOrAddAttachedInstance( instance, transform, null, attributes );
+		return FindOrAddAttachedInstance( instance, gameObject.WorldTransform, gameObject, attributes, callback );
 	}
 
 	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, Transform transform, GameObject gameObject, ATTRIBUTES_3D attributes )
 	{
-		AttachedInstance attachedInstance = Current.attachedInstances.Find( x => x.Instance.handle == instance.handle );
+		AttachedInstance attachedInstance = Current._attachedInstances.Find( x => x.Instance.handle == instance.handle );
 
 		if ( attachedInstance == null )
 		{
 			attachedInstance = new AttachedInstance();
-			Current.attachedInstances.Add( attachedInstance );
+			Current._attachedInstances.Add( attachedInstance );
 		}
+
 		attachedInstance.Instance = instance;
 		attachedInstance.Transform = transform;
 		attachedInstance.AttachedGameObject = gameObject;
 		attachedInstance.Instance.set3DAttributes( attributes );
+		return attachedInstance;
+	}
+
+	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, Transform transform, GameObject gameObject, ATTRIBUTES_3D attributes, EVENT_CALLBACK callback )
+	{
+		AttachedInstance attachedInstance = Current._attachedInstances.Find( x => x.Instance.handle == instance.handle );
+
+		if ( attachedInstance == null )
+		{
+			attachedInstance = new AttachedInstance();
+			Current._attachedInstances.Add( attachedInstance );
+		}
+
+		attachedInstance.Instance = instance;
+		attachedInstance.Transform = transform;
+		attachedInstance.AttachedGameObject = gameObject;
+		attachedInstance.Instance.set3DAttributes( attributes );
+		attachedInstance.Callback = callback;
 		return attachedInstance;
 	}
 
@@ -367,15 +458,94 @@ public partial class FMODManagerSystem
 
 		attachedInstance.RigidBody = rigidBody;
 	}
+
+	public static void AttachInstanceToGameObject( EventInstance instance, GameObject gameObject, EVENT_CALLBACK callback )
+	{
+		AttachedInstance attachedInstance = FindOrAddAttachedInstance( instance, gameObject, RuntimeUtils.To3DAttributes( gameObject.WorldTransform ), callback );
+
+		attachedInstance.LastFramePosition = gameObject.WorldTransform.Position;
+	}
+
+	public static void AttachInstanceToGameObject( EventInstance instance, GameObject gameObject, Rigidbody rigidBody, EVENT_CALLBACK callback )
+	{
+		AttachedInstance attachedInstance = FindOrAddAttachedInstance( instance, gameObject, RuntimeUtils.To3DAttributes( gameObject.WorldTransform, rigidBody.WorldPosition ), callback );
+
+		attachedInstance.RigidBody = rigidBody;
+	}
+
 	public static void DetachInstanceFromGameObject( EventInstance instance )
 	{
-		foreach ( var attached in Current.attachedInstances )
+		foreach ( var attached in Current._attachedInstances )
 		{
 			if ( attached.Instance.handle == instance.handle )
 			{
-				Current.attachedInstances.Remove( attached );
+				Current._attachedInstances.Remove( attached );
 				return;
 			}
 		}
+	}
+
+	// from the Unity scripting examples but it does the job
+	public static RESULT ProgrammerEventCallback( EVENT_CALLBACK_TYPE type, IntPtr instancePtr, IntPtr parameterPtr )
+	{
+		EventInstance instance = new( instancePtr );
+
+		// Retrieve the user data
+		instance.getUserData( out IntPtr stringPtr );
+
+		// Get the string object
+		GCHandle stringHandle = GCHandle.FromIntPtr( stringPtr );
+		string key = stringHandle.Target as string;
+
+		switch ( type )
+		{
+			case EVENT_CALLBACK_TYPE.CREATE_PROGRAMMER_SOUND:
+				{
+					MODE soundMode = MODE.LOOP_NORMAL | FMOD.MODE.CREATECOMPRESSEDSAMPLE | FMOD.MODE.NONBLOCKING;
+					var parameter = Marshal.PtrToStructure<PROGRAMMER_SOUND_PROPERTIES>( parameterPtr );
+
+					if ( key.Contains( '.' ) )
+					{
+						var soundResult = CoreSystem.createSound( GetAssetFolderLocation() + "/" + key, soundMode, out FMOD.Sound programmerSound );
+						if ( soundResult == RESULT.OK )
+						{
+							parameter.sound = programmerSound.handle;
+							parameter.subsoundIndex = -1;
+							Marshal.StructureToPtr( parameter, parameterPtr, false );
+						}
+					}
+					else
+					{
+						var keyResult = StudioSystem.getSoundInfo( key, out SOUND_INFO programmerSoundInfo );
+						if ( keyResult != FMOD.RESULT.OK )
+						{
+							break;
+						}
+
+						var soundResult = CoreSystem.createSound( programmerSoundInfo.name_or_data, soundMode | programmerSoundInfo.mode, ref programmerSoundInfo.exinfo, out FMOD.Sound programmerSound );
+						if ( soundResult == FMOD.RESULT.OK )
+						{
+							parameter.sound = programmerSound.handle;
+							parameter.subsoundIndex = programmerSoundInfo.subsoundindex;
+							Marshal.StructureToPtr( parameter, parameterPtr, false );
+						}
+					}
+					break;
+				}
+			case EVENT_CALLBACK_TYPE.DESTROY_PROGRAMMER_SOUND:
+				{
+					var parameter = Marshal.PtrToStructure<PROGRAMMER_SOUND_PROPERTIES>( parameterPtr );
+					var sound = new FMOD.Sound( parameter.sound );
+					sound.release();
+					break;
+				}
+			case EVENT_CALLBACK_TYPE.DESTROYED:
+				{
+					// Now the event has been destroyed, unpin the string memory so it can be garbage collected
+					stringHandle.Free();
+					break;
+				}
+		}
+		return RESULT.OK;
 	}
 }

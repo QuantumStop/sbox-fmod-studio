@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="Event" id="{4a9b631e-7a0c-4d05-bce5-4b904c6ec5a6}">
 		<property name="name">
-			<value>ProgInstrument</value>
+			<value>Programmer</value>
 		</property>
 		<property name="outputFormat">
 			<value>2</value>
@@ -100,11 +100,7 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{a93d2f0d-9c88-44b7-8072-b8b59dc31cd3}" />
-	<object class="ProgrammerSound" id="{18f5a113-7013-401a-9bad-0ba8c5aa303e}">
-		<relationship name="placeholder">
-			<destination>{27cf182b-0826-490c-ba3c-289f8eecdafe}</destination>
-		</relationship>
-	</object>
+	<object class="ProgrammerSound" id="{18f5a113-7013-401a-9bad-0ba8c5aa303e}" />
 	<object class="MixerBusFader" id="{4af03f10-8c24-450f-b461-ee19b61eb0fb}" />
 	<object class="SpatialiserEffect" id="{c71461a7-8158-48c2-a4fa-f3a8f1cfd407}" />
 	<object class="MixerBusFader" id="{4db02fcb-337f-4bb6-9f24-ca0b08cccd27}" />
