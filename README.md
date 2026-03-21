@@ -2,6 +2,15 @@
 
 This repository contains the source code for the FMOD Studio S&Box integration. Native binaries that are required for this to work have been removed and must be acquired from the FMOD downloads page.
 
+This implementation comes with it's own addition to the editor's asset browser: new additional section specifically to browse your events, and even preview them!
+![Browser](https://media.discordapp.net/attachments/1450076545153765512/1484941338611941456/sbox-dev_cZMtKOfHML.png?ex=69c00ee4&is=69bebd64&hm=0bcd4fc1ac1967be64322b5368faa6ac52790ebb6364a0f6774273746fe99482&=&format=webp&quality=lossless)
+
+Events are `FMODEventResource` GameResource, which can be used instead of direct strings, if you want to have the benefits of an asset browser for the properties. You can use it directly, don't access the `.EventPath` variable, there is an implicit conversion that skips this requirement.
+![Resource](https://media.discordapp.net/attachments/1450076545153765512/1484941374032969881/sbox-dev_N6R5Yqfgrl.png?ex=69c00eec&is=69bebd6c&hm=ef04c834a8f74d0c6a6f5d078e15809de4a7933870c4bb9a29af027dd96c735c&=&format=webp&quality=lossless)
+
+The resource can be previewed, with all its parameters tweakable as well.
+![Preview](https://media.discordapp.net/attachments/1450076545153765512/1484942386907054081/sbox-dev_zY1HxuobnW.png?ex=69c00fdd&is=69bebe5d&hm=cbd47f70f136a98af87d548f9fb4b1c5d04bd50c15aaaebe48c606fe656a9fd6&=&format=webp&quality=lossless)
+
 ## Installation
 This will only work on projects with whitelist disabled, as it heavily relies on `[DllImport]`. It is recommended that you add the `Code/FMOD` folder to your project's code folder directly, to avoid assembly access issues.
 
