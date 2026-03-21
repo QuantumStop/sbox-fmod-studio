@@ -27,8 +27,7 @@ public static class FMODAssetTypeTweaks
 
 		_types ??= [.. new[]
 		{
-			AssetType.FromExtension( "fmevent" ),
-			AssetType.FromExtension( "fmodevent" )
+			AssetType.FromExtension( "fmevent" )
 		}.Where( t => t is not null ).Distinct()];
 
 		if ( _types.Length == 0 )
@@ -51,18 +50,17 @@ public static class FMODAssetTypeTweaks
 			TrySetAssetTypeBool( type, "HiddenByDefault", true );
 		}
 
-		// Needs to happen before AssetEntry instances are constructed (they cache IconSmall).
-		if ( !_iconsApplied )
-		{
-			_iconsApplied = TrySetAssetTypeIconsFromToolImages( _types, "logo_fmod.png" );
-		}
+		// Icons are supplied by the resource type itself (CreateAssetTypeIcon/RenderThumbnail),
+		// not by patching AssetType pixmaps at runtime.
+		_iconsApplied = true;
+
 
 		if ( !_thumbsQueued )
 		{
 			foreach ( var asset in AssetSystem.All )
 			{
 				var ext = asset?.AssetType?.FileExtension;
-				if ( ext == "fmevent" || ext == "fmodevent" )
+				if ( ext == "fmevent" )
 				{
 					asset.RebuildThumbnail( startBuild: true );
 				}
@@ -99,6 +97,18 @@ public static class FMODAssetTypeTweaks
 
 		if ( _iconsApplied && _thumbsQueued && _browserRefreshed )
 			_allDone = true;
+	}
+
+	[EditorEvent.Hotload]
+	private static void OnHotload()
+	{
+		// Ensure thumbnails reflect any render-code changes after hotload.
+		_thumbsQueued = false;
+		_browserRefreshed = false;
+		_iconsApplied = false;
+		_allDone = false;
+		_lastRefreshAttemptUtc = DateTime.MinValue;
+		_types = null;
 	}
 
 	private static void TrySetAssetTypeColor( AssetType type, Color color )
@@ -140,50 +150,4 @@ public static class FMODAssetTypeTweaks
 		}
 	}
 
-	private static bool TrySetAssetTypeIconsFromToolImages( IEnumerable<AssetType> types, string toolImageName )
-	{
-		try
-		{
-			var basePixmap = Pixmap.FromFile( toolImageName );
-			if ( basePixmap is null )
-				return false;
-
-			foreach ( var type in types )
-			{
-				TrySetPixmapProp( type, "Icon16", basePixmap.Resize( 16, 16 ) );
-				TrySetPixmapProp( type, "Icon64", basePixmap.Resize( 64, 64 ) );
-				TrySetPixmapProp( type, "Icon128", basePixmap.Resize( 128, 128 ) );
-				TrySetPixmapProp( type, "Icon256", basePixmap.Resize( 256, 256 ) );
-			}
-
-			return true;
-		}
-		catch
-		{
-			return false;
-		}
-	}
-
-	private static void TrySetPixmapProp( AssetType type, string name, Pixmap value )
-	{
-		try
-		{
-			if ( value is null )
-				return;
-
-			var prop = typeof( AssetType ).GetProperty( name, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic );
-			if ( prop?.CanWrite == true && prop.PropertyType == typeof( Pixmap ) )
-			{
-				prop.SetValue( type, value );
-				return;
-			}
-
-			var field = typeof( AssetType ).GetField( $"<{name}>k__BackingField", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic );
-			if ( field?.FieldType == typeof( Pixmap ) )
-				field.SetValue( type, value );
-		}
-		catch
-		{
-		}
-	}
 }

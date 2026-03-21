@@ -14,7 +14,6 @@ public static class FMODEventResourceGenerator
 	private const int ResourceVersion = 1;
 	private const int GeneratorSchemaVersion = 2;
 	private const string RootFolderName = "_fmod_project";
-	private const string LegacyRootFolderName = "fmod_project";
 	private const string MarkerFileName = ".fmod_event_cache.json";
 
 	private static readonly Lock LockObj = new();
@@ -47,8 +46,6 @@ public static class FMODEventResourceGenerator
 
 				_typeReady = true;
 			}
-
-			TryCleanupLegacyRoot();
 
 			if ( !force && (DateTime.UtcNow - LastCheckUtc) < TimeSpan.FromSeconds( 2 ) )
 				return;
@@ -116,32 +113,6 @@ public static class FMODEventResourceGenerator
 
 		LastFolderMetadataUtc = DateTime.UtcNow;
 		TryApplyFolderMetadata( GetGeneratedEventsRoot() );
-	}
-
-	private static void TryCleanupLegacyRoot()
-	{
-		try
-		{
-			var legacyRoot = Path.Combine( Project.Current.GetAssetsPath(), LegacyRootFolderName, Project.Current.Config.Ident );
-			if ( !Directory.Exists( legacyRoot ) )
-				return;
-
-			var legacyMarker = Path.Combine( legacyRoot, MarkerFileName );
-			var legacyEvents = Path.Combine( legacyRoot, "events" );
-
-			var looksGenerated =
-				File.Exists( legacyMarker ) ||
-				(Directory.Exists( legacyEvents ) && Directory.GetFiles( legacyEvents, "*.fmevent", SearchOption.AllDirectories ).Length > 0) ||
-				(Directory.Exists( legacyEvents ) && Directory.GetFiles( legacyEvents, "*.fmodevent", SearchOption.AllDirectories ).Length > 0);
-
-			if ( !looksGenerated )
-				return;
-
-			Directory.Delete( legacyRoot, recursive: true );
-		}
-		catch
-		{
-		}
 	}
 
 	private static bool TryReadMarker( string markerPath, out DateTime newestBankWriteUtc, out int bankCount, out string[] generatedFiles )

@@ -1,5 +1,6 @@
 using System.IO;
 using System;
+using System.Linq;
 
 namespace FMODSbox;
 
@@ -17,7 +18,8 @@ public sealed class FMODEventResource : GameResource
 	public static implicit operator string( FMODEventResource e ) => e?.EventPath ?? string.Empty;
 
 	private static readonly Color TypePurple = "#8d368dff";
-	private static readonly Color TypeInk = "#141414ff";
+	private static Bitmap _iconLarge;
+	private static Bitmap _iconSmall;
 
 	/// <summary>
 	/// FMOD event path, e.g. "event:/Weapons/Pistol/Fire".
@@ -80,93 +82,103 @@ public sealed class FMODEventResource : GameResource
 		bitmap.SetLinearGradient( new Vector2( 0, 0 ), new Vector2( 0, h ), Gradient.FromColors( bgTop, bgBottom ) );
 		bitmap.DrawRoundRect( bitmap.Rect, 4 );
 
-		var stripH = MathF.Max( 6f, h * 0.035f );
-		bitmap.SetFill( TypePurple.WithAlpha( 0.85f ) );
-		bitmap.DrawRect( new Rect( 0, h - stripH, w, h ) );
-
 		var key = EventPath ?? ResourcePath ?? string.Empty;
 		var samples = GenerateDeterministicWave( key, LengthMs, 256 );
-		DrawWaveform( bitmap, samples, new Rect( w * 0.06f, h * 0.18f, w * 0.94f, h * 0.80f ), TypePurple.Lighten( 0.35f ) );
+		DrawWaveform( bitmap, samples, new Rect( w * 0.06f, h * 0.18f, w * 0.88f, h * 0.62f ), TypePurple.Lighten( 0.35f ) );
 
-		var logo = TryLoadCoreLogo();
-		if ( logo is not null && logo.IsValid )
-		{
-			var size = MathF.Max( 18f, MathF.Min( w, h ) * 0.18f );
-			var dest = new Rect( w - size - 8, 8, w - 8, 8 + size );
-			bitmap.DrawBitmap( logo, dest );
-		}
+		var hasLabeled = Parameters?.Any( p => p?.IsLabeled == true ) == true;
+		var hasFloat = Parameters?.Any( p => p?.IsLabeled != true ) == true;
+		DrawParameterIcons( bitmap, w, h, hasFloat, hasLabeled );
 
 		return bitmap;
+	}
+
+	private static void DrawParameterIcons( Bitmap bitmap, float w, float h, bool hasFloat, bool hasLabeled )
+	{
+		if ( bitmap is null )
+			return;
+
+		var size = MathX.Clamp( MathF.Min( w, h ), 14f, 28f );
+		var gap = MathF.Max( 2f, size * 0.18f );
+		var margin = MathF.Max( 6f, size * 0.35f );
+
+		var rowW = size * 2 + gap;
+		var x0 = w - margin - rowW;
+		var y0 = margin;
+
+		var floatRect = new Rect( x0, y0, size, size );
+		var labeledRect = new Rect( x0 + size + gap, y0, size, size );
+
+		var on = Color.White.WithAlpha( 0.85f );
+		var off = Color.White.WithAlpha( 0.18f );
+
+		var floatColor = hasFloat ? on : off;
+		var labeledColor = hasLabeled ? on : off;
+
+		bitmap.DrawText( new TextRendering.Scope( "tune", floatColor, size, "Material Icons" ), floatRect, TextFlag.Center | TextFlag.DontClip );
+		bitmap.DrawText( new TextRendering.Scope( "label_important", labeledColor, size, "Material Icons" ), labeledRect, TextFlag.Center | TextFlag.DontClip );
 	}
 
 	protected override Bitmap CreateAssetTypeIcon( int width, int height )
 	{
-		var bg = TypePurple;
-		var fg = TypeInk;
-
 		var bitmap = new Bitmap( width, height );
 		bitmap.Clear( new Color( 0, 0, 0, 0 ) );
 
-		bitmap.SetRadialGradient( width * 0.1f, height * 2, Gradient.FromColors( bg, bg.Darken( 0.25f ) ) );
-		bitmap.DrawRoundRect( bitmap.Rect, 4 );
+		bool useLarge = MathF.Max( width, height ) > 64;
 
-		var logo = TryLoadCoreLogo();
-		if ( logo is not null && logo.IsValid && width >= 20 && height >= 20 )
+		var icon = TryLoadIcon( large: useLarge );
+
+		if ( icon != null )
 		{
-			var padding = MathF.Max( 2f, width * 0.12f );
-			var availW = MathF.Max( 1f, width - padding * 2 );
-			var availH = MathF.Max( 1f, height - padding * 2 );
+			var target = MathF.Min( width, height );
 
-			var sx = availW / logo.Width;
-			var sy = availH / logo.Height;
-			var s = MathF.Min( sx, sy );
+			var scale = MathF.Min(
+				target / icon.Width,
+				target / icon.Height
+			);
 
-			var w = logo.Width * s;
-			var h = logo.Height * s;
+			var w = icon.Width * scale;
+			var h = icon.Height * scale;
 
-			var x = (width - w) * 0.5f;
-			var y = (height - h) * 0.5f;
+			var x = MathF.Floor( (width - w) * 0.5f );
+			var y = MathF.Floor( (height - h) * 0.5f );
 
-			bitmap.DrawBitmap( logo, new Rect( x, y, x + w, y + h ) );
-		}
-		else
-		{
-			// Fallback to a material icon glyph.
-			bitmap.DrawText( new TextRendering.Scope( "graphic_eq", fg, height * 0.8f, "Material Icons" ), bitmap.Rect, TextFlag.Center | TextFlag.DontClip );
+			bitmap.DrawBitmap( icon, new Rect( x, y, w, h ) );
 		}
 
 		return bitmap;
 	}
 
-	private static Bitmap TryLoadCoreLogo()
+	private static Bitmap TryLoadIcon( bool large )
+	{
+		if ( large )
+		{
+			_iconLarge ??= TryLoadToolBitmap( "tools/images/assettypes/fmod_lg.tif" );
+			return _iconLarge;
+		}
+
+		_iconSmall ??= TryLoadToolBitmap( "tools/images/assettypes/fmod_sm.tif" );
+		return _iconSmall;
+	}
+
+	private static Bitmap TryLoadToolBitmap( string relativePath )
 	{
 		try
 		{
-			string[] candidates =
-			[
-				"tools/images/logo_fmod.png",
-				"/tools/images/logo_fmod.png",
-				"/core/tools/images/logo_fmod.png"
-			];
+			if ( string.IsNullOrWhiteSpace( relativePath ) )
+				return null;
 
-			foreach ( var p in candidates )
-			{
-				var full = FileSystem.Mounted.GetFullPath( p );
-				if ( string.IsNullOrWhiteSpace( full ) )
-					continue;
+			var fullPath = FileSystem.Mounted.GetFullPath( relativePath );
 
-				if ( File.Exists( full ) )
-				{
-					var data = File.ReadAllBytes( full );
-					return Bitmap.CreateFromBytes( data );
-				}
-			}
+			if ( string.IsNullOrWhiteSpace( fullPath ) || !File.Exists( fullPath ) )
+				return null;
+
+			return Bitmap.CreateFromBytes( File.ReadAllBytes( fullPath ) );
 		}
 		catch
 		{
+			return null;
 		}
-
-		return null;
 	}
 
 	private static float[] GenerateDeterministicWave( string key, int lengthMs, int count )
