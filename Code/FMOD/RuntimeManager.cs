@@ -7,18 +7,16 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
 /// <summary>
 /// Main handler for everything FMOD
 /// </summary>
-public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
+public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, ISceneLoadingEvents
 {
-	[Property, ReadOnly, Hide] public bool SceneInitialized { get; set; } = false;
+	public FMODManagerSystem( Scene scene ) : base( scene ) => Listen( Stage.StartUpdate, 0, StartUpdate, "FMOD OnUpdate" );
 
-	public FMODManagerSystem( Scene scene ) : base( scene )
-	{
-		Listen( Stage.SceneLoaded, 0, SceneLoaded, "FMOD OnStart" );
-		Listen( Stage.StartUpdate, 0, StartUpdate, "FMOD OnUpdate" );
-	}
+	void ISceneLoadingEvents.BeforeLoad( Scene scene, SceneLoadOptions options ) => SceneLoaded();
 
 	[Property, JsonIgnore, ReadOnly, Hide] private SYSTEM_CALLBACK errorCallback;
 
@@ -72,7 +70,8 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		RuntimeUtils.EnforceLibraryOrder();
 		Current.Initialize();
 		Current.SpawnListenerOnCamera();
-		Current.AfterInit();
+
+		if ( !Scene.IsEditor ) NotDisposed = true;
 	}
 
 	public override void Dispose()
@@ -89,23 +88,9 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 	/// </summary>
 	static private bool NotDisposed { get; set; } = false;
 
+	public static FMOD.Studio.System StudioSystem => Current.studioSystem;
 
-	/// <summary>
-	/// SceneLoaded is too late for us to do stuff in OnEnabled, do it ourselves
-	/// </summary>
-	private void AfterInit()
-	{
-		if ( Scene.IsEditor ) return;
-
-		SceneInitialized = true;
-		NotDisposed = true;
-
-		IFMODEvents.Post( x => x.OnAfterInit() );
-	}
-
-	public static FMOD.Studio.System StudioSystem { get => Current.studioSystem; }
-
-	public static System CoreSystem { get => Current.coreSystem; }
+	public static System CoreSystem => Current.coreSystem;
 
 	private struct LoadedBank
 	{

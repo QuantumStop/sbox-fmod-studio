@@ -1,6 +1,6 @@
 namespace FMODSbox;
 
-public sealed class FmodActionGraphNodes 
+public sealed class FmodActionGraphNodes
 {
 	[ActionGraphNode( "fmod.set_parameter_float" )]
 	[Title( "Set FMOD Parameter (Float)" )]
@@ -23,8 +23,8 @@ public sealed class FmodActionGraphNodes
 		if ( sound == null || resource == null )
 			return null;
 
-		sound.EventResource = resource;
-		sound.UseEventResource = true;
+		sound.Event = resource;
+		//sound.UseEventResource = true;
 		sound.StartSound();
 
 		return resource;

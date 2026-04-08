@@ -5,7 +5,7 @@ namespace FMODSbox;
 
 [Icon( "volume_down" )]
 [Title( "FMOD Sound Point" ), Category( "FMOD" ), Tint( EditorTint.Green )]
-public class StudioSoundPoint : Component, IFMODEvents
+public class StudioSoundPoint : Component
 {
 	/// <summary>
 	/// EventInstance of this sound point
@@ -15,17 +15,7 @@ public class StudioSoundPoint : Component, IFMODEvents
 	/// <summary>
 	/// The event to be played by this sound point
 	/// </summary>
-	[Property, Editor( "fmod_event_ref" )] public string Event { get; set; }
-
-	/// <summary>
-	/// When enabled, uses <see cref="EventResource"/> instead of the raw <see cref="Event"/> path.
-	/// </summary>
-	public bool UseEventResource { get; set; }
-
-	/// <summary>
-	/// Optional FMOD event resource reference. Runtime resolves to <see cref="FMODEventResource.EventPath"/>.
-	/// </summary>
-	public FMODEventResource EventResource { get; set; }
+	[Property] public FMODEventResource Event { get; set; }
 
 	/// <summary>
 	/// Start playing when the component is enabled
@@ -39,7 +29,28 @@ public class StudioSoundPoint : Component, IFMODEvents
 	/// <summary>
 	/// Scaling factor for the event volume, doesn't override.
 	/// </summary>
-	[Property, MakeDirty, ShowIf( nameof( OverrideVolumeBool ), true ), Range( 0, 10 )] public float OverrideVolumeScale { get; set; } = 1f;
+	[Property, ShowIf( nameof( OverrideVolumeBool ), true ), Range( 0, 10 )]
+	public float OverrideVolumeScale
+	{
+		get;
+		set
+		{
+			if ( field != value )
+			{
+				field = value;
+
+				if ( Scene.IsEditor ) return; // don't do this if the game is not playing
+
+				if ( ReleaseEvent )
+				{
+					Log.Warning( "To change volume at runtime, event must be not released!" );
+					return;
+				}
+
+				if ( Instance.isValid() ) Instance.setVolume( OverrideVolumeBool ? value : 1f );
+			}
+		}
+	} = 1f;
 
 	/// <summary>
 	/// Do we attach to a GO or we are static on the position of this component's GO?
@@ -72,16 +83,15 @@ public class StudioSoundPoint : Component, IFMODEvents
 			return;
 		}
 
-		var resolvedEvent = ResolveEventPath();
-		if ( string.IsNullOrEmpty( resolvedEvent ) )
+		if ( !Event.IsValid() )
 		{
 			Log.Warning( $"No event given for {this}" );
 			return;
 		}
 
 		Instance = AttachToObject && AttachTarget.IsValid() ?
-		FMODSound.Play( resolvedEvent, AttachTarget, ReleaseEvent ) :
-		FMODSound.Play( resolvedEvent, GameObject.WorldPosition, ReleaseEvent );
+		FMODSound.Play( Event, AttachTarget, ReleaseEvent ) :
+		FMODSound.Play( Event, GameObject.WorldPosition, ReleaseEvent );
 
 		if ( OverrideVolumeBool ) Instance.setVolume( OverrideVolumeScale );
 
@@ -109,7 +119,7 @@ public class StudioSoundPoint : Component, IFMODEvents
 	/// </summary>
 	protected override void OnEnabled()
 	{
-		if ( FMODManagerSystem.Current.SceneInitialized && AutoPlay ) StartSound();
+		if ( AutoPlay ) StartSound();
 	}
 
 	protected override void DrawGizmos()
@@ -142,14 +152,6 @@ public class StudioSoundPoint : Component, IFMODEvents
 	}
 
 	/// <summary>
-	/// Component was enabled when the scene started, but FMOD systems initialize after OnEnabled is fired
-	/// </summary>
-	void IFMODEvents.OnAfterInit()
-	{
-		if ( AutoPlay ) StartSound();
-	}
-
-	/// <summary>
 	/// Set pause state on 
 	/// </summary>
 	/// <param name="set"></param>
@@ -161,26 +163,5 @@ public class StudioSoundPoint : Component, IFMODEvents
 	public void StopSound( bool allowfade = true )
 	{
 		if ( Instance.isValid() ) FMODSound.Stop( Instance, allowfade );
-	}
-
-	protected override void OnDirty()
-	{
-		if ( Scene.IsEditor ) return; // don't do this if the game is not playing
-
-		if ( ReleaseEvent )
-		{
-			Log.Warning( "To change volume at runtime, event must be not released!" );
-			return;
-		}
-
-		if ( Instance.isValid() ) Instance.setVolume( OverrideVolumeBool ? OverrideVolumeScale : 1f );
-	}
-
-	private string ResolveEventPath()
-	{
-		if ( UseEventResource && EventResource is not null && !string.IsNullOrWhiteSpace( EventResource ) )
-			return EventResource;
-
-		return Event;
 	}
 }

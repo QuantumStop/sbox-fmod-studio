@@ -138,14 +138,18 @@ public partial class FMODManagerSystem
 			{
 				var WhichBanksToLoadTemp = WhichBanksToLoad( fmodSettings ).ToList();
 
-				foreach ( string bankName in WhichBanksToLoadTemp )
+				if ( WhichBanksToLoadTemp.Count > 0 ) // don't load nothing if we dont have any
 				{
-					LoadBank( bankName );
-					//	Banks.Remove( bankName );
-					//	im confused why it breaks the loading if the manager is spawned using a GOS, but im not complaining, the list is cleared anyway
+					foreach ( string bankName in WhichBanksToLoadTemp )
+					{
+						LoadBank( bankName );
+						//	Banks.Remove( bankName );
+						//	im confused why it breaks the loading if the manager is spawned using a GOS, but im not complaining, the list is cleared anyway
+					}
 				}
 
 				WaitForAllSampleLoading();
+
 			}
 			catch ( BankLoadException e )
 			{
@@ -155,19 +159,12 @@ public partial class FMODManagerSystem
 	}
 	private IEnumerable<string> WhichBanksToLoad( Settings fmodSettings )
 	{
+		var path = Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" );
+
 		switch ( fmodSettings.BankLoadType )
 		{
 			case BankLoadType.All:
-				//				foreach ( string masterBankFileName in MasterBanks )
-				//				{
-				//					if ( !string.IsNullOrEmpty( masterBankFileName ) )
-				//					{
-				//						yield return masterBankFileName + ".strings";
-				//						yield return masterBankFileName;
-				//					}
-				//				}
 
-				var path = Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" );
 				var AllBanks = System.IO.Directory.GetFiles( path, "*.bank" ).Select( file => System.IO.Path.GetFileName( file ) ).ToArray();
 
 				foreach ( var bank in AllBanks )

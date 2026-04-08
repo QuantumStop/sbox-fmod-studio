@@ -42,8 +42,8 @@ public sealed class FMODEventRefControlWidget : ControlWidget
 
 	private void ResolveSiblingProps()
 	{
-		_useResourceProp = SerializedProperty.Parent?.GetProperty( nameof( StudioSoundPoint.UseEventResource ) );
-		_resourceProp = SerializedProperty.Parent?.GetProperty( nameof( StudioSoundPoint.EventResource ) );
+		_useResourceProp = SerializedProperty.Parent?.GetProperty( nameof( StudioSoundPoint/*.UseEventResource*/.Active ) ); // i dont want to delete this but it doesnt exist anymore
+		_resourceProp = SerializedProperty.Parent?.GetProperty( nameof( StudioSoundPoint.Event ) );
 	}
 
 	private bool IsUsingResource()
