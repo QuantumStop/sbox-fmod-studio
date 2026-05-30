@@ -53,7 +53,7 @@ sealed class FMODEventPreviewWidget : Widget
 	private IconButton _loopButton;
 	private TimerWidget _timeDisplay;
 	private Label _statusLabel;
-	
+
 	private bool _lastPlaying;
 	private bool _lastPaused;
 	private bool _loop = false;
@@ -337,7 +337,7 @@ sealed class FMODEventPreviewWidget : Widget
 		_desc = default;
 		_eventLengthMs = 0;
 
-		if ( _asset == null )
+		if ( _asset is null )
 		{
 			_path.Text = "";
 			_error.Visible = false;
@@ -350,7 +350,7 @@ sealed class FMODEventPreviewWidget : Widget
 			_resource = obj;
 		}
 
-		if ( _resource == null || string.IsNullOrWhiteSpace( _resource ) )
+		if ( _resource is null || string.IsNullOrWhiteSpace( _resource ) )
 		{
 			_path.Text = "";
 			_error.Text = "Could not load resource or missing EventPath.";
@@ -505,7 +505,7 @@ sealed class FMODEventPreviewWidget : Widget
 
 	private void Play()
 	{
-		if ( _resource == null || string.IsNullOrWhiteSpace( _resource ) )
+		if ( _resource is null || string.IsNullOrWhiteSpace( _resource ) )
 			return;
 
 		// If we're pasued we won't restart the whole sequence

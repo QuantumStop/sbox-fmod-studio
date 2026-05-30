@@ -12,7 +12,7 @@ public partial class FMODManagerSystem
 
 		foreach ( var listener in Current.Listeners )
 		{
-			result = MathF.Min( result, position.Distance( listener.AttenuationObject == null ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position ) );
+			result = MathF.Min( result, position.Distance( !listener.AttenuationObject.IsValid() ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position ) );
 		}
 		return result;
 	}
@@ -23,7 +23,7 @@ public partial class FMODManagerSystem
 
 		foreach ( var listener in Current.Listeners )
 		{
-			result = MathF.Min( result, (position - (listener.AttenuationObject == null ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position)).LengthSquared );
+			result = MathF.Min( result, (position - (!listener.AttenuationObject.IsValid() ? listener.WorldTransform.Position : listener.AttenuationObject.WorldTransform.Position)).LengthSquared );
 		}
 
 		return result;
@@ -60,7 +60,7 @@ public partial class FMODManagerSystem
 		{
 			var listener = Scene.Get<StudioListener>();
 
-			if ( listener == null )
+			if ( !listener.IsValid() )
 			{
 				var listen = Scene.Camera?.Components.Create<StudioListener>();
 				listen?.NonRigidbodyVelocity = true;

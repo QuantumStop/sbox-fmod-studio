@@ -26,7 +26,7 @@ public sealed class FMODPickerLocationNode( AssetBrowser.Location location ) : T
 	{
 		Clear();
 
-		if ( Value is null )
+		if ( !Value.IsValid() )
 			return;
 
 		foreach ( var dir in Value.GetDirectories().OrderBy( x => x.Name ) )

@@ -101,7 +101,7 @@ public static class FMODEventResourceGenerator
 			if ( AssetSystem.FindByPath( path ) is null )
 				AssetSystem.RegisterFile( path );
 		}
-}
+	}
 
 	/// <summary>
 	/// Ensure generated FMOD directories get a distinct folder color in folder view.
@@ -201,7 +201,7 @@ public static class FMODEventResourceGenerator
 			var absPath = Path.Combine( eventsRoot, relative );
 			Directory.CreateDirectory( Path.GetDirectoryName( absPath )! );
 
-			var json = JsonSerializer.Serialize( data, JsonOptions );;
+			var json = JsonSerializer.Serialize( data, JsonOptions );
 
 			var write = true;
 			if ( File.Exists( absPath ) )
@@ -392,7 +392,7 @@ public static class FMODEventResourceGenerator
 		foreach ( var bank in banks )
 		{
 			if ( !bank.isValid() ) continue;
-			if ( bank.getEventList( out var events ) != RESULT.OK || events == null ) continue;
+			if ( bank.getEventList( out var events ) != RESULT.OK || events is null ) continue;
 
 			foreach ( var desc in events )
 			{
@@ -445,8 +445,8 @@ public static class FMODEventResourceGenerator
 
 		if ( is3d && desc.getMinMaxDistance( out var min, out var max ) == RESULT.OK )
 		{
-			payload["MinDistance"] = min;
-			payload["MaxDistance"] = max;
+			payload["MinDistance"] = MathX.MeterToInch( min );
+			payload["MaxDistance"] = MathX.MeterToInch( max );
 		}
 
 		if ( desc.getParameterDescriptionCount( out var paramCount ) == RESULT.OK && paramCount > 0 )
@@ -463,8 +463,8 @@ public static class FMODEventResourceGenerator
 				{
 					["Name"] = (string)p.name,
 					["Type"] = p.type.ToString(),
-					["Min"] = p.minimum,
-					["Max"] = p.maximum,
+					["Min"] = MathX.MeterToInch( p.minimum ),
+					["Max"] = MathX.MeterToInch( p.maximum ),
 					["Default"] = p.defaultvalue,
 					["IsGlobal"] = flags.HasFlag( PARAMETER_FLAGS.GLOBAL ),
 					["IsReadOnly"] = flags.HasFlag( PARAMETER_FLAGS.READONLY ),

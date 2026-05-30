@@ -38,7 +38,7 @@ public partial class FMODManagerSystem
 			Current.loadingBanksRef--;
 		}
 	}
-	public static bool IsInitialized => Current != null && Current.studioSystem.isValid();
+	public static bool IsInitialized => Current is not null && Current.studioSystem.isValid();
 
 	public static bool HaveAllBanksLoaded => Current.loadingBanksRef == 0;
 

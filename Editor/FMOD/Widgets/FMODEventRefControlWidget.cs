@@ -48,7 +48,7 @@ public sealed class FMODEventRefControlWidget : ControlWidget
 
 	private bool IsUsingResource()
 	{
-		if ( _useResourceProp is null )
+		if ( !_useResourceProp.IsValid() )
 			return false;
 
 		if ( _useResourceProp.IsMultipleDifferentValues )
@@ -76,7 +76,7 @@ public sealed class FMODEventRefControlWidget : ControlWidget
 
 	private void SwitchMode( bool useResource )
 	{
-		if ( _useResourceProp is null )
+		if ( !_useResourceProp.IsValid() )
 			return;
 
 		_useResourceProp.Parent?.NoteStartEdit( _useResourceProp );
@@ -87,10 +87,10 @@ public sealed class FMODEventRefControlWidget : ControlWidget
 		if ( !useResource && _resourceProp?.IsMultipleDifferentValues != true )
 		{
 			var raw = SerializedProperty.GetValue( string.Empty ) ?? string.Empty;
-			if ( string.IsNullOrWhiteSpace( raw ) && _resourceProp is not null )
+			if ( string.IsNullOrWhiteSpace( raw ) && _resourceProp.IsValid() )
 			{
 				var r = _resourceProp.GetValue<FMODEventResource>( null );
-				if ( r is not null && !string.IsNullOrWhiteSpace( r.EventPath ) )
+				if ( r.IsValid() && !string.IsNullOrWhiteSpace( r.EventPath ) )
 				{
 					SerializedProperty.Parent?.NoteStartEdit( SerializedProperty );
 					SerializedProperty.SetValue( r.EventPath );
@@ -118,13 +118,13 @@ public sealed class FMODEventRefControlWidget : ControlWidget
 
 		if ( usingRes )
 		{
-			if ( _resourceProp is null )
+			if ( !_resourceProp.IsValid() )
 			{
 				_body.Add( new Label( "Missing EventResource property" ) { Color = Theme.Red } );
 				return;
 			}
 
-			_body.Add( ControlWidget.Create( _resourceProp ) );
+			_body.Add( Create( _resourceProp ) );
 			return;
 		}
 

@@ -44,7 +44,7 @@ public partial class FMODManagerSystem
 					continue;
 
 				var result = bank.getEventList( out var eventDescriptions );
-				if ( result != FMOD.RESULT.OK || eventDescriptions == null )
+				if ( result != FMOD.RESULT.OK || eventDescriptions is null )
 					continue;
 
 				foreach ( var desc in eventDescriptions )

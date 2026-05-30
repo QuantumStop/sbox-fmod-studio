@@ -8,7 +8,7 @@ public sealed class FmodActionGraphNodes
 	[Icon( "tune" )]
 	private static void SetParameterFloat( StudioSoundPoint sound, string parameter, float value )
 	{
-		if ( sound == null || !sound.Instance.isValid() )
+		if ( !sound.IsValid() || !sound.Instance.isValid() )
 			return;
 
 		sound.Instance.setParameterByName( parameter, value );
@@ -20,7 +20,7 @@ public sealed class FmodActionGraphNodes
 	[Icon( "tune" )]
 	private static FMODEventResource PlayFMODEvent( StudioSoundPoint sound, [ActionGraphProperty] FMODEventResource resource )
 	{
-		if ( sound == null || resource == null )
+		if ( !sound.IsValid() || !resource.IsValid() )
 			return null;
 
 		sound.Event = resource;

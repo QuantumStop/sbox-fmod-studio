@@ -20,6 +20,11 @@ namespace FMOD
 			return new GUID( new Guid( s ) );
 		}
 
+		public static GUID Null()
+		{
+			return new GUID() { Data1 = 0, Data2 = 0, Data3 = 0, Data4 = 0 };
+		}
+
 		public readonly bool IsNull => Data1 == 0
 					&& Data2 == 0
 					&& Data3 == 0

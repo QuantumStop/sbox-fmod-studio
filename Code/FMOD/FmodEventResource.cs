@@ -128,7 +128,7 @@ public sealed class FMODEventResource : GameResource
 
 		var icon = TryLoadIcon( large: useLarge );
 
-		if ( icon != null )
+		if ( icon.IsValid() )
 		{
 			var target = MathF.Min( width, height );
 

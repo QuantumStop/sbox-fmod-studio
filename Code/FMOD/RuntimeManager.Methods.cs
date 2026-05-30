@@ -168,6 +168,15 @@ public partial class FMODManagerSystem
 		return instance;    // generally not a good idea to get the instance if its released buuuuut...
 	}
 
+	public static EventInstance PlayCreated( EventInstance instance, Vector3 position = new Vector3(), bool release = true )
+	{
+		instance.set3DAttributes( RuntimeUtils.To3DAttributes( position ) );
+		instance.start();
+		if ( release ) instance.release();
+
+		return instance;    // generally not a good idea to get the instance if its released buuuuut...
+	}
+
 	public static EventInstance PlayProgrammerOnce( string path, string key, EVENT_CALLBACK callback, Vector3 position = new Vector3(), bool release = true )
 	{
 		try
@@ -308,8 +317,7 @@ public partial class FMODManagerSystem
 	{
 		try
 		{
-			PlayOnObject( eventReference.Guid, gameObject, out var eventInstance, release );
-			return eventInstance;
+			return PlayOnObject( eventReference.Guid, gameObject, release );
 		}
 		catch ( EventNotFoundException )
 		{
@@ -321,8 +329,7 @@ public partial class FMODManagerSystem
 	{
 		try
 		{
-			PlayOnObject( PathToGUID( path.Trim() ), gameObject, out var instance, release );
-			return instance;
+			return PlayOnObject( PathToGUID( path.Trim() ), gameObject, release );
 		}
 		catch ( EventNotFoundException )
 		{
@@ -334,8 +341,7 @@ public partial class FMODManagerSystem
 	{
 		try
 		{
-			PlayProgrammerOnObject( PathToGUID( path.Trim() ), key, gameObject, callback, out var instance, release );
-			return instance;
+			return PlayProgrammerOnObject( PathToGUID( path.Trim() ), key, gameObject, callback, release );
 		}
 		catch ( EventNotFoundException )
 		{
@@ -343,7 +349,7 @@ public partial class FMODManagerSystem
 		}
 	}
 
-	public static void PlayOnObject( GUID guid, GameObject gameObject, out EventInstance eventInstance, bool release = true )
+	public static EventInstance PlayOnObject( GUID guid, GameObject gameObject, bool release = true )
 	{
 		if ( CreateInstanceWithinMaxDistance( guid, gameObject.WorldTransform.Position, out EventInstance instance ) )
 		{
@@ -356,10 +362,26 @@ public partial class FMODManagerSystem
 			if ( release ) instance.release();
 		}
 
-		eventInstance = instance;
+		return instance;
 	}
 
-	public static void PlayProgrammerOnObject( GUID guid, string key, GameObject gameObject, EVENT_CALLBACK callback, out EventInstance eventInstance, bool release = true )
+
+	public static EventInstance PlayOnObject( EventInstance instance, GameObject gameObject, bool release = true )
+	{
+		// not checking for max distance, because we already created the instance
+
+		if ( gameObject.Components.TryGet<Rigidbody>( out var rigid ) )
+			AttachInstanceToGameObject( instance, gameObject, rigid );
+		else
+			AttachInstanceToGameObject( instance, gameObject );
+
+		instance.start();
+		if ( release ) instance.release();
+
+		return instance;
+	}
+
+	public static EventInstance PlayProgrammerOnObject( GUID guid, string key, GameObject gameObject, EVENT_CALLBACK callback, bool release = true )
 	{
 		if ( CreateInstanceWithinMaxDistance( guid, gameObject.WorldTransform.Position, out EventInstance instance ) )
 		{
@@ -376,7 +398,7 @@ public partial class FMODManagerSystem
 			if ( release ) instance.release();
 		}
 
-		eventInstance = instance;
+		return instance;
 	}
 
 	public static bool CreateInstanceWithinMaxDistance( GUID guid, Vector3 position, out EventInstance instance )
@@ -414,7 +436,7 @@ public partial class FMODManagerSystem
 	{
 		AttachedInstance attachedInstance = Current._attachedInstances.Find( x => x.Instance.handle == instance.handle );
 
-		if ( attachedInstance == null )
+		if ( attachedInstance is null )
 		{
 			attachedInstance = new AttachedInstance();
 			Current._attachedInstances.Add( attachedInstance );
@@ -431,7 +453,7 @@ public partial class FMODManagerSystem
 	{
 		AttachedInstance attachedInstance = Current._attachedInstances.Find( x => x.Instance.handle == instance.handle );
 
-		if ( attachedInstance == null )
+		if ( attachedInstance is null )
 		{
 			attachedInstance = new AttachedInstance();
 			Current._attachedInstances.Add( attachedInstance );

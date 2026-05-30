@@ -102,7 +102,7 @@ public static class FMODEditorEventCache
 		{
 			if ( !bank.isValid() ) continue;
 
-			if ( bank.getEventList( out var eventDescriptions ) != RESULT.OK || eventDescriptions == null )
+			if ( bank.getEventList( out var eventDescriptions ) != RESULT.OK || eventDescriptions is null )
 				continue;
 
 			foreach ( var desc in eventDescriptions )

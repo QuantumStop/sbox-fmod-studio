@@ -7,14 +7,20 @@ public partial class StudioListener : Component
 	[Property] public bool NonRigidbodyVelocity { get; set; } = false;
 	[Property] public GameObject AttenuationObject { get; set; }
 	private Vector3 _lastFramePosition = Vector3.Zero;
-	private Rigidbody _rigidBody;
+	[Property] private Rigidbody _rigidBody { get; set; }
 	public int ListenerNumber => FMODManagerSystem.Current.Listeners.IndexOf( this );
+
+	/// <summary>
+	/// Use this to manually set the rigidbody through code, sort of private getter public setter situation
+	/// </summary>
+	/// <param name="body"></param>
+	public void SetRigidbody( Rigidbody body ) => _rigidBody = body;
 
 	protected override void OnEnabled()
 	{
 		RuntimeUtils.EnforceLibraryOrder();
 
-		_rigidBody = GameObject.Components.Get<Rigidbody>( FindMode.EnabledInSelfAndChildren );
+		_rigidBody ??= GameObject.Components.Get<Rigidbody>( FindMode.EnabledInSelfAndChildren );
 
 		if ( NonRigidbodyVelocity && _rigidBody.IsValid() )
 		{

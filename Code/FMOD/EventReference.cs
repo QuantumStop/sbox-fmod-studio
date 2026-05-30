@@ -20,7 +20,7 @@ public struct EventReference
 
 	public static EventReference Find( string path )
 	{
-		if ( GuidLookupDelegate == null )
+		if ( GuidLookupDelegate is null )
 		{
 			throw new InvalidOperationException( "EventReference.Find called before EventManager was initialized" );
 		}

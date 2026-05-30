@@ -93,7 +93,7 @@ public static class FMODEventThumbnailRenderer
 
 	private static void DrawParameterIcons( Bitmap bitmap, float w, float h, bool hasFloat, bool hasLabeled )
 	{
-		if ( bitmap is null )
+		if ( !bitmap.IsValid() )
 			return;
 
 		var size = MathX.Clamp( MathF.Min( w, h ) * 0.085f, 12f, 18f );

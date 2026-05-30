@@ -26,10 +26,10 @@ public static class FMODAssetBrowserIntegration
 		var browser = MainAssetBrowser.Instance?.Local;
 
 		// Browser closed or replaced.
-		if ( browser == null || _trackedBrowser != null && _trackedBrowser != browser )
+		if ( !browser.IsValid() || !_trackedBrowser.IsValid() && _trackedBrowser != browser )
 		{
 			Reset();
-			if ( browser == null )
+			if ( !browser.IsValid() )
 				return;
 		}
 
@@ -49,7 +49,7 @@ public static class FMODAssetBrowserIntegration
 
 		var root = FMODEventResourceGenerator.GetGeneratedEventsRoot();
 		var location = new FMODProjectLocation( root );
-		
+
 		// Add a spacer so it doesn't stick to the bottom of another group.
 		locations.AddItem( new TreeNode.Spacer( 10 ) );
 		var node = new FMODProjectNode( location );

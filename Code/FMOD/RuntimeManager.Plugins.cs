@@ -19,7 +19,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 	{
 		List<string> pluginNames = Plugins;
 
-		if ( pluginNames == null )
+		if ( pluginNames is null )
 			return;
 
 		foreach ( string pluginName in pluginNames )

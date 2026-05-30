@@ -47,13 +47,15 @@ public sealed class FMODEventResourcePicker : AssetPicker
 			| DockManager.DockProperty.DisallowUserDocking
 			| DockManager.DockProperty.DisableDraggableTab;
 
-		LocalBrowser = new( _dock, AssetType is null ? null : [AssetType] );
-		LocalBrowser.WindowTitle = "Asset Browser";
-		LocalBrowser.SetWindowIcon( "folder" );
-		LocalBrowser.MultiSelect = Options.EnableMultiselect;
+		LocalBrowser = new( _dock, AssetType is null ? null : [AssetType] )
+		{
+			WindowTitle = "Asset Browser",
+			MultiSelect = Options.EnableMultiselect,
+			ViewModeType = AssetListViewMode.MediumIcons,
+			ShowRecursiveFiles = true
+		};
 
-		LocalBrowser.ViewModeType = AssetListViewMode.MediumIcons;
-		LocalBrowser.ShowRecursiveFiles = true;
+		LocalBrowser.SetWindowIcon( "folder" );
 
 		LocalBrowser.OnAssetHighlight += Highlight;
 		LocalBrowser.OnAssetsHighlight += Highlight;
@@ -64,11 +66,15 @@ public sealed class FMODEventResourcePicker : AssetPicker
 
 		if ( Options.EnableCloud )
 		{
-			CloudBrowser = new CloudAssetBrowser( _dock, AssetType is null ? null : [AssetType] );
-			CloudBrowser.WindowTitle = "Cloud Browser";
+			CloudBrowser = new CloudAssetBrowser( _dock, AssetType is null ? null : [AssetType] )
+			{
+				WindowTitle = "Cloud Browser",
+				MultiSelect = Options.EnableMultiselect,
+				OnPackageSelected = _ => Select(),
+			};
+
 			CloudBrowser.SetWindowIcon( "cloud_download" );
-			CloudBrowser.MultiSelect = Options.EnableMultiselect;
-			CloudBrowser.OnPackageSelected = _ => Select();
+
 			_dock.AddDock( null, CloudBrowser, DockArea.Inside, properties );
 		}
 
@@ -100,7 +106,7 @@ public sealed class FMODEventResourcePicker : AssetPicker
 
 			var locations = AssetLocationsField?.GetValue( LocalBrowser ) is AssetLocations loc ? loc : null;
 
-			if ( locations is null )
+			if ( !locations.IsValid() )
 				return;
 
 			// Hide the standard project/library roots for this picker (we only want the FMOD stuff)
@@ -159,7 +165,7 @@ public sealed class FMODEventResourcePicker : AssetPicker
 			return;
 		}
 
-		if ( CloudBrowser is not null && CloudBrowser.Visible )
+		if ( CloudBrowser.IsValid() && CloudBrowser.Visible )
 		{
 			var pkg = CloudBrowser.GetSelected<PackageEntry>().FirstOrDefault()?.Package;
 			if ( pkg is not null )
@@ -179,10 +185,10 @@ public sealed class FMODEventResourcePicker : AssetPicker
 
 		_highlighted = [asset];
 		_confirm.Enabled = true;
-		
+
 		try { OnAssetHighlighted?.Invoke( _highlighted ); }
 		catch ( NullReferenceException ) { }
-		
+
 		BindSystem.Flush();
 		EditorUtility.PlayAssetSound( asset );
 	}
@@ -202,7 +208,7 @@ public sealed class FMODEventResourcePicker : AssetPicker
 
 		BindSystem.Flush();
 	}
-	
+
 	protected override void OnKeyPress( KeyEvent e )
 	{
 		base.OnKeyPress( e );

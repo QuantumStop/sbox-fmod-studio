@@ -141,7 +141,7 @@ public sealed class FMODEventDropdown : ControlWidget
 			RebuildList();
 		} );
 		_listCanvas.Layout.AddSpacingCell( 4 );
-		if ( _events == null || _events.Count == 0 )
+		if ( _events is null || _events.Count == 0 )
 		{
 			var hint = FMODManagerSystem.IsInitialized
 				? "No events found in loaded banks"
@@ -154,7 +154,7 @@ public sealed class FMODEventDropdown : ControlWidget
 		var query = (_searchText ?? string.Empty).Trim();
 		var filtered = string.IsNullOrEmpty( query )
 			? _events
-			: [.. _events.Where( e => e.Contains( query, StringComparison.OrdinalIgnoreCase ) ) ];
+			: [.. _events.Where( e => e.Contains( query, StringComparison.OrdinalIgnoreCase ) )];
 
 		foreach ( var ev in filtered )
 		{
