@@ -77,7 +77,7 @@ public static class FMODAssetTypeTweaks
 				var any = false;
 				if ( AssetBrowser.Get() is { } focused )
 				{
-					focused.UpdateAssetList();
+					//	focused.UpdateAssetList();
 					any = true;
 				}
 

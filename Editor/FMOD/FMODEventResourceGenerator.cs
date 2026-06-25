@@ -463,8 +463,8 @@ public static class FMODEventResourceGenerator
 				{
 					["Name"] = (string)p.name,
 					["Type"] = p.type.ToString(),
-					["Min"] = MathX.MeterToInch( p.minimum ),
-					["Max"] = MathX.MeterToInch( p.maximum ),
+					["Min"] = p.minimum,
+					["Max"] = p.maximum,
 					["Default"] = p.defaultvalue,
 					["IsGlobal"] = flags.HasFlag( PARAMETER_FLAGS.GLOBAL ),
 					["IsReadOnly"] = flags.HasFlag( PARAMETER_FLAGS.READONLY ),

@@ -19,7 +19,7 @@ static public partial class FMODSound
 	/// <param name="guid">GUID of the event</param>
 	/// <param name="release">Should the instance be released?</param>
 	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
-	static public EventInstance Play( GUID guid, bool release = true ) => FMODManagerSystem.PlayOnce( guid, Vector3.Zero, release );
+	static public EventInstance Play( GUID guid, bool release = true ) => FMODManagerSystem.Play( guid, Vector3.Zero, release );
 
 	/// <summary>
 	/// Play an FMOD sound the easy way. 
@@ -28,7 +28,7 @@ static public partial class FMODSound
 	/// <param name="pos">Static position of the event</param>
 	/// <param name="release">Should the instance be released?</param>
 	/// <returns>The EventInstance, which shouldnt be used if the sound was released</returns>
-	static public EventInstance Play( GUID guid, Vector3 pos, bool release = true ) => FMODManagerSystem.PlayOnce( guid, pos, release );
+	static public EventInstance Play( GUID guid, Vector3 pos, bool release = true ) => FMODManagerSystem.Play( guid, pos, release );
 
 	/// <summary>
 	/// Play the sound and attach it to the game object (or the rigidbody)
