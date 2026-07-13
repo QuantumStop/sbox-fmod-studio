@@ -2,10 +2,7 @@ namespace FMODSbox;
 
 public partial class FMODManagerSystem
 {
-	public static void LoadBank( string bankName, bool loadSamples = false )
-	{
-		LoadBank( bankName, loadSamples, bankName );
-	}
+	public static void LoadBank( string bankName, bool loadSamples = false ) => LoadBank( bankName, loadSamples, bankName );
 
 	private static void LoadBank( string bankName, bool loadSamples, string bankId )
 	{
@@ -18,7 +15,7 @@ public partial class FMODManagerSystem
 			const string BankExtension = ".bank";
 
 			string bankPath;
-			string assetsFolder = Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" );
+			string assetsFolder = GetBankFolderLocation();
 
 			if ( System.IO.Path.GetExtension( bankName ) != BankExtension )
 			{
@@ -56,10 +53,7 @@ public partial class FMODManagerSystem
 		}
 	}
 	*/
-	public static bool HasBankLoaded( string loadedBank )
-	{
-		return Current._loadedBanks.ContainsKey( loadedBank );
-	}
+	public static bool HasBankLoaded( string loadedBank ) => Current._loadedBanks.ContainsKey( loadedBank );
 
 	private static void ReferenceLoadedBank( string bankName, bool loadSamples )
 	{
@@ -159,13 +153,11 @@ public partial class FMODManagerSystem
 	}
 	private IEnumerable<string> WhichBanksToLoad( Settings fmodSettings )
 	{
-		var path = Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" );
-
 		switch ( fmodSettings.BankLoadType )
 		{
 			case BankLoadType.All:
 
-				var AllBanks = System.IO.Directory.GetFiles( path, "*.bank" ).Select( file => System.IO.Path.GetFileName( file ) ).ToArray();
+				var AllBanks = System.IO.Directory.GetFiles( GetBankFolderLocation(), "*.bank" ).Select( file => System.IO.Path.GetFileName( file ) ).ToArray();
 
 				foreach ( var bank in AllBanks )
 				{
@@ -191,8 +183,5 @@ public partial class FMODManagerSystem
 		}
 	}
 
-	public static void WaitForAllSampleLoading()
-	{
-		Current.studioSystem.flushSampleLoading();
-	}
+	public static void WaitForAllSampleLoading() => Current.studioSystem.flushSampleLoading();
 }

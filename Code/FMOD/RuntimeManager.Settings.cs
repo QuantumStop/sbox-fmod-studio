@@ -50,7 +50,6 @@ public partial class FMODManagerSystem
 		[Property, ReadOnly] public string BankFolder { get; init; }
 		[Property, ReadOnly] public bool StopEventsOutsideMaxDistance { get; init; }
 		[Property, ReadOnly] public ImportType ImportType { get; init; }
-		public string BankFolderLocation { get => Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" ); }
 
 		public Settings()
 		{
