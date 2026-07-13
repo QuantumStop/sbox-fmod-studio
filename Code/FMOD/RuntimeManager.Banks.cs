@@ -18,7 +18,7 @@ public partial class FMODManagerSystem
 			const string BankExtension = ".bank";
 
 			string bankPath;
-			string assetsFolder = Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{_fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{_fmodSettings.BankFolder}" );
+			string assetsFolder = Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{fmodSettings.BankFolder}" );
 
 			if ( System.IO.Path.GetExtension( bankName ) != BankExtension )
 			{
