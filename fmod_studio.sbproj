@@ -27,7 +27,7 @@
     "LaunchMode": "Normal",
     "Compiler": {
       "RootNamespace": "Sandbox",
-      "DefineConstants": "SANDBOX;ADDON;DEBUG",
+      "DefineConstants": "SANDBOX;ADDON;DEBUG;STEAMAUDIO",
       "NoWarn": "1701;1702;1591;",
       "WarningsAsErrors": "",
       "TreatWarningsAsErrors": false,
