@@ -26,7 +26,7 @@ public enum EventLinkage
 
 public partial class FMODManagerSystem
 {
-	private static Settings fmodSettings => new();
+	private static Settings _fmodSettings => new();
 
 	/// <summary>
 	/// This is where we store settings for all the shit, and since there is no platform choice we can just hardcode it. 
@@ -50,6 +50,7 @@ public partial class FMODManagerSystem
 		[Property, ReadOnly] public string BankFolder { get; init; }
 		[Property, ReadOnly] public bool StopEventsOutsideMaxDistance { get; init; }
 		[Property, ReadOnly] public ImportType ImportType { get; init; }
+		public static string BankFolderLocation => Game.IsEditor ? $"{Project.Current.GetAssetsPath()}\\{_fmodSettings.BankFolder}" : System.IO.Path.GetFullPath( $"Assets\\{_fmodSettings.BankFolder}" );
 
 		public Settings()
 		{

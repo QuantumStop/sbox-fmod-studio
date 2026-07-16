@@ -120,7 +120,8 @@ public partial class FMODManagerSystem
 	{
 		if ( StudioSystem.getBus( "bus:/", out Bus masterBus ) == RESULT.OK )
 		{
-			Current._unreleasedInstances.Clear(); // clear the list
+			Current.UnreleasedInstances.Clear(); // clear the list of unreleased because they will be released
+			Current.AllInstancesEver.Clear();  // clear the list of all instances too, guess why
 			masterBus.stopAllEvents( allowfadeout ? STOP_MODE.ALLOWFADEOUT : STOP_MODE.IMMEDIATE );
 		}
 	}
@@ -145,8 +146,17 @@ public partial class FMODManagerSystem
 
 	public static void ReleaseEvent( EventInstance eventInstance )
 	{
-		Current._unreleasedInstances.Remove( eventInstance ); // stop tracking the event in the list
-		eventInstance.release();
+		Current.UnreleasedInstances.Remove( eventInstance ); // stop tracking the event in the list
+
+		// we never played this instance, it was only created and was waiting to be played (or something), remove it
+		// very rare but can happen
+		if ( eventInstance.isValid() )
+		{
+			eventInstance.getPlaybackState( out var playbackThis );
+			if ( playbackThis == PLAYBACK_STATE.STOPPED ) Current.AllInstancesEver.RemoveAt( Current.AllInstancesEver.FindIndex( p => p.Instance.handle == eventInstance.handle ) );
+		}
+
+		eventInstance.release(); // actually release it
 	}
 
 	/// <summary>
@@ -155,11 +165,11 @@ public partial class FMODManagerSystem
 	/// <param name="path">Path string of the event</param>
 	/// <param name="position">WorldPosition of the event</param>
 	/// <param name="release">Should the instance be released or we do that ourselves</param>
-	public static EventInstance PlayOnce( string path, Vector3 position = default, bool release = true )
+	public static EventInstance Play( string path, Vector3 position = default, bool release = true )
 	{
 		try
 		{
-			return PlayOnce( PathToGUID( path.Trim() ), position, release );
+			return Play( PathToGUID( path.Trim() ), position, release );
 		}
 		catch ( EventNotFoundException )
 		{
@@ -168,19 +178,22 @@ public partial class FMODManagerSystem
 	}
 
 	/// <summary>
-	/// PlayOnObject a sound which is immediately released, making it innacessible (oneshot sound)
+	/// Play a sound
 	/// </summary>
 	/// <param name="guid">GUID of the event</param>
 	/// <param name="position">WorldPosition of the event</param>
 	/// <param name="release">Should the instance be released or we do that ourselves</param>
-	public static EventInstance PlayOnce( GUID guid, Vector3 position = new Vector3(), bool release = true )
+	public static EventInstance Play( GUID guid, Vector3 position = new Vector3(), bool release = true )
 	{
 		var instance = CreateInstance( guid );
 
 		instance.set3DAttributes( RuntimeUtils.To3DAttributes( position ) );
 		instance.start();
-		if ( release ) instance.release();
-		else Current._unreleasedInstances.Add( instance ); // add to list of unreleased instances to remove later
+
+		var hist = FindInstanceHistory( instance );
+		hist.EverStarted = true;
+
+		if ( release ) ReleaseEvent( instance );
 
 		return instance;    // generally not a good idea to get the instance if its released buuuuut...
 	}
@@ -189,8 +202,11 @@ public partial class FMODManagerSystem
 	{
 		instance.set3DAttributes( RuntimeUtils.To3DAttributes( position ) );
 		instance.start();
-		if ( release ) instance.release();
-		else Current._unreleasedInstances.Add( instance ); // add to list of unreleased instances to remove later
+
+		var hist = FindInstanceHistory( instance );
+		hist.EverStarted = true;
+
+		if ( release ) ReleaseEvent( instance );
 
 		return instance;    // generally not a good idea to get the instance if its released buuuuut...
 	}
@@ -227,8 +243,11 @@ public partial class FMODManagerSystem
 
 		instance.set3DAttributes( RuntimeUtils.To3DAttributes( position ) );
 		instance.start();
-		if ( release ) instance.release();
-		else Current._unreleasedInstances.Add( instance ); // add to list of unreleased instances to remove later
+
+		var hist = FindInstanceHistory( instance );
+		hist.EverStarted = true;
+
+		if ( release ) ReleaseEvent( instance );
 
 		return instance;    // generally not a good idea to get the instance if its released buuuuut...
 	}
@@ -280,6 +299,9 @@ public partial class FMODManagerSystem
 	{
 		EventDescription eventDesc = GetEventDescription( guid );
 		eventDesc.createInstance( out EventInstance newInstance );
+
+		Current.AllInstancesEver.Add( new( newInstance ) ); // add the event to the list of all instances
+		Current.UnreleasedInstances.Add( newInstance ); // add the event to the list of unreleased instances, even if it's immediately released, this is easier than to add it later
 
 		return newInstance;
 	}
@@ -379,7 +401,7 @@ public partial class FMODManagerSystem
 
 			instance.start();
 			if ( release ) instance.release();
-			else Current._unreleasedInstances.Add( instance ); // add to list of unreleased instances to remove later
+			else Current.UnreleasedInstances.Add( instance ); // add to list of unreleased instances to remove later
 		}
 
 		return instance;
@@ -397,7 +419,7 @@ public partial class FMODManagerSystem
 
 		instance.start();
 		if ( release ) instance.release();
-		else Current._unreleasedInstances.Add( instance ); // add to list of unreleased instances to remove later
+		else Current.UnreleasedInstances.Add( instance ); // add to list of unreleased instances to remove later
 
 		return instance;
 	}
@@ -417,7 +439,7 @@ public partial class FMODManagerSystem
 			instance.setCallback( callback );
 			instance.start();
 			if ( release ) instance.release();
-			else Current._unreleasedInstances.Add( instance ); // add to list of unreleased instances to remove later
+			else Current.UnreleasedInstances.Add( instance ); // add to list of unreleased instances to remove later
 		}
 
 		return instance;
@@ -426,7 +448,7 @@ public partial class FMODManagerSystem
 	public static bool CreateInstanceWithinMaxDistance( GUID guid, Vector3 position, out EventInstance instance )
 	{
 		EventDescription description = GetEventDescription( guid );
-		if ( fmodSettings.StopEventsOutsideMaxDistance )
+		if ( _fmodSettings.StopEventsOutsideMaxDistance )
 		{
 			description.is3D( out bool is3D );
 			if ( is3D )

@@ -34,7 +34,26 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 
 	[Property, JsonIgnore, ReadOnly] private readonly List<AttachedInstance> _attachedInstances = new( 128 );
 
-	[Property, ReadOnly] private List<FMOD.Studio.EventInstance> _unreleasedInstances { get; set; } = [];
+	/// <summary>
+	/// Unreleased instances only, so calling to stop all instances also releases the ones unreleased
+	/// </summary>
+	[Property, ReadOnly] public List<FMOD.Studio.EventInstance> UnreleasedInstances { get; private set; } = [];
+	/// <summary>
+	/// Literally all of instances. It's useful to have, believe me. Very useful for a save system, or to know how many sounds there are ever or something.
+	/// </summary>
+	[Property, ReadOnly] public List<InstanceHistory> AllInstancesEver { get; private set; } = [];
+
+	/// <summary>
+	/// For tracking whether this instance was ever played, so we don't remove the "just created but not yet played" instances
+	/// Kinda stupid but whatever
+	/// </summary>
+	public struct InstanceHistory( FMOD.Studio.EventInstance instance )
+	{
+		public FMOD.Studio.EventInstance Instance { get; set; } = instance;
+		public bool EverStarted { get; set; } = false;
+	}
+
+	public static InstanceHistory FindInstanceHistory( FMOD.Studio.EventInstance instance ) => Current.AllInstancesEver.Find( p => p.Instance.handle == instance.handle );
 
 	private class AttachedInstance
 	{
@@ -106,18 +125,12 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 		RESULT result = RESULT.OK;
 		RESULT initResult = RESULT.OK;
 
-		int sampleRate = fmodSettings.SampleRate;
-		int realChannels = fmodSettings.RealChannels;
-		int virtualChannels = fmodSettings.VirtualChannels;
-		uint dspBufferLength = fmodSettings.DSPBufferLength;
-		int dspBufferCount = fmodSettings.DSPBufferCount;
-		SPEAKERMODE speakerMode = fmodSettings.SpeakerMode;
-		OUTPUTTYPE outputType = fmodSettings.OutputType;
+		OUTPUTTYPE outputType = _fmodSettings.OutputType;
 		ADVANCEDSETTINGS advancedSettings = new();
 
 		FMOD.Studio.INITFLAGS studioInitFlags = FMOD.Studio.INITFLAGS.NORMAL | FMOD.Studio.INITFLAGS.ALLOW_MISSING_PLUGINS | FMOD.Studio.INITFLAGS.LIVEUPDATE;
 
-		advancedSettings.profilePort = fmodSettings.ProfilerPort; // the port it expects
+		advancedSettings.profilePort = _fmodSettings.ProfilerPort; // the port it expects
 
 		retry:
 
@@ -130,19 +143,19 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 		result = coreSystem.setOutput( outputType );
 		CheckInitResult( result, "FMOD.System.setOutput" );
 
-		result = coreSystem.setSoftwareChannels( realChannels );
+		result = coreSystem.setSoftwareChannels( _fmodSettings.RealChannels );
 		CheckInitResult( result, "FMOD.System.setSoftwareChannels" );
 
-		result = coreSystem.setSoftwareFormat( sampleRate, speakerMode, 0 );
+		result = coreSystem.setSoftwareFormat( _fmodSettings.SampleRate, _fmodSettings.SpeakerMode, 0 );
 		CheckInitResult( result, "FMOD.System.setSoftwareFormat" );
 
 		// this is fucked, it doesnt affect the attenuation?
 		result = coreSystem.set3DSettings( 1, 1, 1 );
 		CheckInitResult( result, "FMOD.System.set3DSettings" );
 
-		if ( dspBufferLength > 0 && dspBufferCount > 0 )
+		if ( _fmodSettings.DSPBufferLength > 0 && _fmodSettings.DSPBufferCount > 0 )
 		{
-			result = coreSystem.setDSPBufferSize( dspBufferLength, dspBufferCount );
+			result = coreSystem.setDSPBufferSize( _fmodSettings.DSPBufferLength, _fmodSettings.DSPBufferCount );
 			CheckInitResult( result, "FMOD.System.setDSPBufferSize" );
 		}
 
@@ -155,13 +168,13 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 #endif
 
 		// Source 2 is X+ Forward, Y+ Left, Z+ Up = Righthanded, FMOD is lefthanded Y-Up
-		FMOD.INITFLAGS coreInitFlags = FMOD.INITFLAGS.NORMAL | FMOD.INITFLAGS._3D_RIGHTHANDED;
+		INITFLAGS coreInitFlags = FMOD.INITFLAGS.NORMAL | FMOD.INITFLAGS._3D_RIGHTHANDED;
 
-		result = studioSystem.initialize( virtualChannels, studioInitFlags, coreInitFlags, IntPtr.Zero );
+		result = studioSystem.initialize( _fmodSettings.VirtualChannels, studioInitFlags, coreInitFlags, IntPtr.Zero );
 		if ( result != FMOD.RESULT.OK && initResult == FMOD.RESULT.OK )
 		{
 			initResult = result; // Save this to throw at the end (we'll attempt NO SOUND to shield ourselves from unexpected device failures)
-			outputType = FMOD.OUTPUTTYPE.NOSOUND;
+			outputType = OUTPUTTYPE.NOSOUND;
 			Log.Warning( "[FMOD] Studio::System::initialize returned {0}, defaulting to no-sound mode." );
 
 			goto retry;
@@ -189,7 +202,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 
 
 		LoadPlugins( coreSystem, CheckInitResult );
-		LoadBanks( fmodSettings );
+		LoadBanks( _fmodSettings );
 
 		return initResult;
 	}
@@ -199,41 +212,52 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 		using var _ = PerformanceStats.Timings.Audio.Scope();
 		if ( studioSystem.isValid() )
 		{
-			foreach ( var attached in _attachedInstances.ToList() ) // could be bad
+			for ( int i = 0; i < _attachedInstances.Count; i++ )
 			{
 				FMOD.Studio.PLAYBACK_STATE playbackState = FMOD.Studio.PLAYBACK_STATE.STOPPED;
-				if ( attached.Instance.isValid() )
-				{
-					attached.Instance.getPlaybackState( out playbackState );
-				}
+				if ( _attachedInstances[i].Instance.isValid() ) _attachedInstances[i].Instance.getPlaybackState( out playbackState );
 
 				if ( playbackState == FMOD.Studio.PLAYBACK_STATE.STOPPED )
 				{
-					_attachedInstances.Remove( attached );
+					_attachedInstances.Remove( _attachedInstances[i] );
 					continue;
 				}
 
-				if ( attached.RigidBody.IsValid() )
+				if ( _attachedInstances[i].RigidBody.IsValid() )
 				{
-					attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.Transform, attached.RigidBody.Velocity ) );
+					_attachedInstances[i].Instance.set3DAttributes( RuntimeUtils.To3DAttributes( _attachedInstances[i].Transform, _attachedInstances[i].RigidBody.Velocity ) );
 				}
 				else
 				{
-					if ( attached.AttachedGameObject.IsValid() )
-						attached.Transform = attached.AttachedGameObject.WorldTransform;
+					if ( _attachedInstances[i].AttachedGameObject.IsValid() )
+						_attachedInstances[i].Transform = _attachedInstances[i].AttachedGameObject.WorldTransform;
 
-					var position = attached.Transform.Position;
+					var position = _attachedInstances[i].Transform.Position;
 					var velocity = Vector3.Zero;
 
 					if ( Time.Delta != 0 )
 					{
-						velocity = (position - attached.LastFramePosition) / Time.Delta;
+						velocity = (position - _attachedInstances[i].LastFramePosition) / Time.Delta;
 						velocity = velocity.Clamp( velocity, 512f ); // Stops pitch fluttering when moving too quickly
 					}
 
 
-					attached.LastFramePosition = position;
-					attached.Instance.set3DAttributes( RuntimeUtils.To3DAttributes( attached.Transform, velocity ) );
+					_attachedInstances[i].LastFramePosition = position;
+					_attachedInstances[i].Instance.set3DAttributes( RuntimeUtils.To3DAttributes( _attachedInstances[i].Transform, velocity ) );
+				}
+
+				for ( int inst = 0; inst < AllInstancesEver.Count; inst++ ) // clean out the instances that are finished
+				{
+					FMOD.Studio.PLAYBACK_STATE playbackAll = FMOD.Studio.PLAYBACK_STATE.STOPPED;
+					bool paused = false;
+					if ( AllInstancesEver[inst].Instance.isValid() )
+					{
+						AllInstancesEver[inst].Instance.getPlaybackState( out playbackAll );
+						AllInstancesEver[inst].Instance.getPaused( out paused );
+					}
+
+					// don't clean the paused instances, because we might be unpausing them later
+					if ( AllInstancesEver[inst].EverStarted && playbackAll == FMOD.Studio.PLAYBACK_STATE.STOPPED && !paused ) AllInstancesEver.Remove( AllInstancesEver[inst] );
 				}
 			}
 #if IGNIS

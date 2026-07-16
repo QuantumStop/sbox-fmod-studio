@@ -5,7 +5,7 @@ namespace FMODSbox;
 
 [Icon( "volume_down" )]
 [Title( "FMOD Sound Point" ), Category( "FMOD" ), Tint( EditorTint.Green )]
-public class StudioSoundPoint : Component
+public class StudioSoundPoint : Component, ISceneLoadingEvents
 {
 	/// <summary>
 	/// EventInstance of this sound point
@@ -41,6 +41,8 @@ public class StudioSoundPoint : Component
 
 				if ( Scene.IsEditor ) return; // don't do this if the game is not playing
 
+				if ( !OverrideVolumeBool ) return;
+
 				if ( ReleaseEvent )
 				{
 					Log.Warning( "To change volume at runtime, event must be not released!" );
@@ -56,7 +58,7 @@ public class StudioSoundPoint : Component
 	/// Do we attach to a GO or we are static on the position of this component's GO?
 	/// </summary>
 	[Property, Title( "Attach to a GameObject" ), Space] public bool AttachToObject { get; set; } = true;
-	[Property, ShowIf( nameof( AttachToObject ), true )] GameObject AttachTarget { get; set; }
+	[Property, ShowIf( nameof( AttachToObject ), true )] public GameObject AttachTarget { get; set; }
 	/// <summary>
 	/// Do we immediately release the event instance, or do we want to hold it for a bit?
 	/// </summary>
@@ -69,8 +71,8 @@ public class StudioSoundPoint : Component
 	/// Label parameters for this event to have when the event starts playing
 	/// </summary>
 	[Property, Feature( "Labels" )] public List<ParamLabel> LabelParameters { get; set; }
-	[Property, FeatureEnabled( "Floats" )] private bool HasFloats { get; set; } = false;
-	[Property, FeatureEnabled( "Labels" )] private bool HasLabels { get; set; } = false;
+	[Property, FeatureEnabled( "Floats" )] private bool _hasFloats { get; set; } = false;
+	[Property, FeatureEnabled( "Labels" )] private bool _hasLabels { get; set; } = false;
 
 	/// <summary>
 	/// Entry point for playing our event, has all the necessary checks to not shit the pants, use this to start the sound from code
@@ -95,7 +97,7 @@ public class StudioSoundPoint : Component
 
 		if ( OverrideVolumeBool ) Instance.setVolume( OverrideVolumeScale );
 
-		if ( HasFloats && FloatParameters.Count > 0 )
+		if ( _hasFloats && FloatParameters.Count > 0 )
 		{
 			foreach ( var floater in FloatParameters )
 			{
@@ -104,7 +106,7 @@ public class StudioSoundPoint : Component
 			}
 		}
 
-		if ( HasLabels && LabelParameters.Count > 0 )
+		if ( _hasLabels && LabelParameters.Count > 0 )
 		{
 			foreach ( var labeler in LabelParameters )
 			{
@@ -114,10 +116,7 @@ public class StudioSoundPoint : Component
 		}
 	}
 
-	/// <summary>
-	/// Compoent was NOT enabled when the scene started, but was enabled some time after, when FMOD system was already initialized
-	/// </summary>
-	protected override void OnEnabled()
+	void ISceneLoadingEvents.AfterLoad( Scene scene )
 	{
 		if ( AutoPlay ) StartSound();
 	}
@@ -136,7 +135,7 @@ public class StudioSoundPoint : Component
 		Gizmo.Draw.Color = Gizmo.IsSelected
 			? Color.Yellow
 			: Gizmo.IsHovered
-				? Color.White.WithAlpha( PulseAlpha() )
+				? Color.White.WithAlpha( 0.7f + MathF.Sin( Time.Now * 20f ) * 0.3f )
 				: Color.White;
 
 		if ( Gizmo.IsSelected || Gizmo.IsHovered )
@@ -144,11 +143,6 @@ public class StudioSoundPoint : Component
 
 		return;
 
-	}
-
-	private static float PulseAlpha()
-	{
-		return 0.7f + MathF.Sin( Time.Now * 20f ) * 0.3f;
 	}
 
 	/// <summary>
