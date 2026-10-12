@@ -1,4 +1,3 @@
-using FMOD;
 using FMOD.Studio;
 
 namespace FMODSbox;

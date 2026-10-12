@@ -1,14 +1,12 @@
 namespace FMODSbox;
 
 using FMOD;
-using Sandbox.ActionGraphs;
 using Sandbox.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 /// <summary>
 /// Main handler for everything FMOD
@@ -87,18 +85,17 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 
 	private void SceneLoaded()
 	{
-		if ( NotDisposed ) return;
-
+		if ( Scene.IsEditor || _notDisposed ) return;
 		RuntimeUtils.EnforceLibraryOrder();
 		Current.Initialize();
 		Current.SpawnListenerOnCamera();
 
-		if ( !Scene.IsEditor ) NotDisposed = true;
+		_notDisposed = true;
 	}
 
 	public override void Dispose()
 	{
-		NotDisposed = false;
+		_notDisposed = false;
 		coreSystem.setCallback( null, 0 );
 		ReleaseStudioSystem();
 		GC.SuppressFinalize( this );
@@ -108,7 +105,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 	/// <summary>
 	/// Because GOS dont dispose on scene switching, SceneLoaded initializes a new FMOD system on top of the one that was supposed to be destroyed, so we check if we need one inited first
 	/// </summary>
-	static private bool NotDisposed { get; set; } = false;
+	static private bool _notDisposed { get; set; } = false;
 
 	public static FMOD.Studio.System StudioSystem => Current.studioSystem;
 
@@ -166,6 +163,9 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 #if DEBUG  // used for memory profiling in studio profiler, use it only in edtior builds                                                                                
 		studioInitFlags |= FMOD.Studio.INITFLAGS.MEMORY_TRACKING;
 #endif
+
+		// set the live update port (even if its the default it expects it set)
+		coreSystem.setAdvancedSettings( ref advancedSettings );
 
 		// Source 2 is X+ Forward, Y+ Left, Z+ Up = Righthanded, FMOD is lefthanded Y-Up
 		INITFLAGS coreInitFlags = FMOD.INITFLAGS.NORMAL | FMOD.INITFLAGS._3D_RIGHTHANDED;

@@ -11,7 +11,7 @@ using FMODSbox;
 [AssetPicker( typeof( FMODEventResource ) )]
 public sealed class FMODEventResourcePicker : AssetPicker
 {
-	private static readonly FieldInfo AssetLocationsField =
+	private static readonly FieldInfo _assetLocationsField =
 		typeof( AssetBrowser ).GetField( "AssetLocations", BindingFlags.Instance | BindingFlags.NonPublic );
 
 	public LocalAssetBrowser LocalBrowser { get; private set; }
@@ -43,9 +43,6 @@ public sealed class FMODEventResourcePicker : AssetPicker
 	private void CreateUI()
 	{
 		_dock = new DockManager( this );
-		var properties = DockManager.DockProperty.HideCloseButton
-			| DockManager.DockProperty.DisallowUserDocking
-			| DockManager.DockProperty.DisableDraggableTab;
 
 		LocalBrowser = new( _dock, AssetType is null ? null : [AssetType] )
 		{
@@ -62,7 +59,7 @@ public sealed class FMODEventResourcePicker : AssetPicker
 		LocalBrowser.OnAssetSelected += _ => Select();
 		LocalBrowser.OnHighlight += _ => _confirm.Enabled = false;
 
-		_dock.AddDock( null, LocalBrowser, DockArea.Inside, properties );
+		//	_dock.AddDock( null, LocalBrowser, DockArea.Inside, properties );
 
 		if ( Options.EnableCloud )
 		{
@@ -75,7 +72,7 @@ public sealed class FMODEventResourcePicker : AssetPicker
 
 			CloudBrowser.SetWindowIcon( "cloud_download" );
 
-			_dock.AddDock( null, CloudBrowser, DockArea.Inside, properties );
+			//	_dock.AddDock( null, CloudBrowser, DockArea.Inside, properties );
 		}
 
 		Layout.Add( _dock, 1 );
@@ -104,7 +101,7 @@ public sealed class FMODEventResourcePicker : AssetPicker
 			// Ensure generated assets exist so the node has something to browse.
 			FMODEventResourceGenerator.EnsureGenerated();
 
-			var locations = AssetLocationsField?.GetValue( LocalBrowser ) is AssetLocations loc ? loc : null;
+			var locations = _assetLocationsField?.GetValue( LocalBrowser ) is AssetLocations loc ? loc : null;
 
 			if ( !locations.IsValid() )
 				return;
