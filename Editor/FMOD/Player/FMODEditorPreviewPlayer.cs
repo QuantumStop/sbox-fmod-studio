@@ -214,14 +214,14 @@ public static class FMODEditorPreviewPlayer
 			return Math.Clamp( v, 0f, 1f );
 		}
 
-		static bool TryCompute( FMOD.DSP_METERING_INFO info, out float value01 )
+		static bool TryCompute( DSP_METERING_INFO info, out float value01 )
 		{
 			value01 = 0f;
 			var channels = Math.Clamp( (int)info.numchannels, 1, 32 );
 			var levels = info.peaklevel;
-			if ( levels is null || levels.Length < channels )
+			if ( levels.Length < channels )
 				levels = info.rmslevel;
-			if ( levels is null || levels.Length < channels )
+			if ( levels.Length < channels )
 				return false;
 
 			var sum = 0f;
