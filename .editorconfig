@@ -98,3 +98,23 @@ csharp_space_between_square_brackets = false
 # Wrapping preferences
 csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = true
+
+# Naming
+dotnet_naming_symbols.private_and_protected_fields.applicable_kinds = field, property
+dotnet_naming_symbols.private_and_protected_fields.applicable_accessibilities = private, protected, private_protected
+
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+
+dotnet_naming_rule.private_and_protected_fields_should_be_underscore_camel_case.symbols = private_and_protected_fields
+dotnet_naming_rule.private_and_protected_fields_should_be_underscore_camel_case.style = underscore_camel_case
+dotnet_naming_rule.private_and_protected_fields_should_be_underscore_camel_case.severity = warning
+
+dotnet_naming_symbols.public_api.applicable_kinds = field, property
+dotnet_naming_symbols.public_api.applicable_accessibilities = public
+
+dotnet_naming_style.pascal_case_no_prefix.capitalization = pascal_case
+
+dotnet_naming_rule.public_api_should_be_pascal_case.symbols = public_api
+dotnet_naming_rule.public_api_should_be_pascal_case.style = pascal_case_no_prefix
+dotnet_naming_rule.public_api_should_be_pascal_case.severity = warning
