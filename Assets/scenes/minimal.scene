@@ -212,7 +212,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Sphere",
-      "Position": "384,224,32",
+      "Position": "-73.0666656,-352,32",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -252,15 +252,11 @@
           "__guid": "3d07ebc2-45a6-44e8-b72f-5fb5612a5b2c",
           "__enabled": true,
           "Flags": 0,
-          "Obj1": {
-            "_type": "gameobject",
-            "go": "558b5fd7-dcc7-4526-b3aa-26a76529659f"
-          },
-          "Obj2": null,
-          "TestFloat": {
-            "ParameterName": null,
-            "Value": 0
-          }
+          "_event": null,
+          "_key": "wax",
+          "_obj1": null,
+          "_obj2": null,
+          "_testFloat": null
         },
         {
           "__type": "Programmer",
@@ -761,7 +757,7 @@
         {
           "__type": "FMODSbox.StudioSoundPoint",
           "__guid": "856a4523-4ed4-4b1d-a189-09adbe0aabc1",
-          "__enabled": true,
+          "__enabled": false,
           "Flags": 0,
           "_hasFloats": false,
           "_hasLabels": false,
@@ -769,8 +765,8 @@
           "AttachToObject": false,
           "AutoPlay": true,
           "Event": {
-            "Id": "eddc15da-8bb4-4309-93dc-5af0aeab936f",
-            "Path": "_fmod_project/fmod_studio/events/timeline.fmevent"
+            "Id": "513a3747-bcd1-4273-b9cf-e93640bd1216",
+            "Path": "_fmod_project/fmod_studio/events/audiotable.fmevent"
           },
           "FloatParameters": [
             {
@@ -787,6 +783,23 @@
           "OverrideVolumeBool": true,
           "OverrideVolumeScale": 1,
           "ReleaseEvent": true
+        },
+        {
+          "__type": "DistancePrinter",
+          "__guid": "889b2135-9309-42e4-9f83-3d496e01e19d",
+          "__enabled": true,
+          "Flags": 0,
+          "_event": {
+            "Id": "1bc70827-c608-4ec1-8c67-1c236240d7f8",
+            "Path": "_fmod_project/fmod_studio/events/action.fmevent"
+          },
+          "_key": "wax",
+          "_obj1": null,
+          "_obj2": null,
+          "_testFloat": {
+            "ParameterName": null,
+            "Value": 0
+          }
         }
       ],
       "Children": []
@@ -814,7 +827,36 @@
     },
     "GameObjectSystems": {
       "FMODSbox.FMODManagerSystem": {
-        "AllInstancesEver": [],
+        "AllInstancesEver": [
+          {
+            "Instance": {},
+            "EverStarted": false
+          },
+          {
+            "Instance": {},
+            "EverStarted": false
+          },
+          {
+            "Instance": {},
+            "EverStarted": false
+          },
+          {
+            "Instance": {},
+            "EverStarted": false
+          },
+          {
+            "Instance": {},
+            "EverStarted": false
+          },
+          {
+            "Instance": {},
+            "EverStarted": false
+          },
+          {
+            "Instance": {},
+            "EverStarted": false
+          }
+        ],
         "UnreleasedInstances": []
       },
       "Sandbox.Clutter.ClutterGridSystem": {

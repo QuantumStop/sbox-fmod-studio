@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<objects serializationModel="Studio.02.03.00">
+<objects serializationModel="Studio.02.04.00">
 	<object class="Workspace" id="{5a1db3ae-1d47-43f0-b5f2-b7a8747be40f}">
 		<relationship name="masterEventFolder">
 			<destination>{edbe0dfa-212e-427f-bd71-3ccf2dc126b2}</destination>
@@ -12,6 +12,9 @@
 		</relationship>
 		<relationship name="masterParameterPresetFolder">
 			<destination>{dbc5a95d-5d58-422b-abc8-08cf96375260}</destination>
+		</relationship>
+		<relationship name="masterCurvePresetFolder">
+			<destination>{8a7faf3a-3440-4856-9c6b-e85483524bd8}</destination>
 		</relationship>
 		<relationship name="masterBankFolder">
 			<destination>{82980f3e-4785-47fc-9dcc-119b71e31454}</destination>

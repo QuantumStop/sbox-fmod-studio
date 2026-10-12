@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<objects serializationModel="Studio.02.03.00">
+<objects serializationModel="Studio.02.04.00">
 	<object class="Platform" id="{fe788e1b-7713-4900-b3cb-f5286f9513f9}">
 		<property name="hardwareType">
 			<value>0</value>
@@ -11,7 +11,7 @@
 			<value>G:/Sandbox/fmod_studio/Assets/fmod</value>
 		</property>
 		<property name="speakerFormat">
-			<value>5</value>
+			<value>1</value>
 		</property>
 	</object>
 </objects>

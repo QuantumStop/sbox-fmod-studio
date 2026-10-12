@@ -3,42 +3,47 @@ using FMODSbox;
 
 public class DistancePrinter : Component
 {
-	[Property] public GameObject Obj1 { get; set; }
-	[Property] public GameObject Obj2 { get; set; }
-	[Property] public ParamFloat TestFloat { get; set; }
-	private EventInstance instance { get; set; }
+	[Property] private FMODEventResource _event { get; set; }
+
+	[Property] private GameObject _obj1 { get; set; }
+	[Property] private GameObject _obj2 { get; set; }
+	[Property] private ParamFloat _testFloat { get; set; }
+	private EventInstance _instance { get; set; }
 
 	protected override void OnUpdate()
 	{
-		if ( Obj2.IsValid() ) Log.Info( "Meters: " + MathX.InchToMeter( Obj1.WorldPosition.Distance( Obj2.WorldPosition ) ) );
+		if ( _obj2.IsValid() ) Log.Info( "Meters: " + MathX.InchToMeter( _obj1.WorldPosition.Distance( _obj2.WorldPosition ) ) );
 	}
 
 	[Button]
-	void TestSound()
-	{
-		FMODSound.Play( "event:/Action" );
-	}
+	private void TestSound() => FMODSound.Play( _event );
 
 	[Button]
-	void Test3DSound()
+	private void Test3DSound()
 	{
-		if ( Obj1.IsValid() )
+		if ( _obj1.IsValid() )
 		{
-			instance = FMODSound.Play( "event:/Action", Obj1 );
+			_instance = FMODSound.Play( _event, _obj1 );
 		}
 	}
 
 	[Button]
-	void SetParam()
-	{
-		FMODSound.SetParameter( instance, TestFloat );
-	}
+	private void SetParam() => FMODSound.SetParameter( _instance, _testFloat );
 
-	bool pause = false;
+	bool _pause = false;
 	[Button]
-	void TestPause()
+	private void TestPause()
 	{
-		pause = !pause;
-		FMODSound.SetPauseOnAll( pause );
+		_pause = !_pause;
+		FMODSound.SetPauseOnAll( _pause );
+	}
+	[Property, Header( "Audio Table" )] private string _key { get; set; } = "wax";
+
+	[Button]
+	private void TestAudioTable()
+	{
+		var snd = FMODSound.Create( _event );
+		snd.addAudioTableKey( _key );
+		FMODSound.Play( snd );
 	}
 }
