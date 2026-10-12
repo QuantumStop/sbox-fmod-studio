@@ -28,12 +28,6 @@
           "FieldOfView": 60,
           "FovAxis": "Horizontal",
           "IsMainCamera": true,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "Orthographic": false,
           "OrthographicHeight": 1204,
           "PostProcessAnchor": null,
@@ -55,7 +49,7 @@
       "Flags": 0,
       "Name": "Sun",
       "Position": "0,0,0",
-      "Rotation": "-0.0729315,0.4822396,0.1305433,0.8631827",
+      "Rotation": "-0.0729314983,0.482239604,0.130543306,0.863182724",
       "Scale": "1,1,1",
       "Tags": "light_directional,light",
       "Enabled": true,
@@ -70,17 +64,18 @@
           "__guid": "d3659344-a90d-48fa-927a-095f70fe041f",
           "__enabled": true,
           "Flags": 0,
+          "ContactShadows": true,
+          "Contribution": "Diffuse, Specular, Transmissive",
           "FogMode": "Enabled",
           "FogStrength": 1,
           "LightColor": "0.94419,0.97767,1,1",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
+          "ShadowBias": 0,
+          "ShadowCascadeCount": 4,
+          "ShadowCascadeSplitRatio": 0.91,
+          "ShadowHardness": 0,
           "Shadows": true,
-          "SkyColor": "0.2532,0.32006,0.35349,1"
+          "SkyColor": "0.2532,0.32006,0.35349,1",
+          "Visualizer": {}
         }
       ],
       "Children": []
@@ -106,14 +101,11 @@
           "__guid": "de79e9e0-5c37-4c54-ac67-bfcdb1d5483b",
           "__enabled": true,
           "Flags": 0,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "SkyIndirectLighting": true,
-          "SkyMaterial": "materials/skybox/skybox_day_01.vmat",
+          "SkyMaterial": {
+            "Id": "e05fd285-6edd-4c7b-9b31-8a41a0265c3e",
+            "Path": "materials/skybox/skybox_day_01.vmat"
+          },
           "Tint": "1,1,1,1"
         },
         {
@@ -133,16 +125,14 @@
           "MaxDistance": 512,
           "Mode": "CustomTexture",
           "MultiBounce": false,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "Priority": 0,
           "Projection": "Sphere",
+          "RenderExcludeTags": "",
           "Resolution": "Small",
-          "Texture": "textures/cubemaps/default2.vtex",
+          "Texture": {
+            "Id": "739e0d1c-2cb0-4b83-8f85-38b7eaf46e62",
+            "Path": "textures/cubemaps/default2.vtex"
+          },
           "TintColor": "1,1,1,1",
           "UpdateStrategy": "OnEnabled",
           "ZFar": 4096,
@@ -176,15 +166,15 @@
           "CreateAttachments": false,
           "LodOverride": null,
           "MaterialGroup": null,
-          "MaterialOverride": "materials/default.vmat",
+          "MaterialOverride": {
+            "Id": "eaa543a0-3df1-48b8-9cfd-1a27c5fc3dc7",
+            "Path": "materials/default.vmat"
+          },
           "Materials": null,
-          "Model": "models/dev/plane.vmdl",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
+          "Model": {
+            "Id": "00000000-0000-0000-306d-2b8df8010000",
+            "Path": "models/dev/plane.vmdl"
+          },
           "RenderOptions": {
             "GameLayer": true,
             "OverlayLayer": false,
@@ -204,12 +194,6 @@
           "Elasticity": null,
           "Friction": null,
           "IsTrigger": false,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "OnObjectTriggerEnter": null,
           "OnObjectTriggerExit": null,
           "OnTriggerEnter": null,
@@ -228,7 +212,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Sphere",
-      "Position": "384,416,32",
+      "Position": "384,224,32",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -250,13 +234,10 @@
           "MaterialGroup": null,
           "MaterialOverride": null,
           "Materials": null,
-          "Model": "models/dev/sphere.vmdl",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
+          "Model": {
+            "Id": "00000000-0000-0000-f09f-a6f0fe7f0000",
+            "Path": "models/dev/sphere.vmdl"
+          },
           "RenderOptions": {
             "GameLayer": true,
             "OverlayLayer": false,
@@ -276,12 +257,6 @@
             "go": "558b5fd7-dcc7-4526-b3aa-26a76529659f"
           },
           "Obj2": null,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "TestFloat": {
             "ParameterName": null,
             "Value": 0
@@ -292,13 +267,7 @@
           "__guid": "5c4cd598-46df-4bd3-b905-eb216f35d5f7",
           "__enabled": true,
           "Flags": 0,
-          "EventName": "event:/Programmer",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "EventName": "event:/Programmer"
         }
       ],
       "Children": []
@@ -308,7 +277,7 @@
       "__version": 2,
       "Flags": 0,
       "Name": "Player Controller",
-      "Position": "-250.2074,63.72749,143.6803",
+      "Position": "-250.207397,63.7274895,143.680298",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -341,6 +310,7 @@
           "BodyMass": 500,
           "BodyRadius": 16,
           "BrakePower": 1,
+          "CameraCollisionIgnore": "",
           "CameraOffset": "256,0,12",
           "ColliderObject": {
             "_type": "gameobject",
@@ -360,12 +330,6 @@
           "HideBodyInFirstPerson": true,
           "JumpSpeed": 300,
           "LookSensitivity": 1,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "PitchClamp": 90,
           "ReachLength": 130,
           "Renderer": {
@@ -415,14 +379,9 @@
           "MassOverride": 500,
           "MinImpactDamageSpeed": 500,
           "MotionEnabled": true,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "OverrideMassCenter": true,
           "RigidbodyFlags": "DisableCollisionSounds",
+          "SleepThreshold": 2,
           "StartAsleep": false
         },
         {
@@ -431,12 +390,6 @@
           "__enabled": true,
           "Flags": 0,
           "GroundAngle": 45,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "Priority": 0,
           "StepDownHeight": 18,
           "StepUpHeight": 18
@@ -446,12 +399,6 @@
           "__guid": "7c9849e7-2600-4e94-9f6f-72434d13a59b",
           "__enabled": true,
           "Flags": 0,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "Priority": 10,
           "SwimLevel": 0.7
         },
@@ -461,12 +408,6 @@
           "__enabled": true,
           "Flags": 0,
           "ClimbableTags": "ladder",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "Priority": 5,
           "Speed": 1
         },
@@ -482,17 +423,20 @@
             "go": "87fa2f63-dae0-46ce-b40c-2b4a4528f149",
             "component_type": "SkinnedModelRenderer"
           },
+          "ChestSize": 0.5,
+          "ChinSize": 0,
           "Clothing": [],
+          "EyeAlign": 0.5,
+          "EyeColor": 0,
+          "HeadShape": 0.5,
           "ManualAge": 0.5,
           "ManualHeight": 0.5,
           "ManualTint": 0.5,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
+          "NeckSize": 0,
+          "NoseSize": 0,
+          "RemoveUnownedItems": true,
           "Source": "OwnerConnection",
+          "WaistSize": 0.5,
           "WorkshopItems": []
         }
       ],
@@ -523,24 +467,18 @@
               "BoneMergeTarget": null,
               "CreateAttachments": false,
               "CreateBoneObjects": false,
+              "DeformationMode": "Normal",
               "LodOverride": null,
               "MaterialGroup": "default",
               "MaterialOverride": null,
               "Materials": null,
               "Model": null,
               "Morphs": {},
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
               "Parameters": {
-                "bools": {},
-                "ints": {},
-                "floats": {},
-                "vectors": {},
-                "rotations": {}
+                "floats": {
+                  "scale_height": 1,
+                  "scale_heel": 0
+                }
               },
               "PlaybackRate": 1,
               "RenderOptions": {
@@ -587,19 +525,13 @@
               "End": "0,0,36",
               "Friction": 0,
               "IsTrigger": false,
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
               "OnObjectTriggerEnter": null,
               "OnObjectTriggerExit": null,
               "OnTriggerEnter": null,
               "OnTriggerExit": null,
               "Radius": 11.313708,
               "RollingResistance": null,
-              "Start": "0,0,60.68629",
+              "Start": "0,0,60.6862907",
               "Static": false,
               "Surface": null,
               "SurfaceVelocity": "0,0,0"
@@ -614,12 +546,6 @@
               "Elasticity": null,
               "Friction": 0,
               "IsTrigger": false,
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
               "OnObjectTriggerEnter": null,
               "OnObjectTriggerExit": null,
               "OnTriggerEnter": null,
@@ -670,14 +596,9 @@
               }
             ]
           },
+          "CreateTargets": true,
           "IsLooping": true,
           "IsPlaying": true,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "PositionSeconds": 0,
           "Resource": {
             "Compiled": {
@@ -687,7 +608,9 @@
                   "Name": "Sphere",
                   "Type": "Sandbox.GameObject",
                   "Id": "d91ed374-098b-4252-9441-39e4c189f486",
-                  "ReferenceId": "558b5fd7-dcc7-4526-b3aa-26a76529659f",
+                  "Metadata": {
+                    "ReferenceId": "558b5fd7-dcc7-4526-b3aa-26a76529659f"
+                  },
                   "Children": [
                     {
                       "Kind": "Property",
@@ -695,55 +618,34 @@
                       "Type": "Vector3",
                       "Blocks": [
                         {
-                          "TimeRange": {
-                            "Start": 0,
-                            "End": 6240
-                          },
+                          "TimeRange": "0,6240",
                           "Value": "384,416,32"
                         },
                         {
-                          "TimeRange": {
-                            "Start": 6240,
-                            "End": 9120
-                          },
+                          "TimeRange": "6240,9120",
                           "SampleRate": 30,
                           "Samples": "H4sIAAAAAAAACpNkAIEDzhDM4ITJ3kAl9gIkdgMSWwGJzYDsBick9UhsEA1nH0JSj8R2OIykF4k9AQd7ARJ7Aw72ATAbAGHuD6gwAQAA"
                         },
                         {
-                          "TimeRange": {
-                            "Start": 9120,
-                            "End": 15000
-                          },
+                          "TimeRange": "9120,15000",
                           "Value": "384,-384,32"
                         },
                         {
-                          "TimeRange": {
-                            "Start": 15000,
-                            "End": 32520
-                          },
+                          "TimeRange": "15000,32520",
                           "SampleRate": 30,
                           "Samples": "H4sIAAAAAAAACsXUzQ2CQBDF8Tl6tARKIayFbClbAokNUMKWsFELoARK2BKMEsOfxBeH7EFOvxDCx7zHXO11lGCW72Y2rJ7gEe7hDk63ze/jc37YXOAu4J7C0eEEjwc9wVm4NHj+k4v4liTmzFx22SHTwnxFByL7IPrDjs3wAttj8wk+C/OaKp6VHL1Nop9JdEZlvcAVtstvV0emkyNTU/mKrJlvL/ZAPujSYObFvvFb1B7w/NdHzb0RxZw5T75zL/6Fltl6ur3LOnzviWduLfutZf+YY/94ds465yeZ9wXD6AYAAA=="
                         },
                         {
-                          "TimeRange": {
-                            "Start": 32520,
-                            "End": 36960
-                          },
+                          "TimeRange": "32520,36960",
                           "Value": "384,-320,32"
                         },
                         {
-                          "TimeRange": {
-                            "Start": 36960,
-                            "End": 58440
-                          },
+                          "TimeRange": "36960,58440",
                           "SampleRate": 30,
                           "Samples": "H4sIAAAAAAAACo2VMY7bMBBFBymCIEiR0qVLlz6Cs1SxZcqUKnOElCpyAB3BR9giBxAkHcD9pki63W5v4MUfzh/+OHYQA4YeqOFw5vOT+mH4PRSzh2Vjdmc2OpvzwfmNsxWzY4zjn2xmI3k2G4KH2cyCJ/AcMZJju5hNwliD8dvS8qAOrtVzHH+OlzaOWMbjPfMcS50DRr+sYQJbY6+bMewFOUUT9ojas3drmiBHji8tHj1mHvQea/mYMOv08SJzWTdiRCuyrytakZGP7DWLVpzbi4bjhW7cI7ApR82eQ/Tp2XsRHaCp+GESTcijMLRkPJ7MM4mGYPfNndkJmkQ9noP7KOt7/uBe9ESO/oqe7mfRc7jivek/fNiLnv5emHvNebkvPC+YK35LbdV785/akjGPjHnpT/HkKHoexZOe2xpnndCcPd7w5KUP6ZtBPYT7hPoLQwfOxZO64D3Xwtmcrpxl9eR44/xuLzxJv2HeLzmbtrbe360SG4xYxuPJPC/iVfBBY+bm1bxzRFvfK/YuOmOv0leiM/rLcy2aD//wbXr+hif/uiev3I1+Z9Izoi3Wp6+QMz0Z/VNn6okcm7V5b7e+TX3I0Pvj+vN8/lTnnZbHZK7lezKLzqJnnkH4vzz5XL9/yJhTnp2hExm9n4Ktaz7bdMjz3nnfoeea59Ch58qfO+j5wWO+gK3xsFS+77D3lXcd+qmMtfbB0PY+GHV+ZQz2Nxh9fQ9Gv2R471swNO7X317bbjU7hOb71WwrTG8jPr/viFnOVSu5V/0Oke8UNXdf3PiOV34FsVs3xnQIAAA="
                         },
                         {
-                          "TimeRange": {
-                            "Start": 58440,
-                            "End": 61800
-                          },
+                          "TimeRange": "58440,61800",
                           "Value": "-64,160,32"
                         }
                       ]
@@ -830,7 +732,10 @@
                 }
               },
               "References": []
-            }
+            },
+            "__references": [
+              "local.fmod_studio"
+            ]
           },
           "TimeScale": 1
         }
@@ -858,32 +763,29 @@
           "__guid": "856a4523-4ed4-4b1d-a189-09adbe0aabc1",
           "__enabled": true,
           "Flags": 0,
+          "_hasFloats": false,
+          "_hasLabels": false,
           "AttachTarget": null,
           "AttachToObject": false,
-          "AutoPlay": false,
-          "Event": "event:/Timeline",
+          "AutoPlay": true,
+          "Event": {
+            "Id": "eddc15da-8bb4-4309-93dc-5af0aeab936f",
+            "Path": "_fmod_project/fmod_studio/events/timeline.fmevent"
+          },
           "FloatParameters": [
             {
               "ParameterName": null,
               "Value": 0
             }
           ],
-          "HasFloats": false,
-          "HasLabels": false,
           "LabelParameters": [
             {
               "ParameterName": null,
               "Value": null
             }
           ],
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
           "OverrideVolumeBool": true,
-          "OverrideVolumeScale": 0.25,
+          "OverrideVolumeScale": 1,
           "ReleaseEvent": true
         }
       ],
@@ -892,6 +794,7 @@
   ],
   "SceneProperties": {
     "NetworkInterpolation": true,
+    "PhysicsMode": "Physics3D",
     "TimeScale": 1,
     "WantsSystemScene": true,
     "Metadata": {},
@@ -905,12 +808,24 @@
       "AgentStepSize": 18,
       "AgentMaxSlope": 40,
       "ExcludedBodies": "",
-      "IncludedBodies": ""
+      "IncludedBodies": "",
+      "DeferGeneration": false,
+      "CustomBounds": false
     },
     "GameObjectSystems": {
+      "FMODSbox.FMODManagerSystem": {
+        "AllInstancesEver": [],
+        "UnreleasedInstances": []
+      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
-          "$blob": "0b0d67fa-d5f2-4035-be66-11b243150173"
+          "$blob": "64db792e-5935-8fbc-8cfa-050cd49fa7fd",
+          "$refs": []
+        }
+      },
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
         }
       }
     }
