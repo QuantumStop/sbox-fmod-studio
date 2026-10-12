@@ -5,22 +5,17 @@ namespace FMODSbox;
 
 public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 {
-	/// <summary>
-	/// The list of plugins to load
-	/// </summary>
+	/// <summary>The list of plugins to load</summary>
 	[Property] public List<string> Plugins { get; set; }
 
-	/// <summary>
-	/// Load Dynamic plugins, platforms that want Static plugins are niche even by Unreal standards, so we don't care about statics. 
-	/// </summary>
+	/// <summary>Load Dynamic plugins, platforms that want Static plugins are niche even by Unreal standards, so we don't care about statics.</summary>
 	/// <param name="coreSystem">FMOD Core system</param>
 	/// <param name="reportResult">Result of the plugin linking</param>
 	private void LoadPlugins( FMOD.System coreSystem, Action<FMOD.RESULT, string> reportResult )
 	{
 		List<string> pluginNames = Plugins;
 
-		if ( pluginNames is null )
-			return;
+		if ( pluginNames is null ) return;
 
 		foreach ( string pluginName in pluginNames )
 		{
@@ -42,9 +37,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		}
 	}
 
-	/// <summary>
-	/// Sanitize input by appending .dll in case it's not there
-	/// </summary>
+	/// <summary>Sanitize input by appending .dll in case it's not there</summary>
 	/// <param name="name">The string</param>
 	/// <returns>Modified (or unmodified) string</returns>
 	private static string CheckForDll( string name )
@@ -57,9 +50,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>
 		return adjust;
 	}
 
-	/// <summary>
-	/// The dlls are stored in the balls
-	/// </summary>
+	/// <summary>The dlls are stored in the balls</summary>
 	/// <param name="name">Name of dll we are looking for</param>
 	/// <returns>Full path</returns>
 	private static string GetPluginPath( string name ) => Path.GetFullPath( $"bin/thirdparty/{name}" );

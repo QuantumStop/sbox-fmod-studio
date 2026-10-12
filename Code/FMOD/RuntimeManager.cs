@@ -17,13 +17,13 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 
 	void ISceneLoadingEvents.BeforeLoad( Scene scene, SceneLoadOptions options ) => SceneLoaded();
 
-	[Property, JsonIgnore, ReadOnly, Hide] private SYSTEM_CALLBACK errorCallback;
+	[Property, JsonIgnore, ReadOnly, Hide] private SYSTEM_CALLBACK _errorCallback;
 
-	[Property, JsonIgnore, ReadOnly, Hide] private FMOD.Studio.System studioSystem;
-	[Property, JsonIgnore, ReadOnly, Hide] private System coreSystem;
+	[Property, JsonIgnore, ReadOnly, Hide] private FMOD.Studio.System _studioSystem;
+	[Property, JsonIgnore, ReadOnly, Hide] private System _coreSystem;
 
 
-	private bool isMuted = false;
+	private bool _isMuted = false;
 
 	private Dictionary<GUID, FMOD.Studio.EventDescription> _cachedDescriptions = [];
 
@@ -63,11 +63,11 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 		public FMOD.Studio.EVENT_CALLBACK Callback;
 	}
 
-	private int loadingBanksRef = 0;
+	private int _loadingBanksRef = 0;
 
-	private static readonly byte[] masterBusPrefix;
-	private static readonly byte[] eventSet3DAttributes;
-	private static readonly byte[] systemGetBus;
+	private static readonly byte[] _masterBusPrefix;
+	private static readonly byte[] _eventSet3DAttributes;
+	private static readonly byte[] _systemGetBus;
 
 	[Property, ReadOnly, Hide] public List<string> Banks { get; set; }
 	[Property, ReadOnly, Hide] public List<string> BanksToLoad { get; set; }
@@ -76,12 +76,12 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 	{
 		UTF8Encoding encoding = new();
 
-		masterBusPrefix = encoding.GetBytes( "bus:/, " );
-		eventSet3DAttributes = encoding.GetBytes( "EventInstance::set3DAttributes" );
-		systemGetBus = encoding.GetBytes( "System::getBus" );
+		_masterBusPrefix = encoding.GetBytes( "bus:/, " );
+		_eventSet3DAttributes = encoding.GetBytes( "EventInstance::set3DAttributes" );
+		_systemGetBus = encoding.GetBytes( "System::getBus" );
 	}
 
-	public static bool IsMuted => Current.isMuted;
+	public static bool IsMuted => Current._isMuted;
 
 	private void SceneLoaded()
 	{
@@ -96,7 +96,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 	public override void Dispose()
 	{
 		_notDisposed = false;
-		coreSystem.setCallback( null, 0 );
+		_coreSystem.setCallback( null, 0 );
 		ReleaseStudioSystem();
 		GC.SuppressFinalize( this );
 		base.Dispose();
@@ -107,9 +107,9 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 	/// </summary>
 	static private bool _notDisposed { get; set; } = false;
 
-	public static FMOD.Studio.System StudioSystem => Current.studioSystem;
+	public static FMOD.Studio.System StudioSystem => Current._studioSystem;
 
-	public static System CoreSystem => Current.coreSystem;
+	public static System CoreSystem => Current._coreSystem;
 
 	private struct LoadedBank
 	{
@@ -131,33 +131,33 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 
 		retry:
 
-		result = FMOD.Studio.System.create( out studioSystem );
+		result = FMOD.Studio.System.create( out _studioSystem );
 		CheckInitResult( result, "FMOD.Studio.System.create" );
 
-		result = studioSystem.getCoreSystem( out coreSystem );
+		result = _studioSystem.getCoreSystem( out _coreSystem );
 		CheckInitResult( result, "FMOD.Studio.System.getCoreSystem" );
 
-		result = coreSystem.setOutput( outputType );
+		result = _coreSystem.setOutput( outputType );
 		CheckInitResult( result, "FMOD.System.setOutput" );
 
-		result = coreSystem.setSoftwareChannels( _fmodSettings.RealChannels );
+		result = _coreSystem.setSoftwareChannels( _fmodSettings.RealChannels );
 		CheckInitResult( result, "FMOD.System.setSoftwareChannels" );
 
-		result = coreSystem.setSoftwareFormat( _fmodSettings.SampleRate, _fmodSettings.SpeakerMode, 0 );
+		result = _coreSystem.setSoftwareFormat( _fmodSettings.SampleRate, _fmodSettings.SpeakerMode, 0 );
 		CheckInitResult( result, "FMOD.System.setSoftwareFormat" );
 
 		// this is fucked, it doesnt affect the attenuation?
-		result = coreSystem.set3DSettings( 1, 1, 1 );
+		result = _coreSystem.set3DSettings( 1, 1, 1 );
 		CheckInitResult( result, "FMOD.System.set3DSettings" );
 
 		if ( _fmodSettings.DSPBufferLength > 0 && _fmodSettings.DSPBufferCount > 0 )
 		{
-			result = coreSystem.setDSPBufferSize( _fmodSettings.DSPBufferLength, _fmodSettings.DSPBufferCount );
+			result = _coreSystem.setDSPBufferSize( _fmodSettings.DSPBufferLength, _fmodSettings.DSPBufferCount );
 			CheckInitResult( result, "FMOD.System.setDSPBufferSize" );
 		}
 
-		errorCallback = new SYSTEM_CALLBACK( ERROR_CALLBACK );
-		result = coreSystem.setCallback( errorCallback, FMOD.SYSTEM_CALLBACK_TYPE.ERROR );
+		_errorCallback = new SYSTEM_CALLBACK( ERROR_CALLBACK );
+		result = _coreSystem.setCallback( _errorCallback, FMOD.SYSTEM_CALLBACK_TYPE.ERROR );
 		CheckInitResult( result, "FMOD.System.setCallback" );
 
 #if DEBUG  // used for memory profiling in studio profiler, use it only in edtior builds                                                                                
@@ -165,12 +165,12 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 #endif
 
 		// set the live update port (even if its the default it expects it set)
-		coreSystem.setAdvancedSettings( ref advancedSettings );
+		_coreSystem.setAdvancedSettings( ref advancedSettings );
 
 		// Source 2 is X+ Forward, Y+ Left, Z+ Up = Righthanded, FMOD is lefthanded Y-Up
 		INITFLAGS coreInitFlags = FMOD.INITFLAGS.NORMAL | FMOD.INITFLAGS._3D_RIGHTHANDED;
 
-		result = studioSystem.initialize( _fmodSettings.VirtualChannels, studioInitFlags, coreInitFlags, IntPtr.Zero );
+		result = _studioSystem.initialize( _fmodSettings.VirtualChannels, studioInitFlags, coreInitFlags, IntPtr.Zero );
 		if ( result != FMOD.RESULT.OK && initResult == FMOD.RESULT.OK )
 		{
 			initResult = result; // Save this to throw at the end (we'll attempt NO SOUND to shield ourselves from unexpected device failures)
@@ -185,15 +185,15 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 		// Test network functionality triggered during System::update
 		if ( (studioInitFlags & FMOD.Studio.INITFLAGS.LIVEUPDATE) != 0 )
 		{
-			studioSystem.flushCommands(); // Any error will be returned through Studio.System.update
+			_studioSystem.flushCommands(); // Any error will be returned through Studio.System.update
 
-			result = studioSystem.update();
+			result = _studioSystem.update();
 			if ( result == RESULT.ERR_NET_SOCKET_ERROR )
 			{
 				studioInitFlags &= ~FMOD.Studio.INITFLAGS.LIVEUPDATE;
 				Log.Info( "[FMOD] Cannot open network port for Live Update (in-use), restarting with Live Update disabled." );
 
-				result = studioSystem.release();
+				result = _studioSystem.release();
 				CheckInitResult( result, "FMOD.Studio.System.Release" );
 
 				goto retry;
@@ -201,7 +201,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 		}
 
 
-		LoadPlugins( coreSystem, CheckInitResult );
+		LoadPlugins( _coreSystem, CheckInitResult );
 		LoadBanks( _fmodSettings );
 
 		return initResult;
@@ -210,7 +210,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 	private void StartUpdate()
 	{
 		using var _ = PerformanceStats.Timings.Audio.Scope();
-		if ( studioSystem.isValid() )
+		if ( _studioSystem.isValid() )
 		{
 			for ( int i = 0; i < _attachedInstances.Count; i++ )
 			{
@@ -263,7 +263,7 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 #if IGNIS
 			MuteAllEvents( Sandbox.Audio.AudioEngine.Mute || (!Sandbox.Audio.AudioEngine.IsFocused && Sandbox.Audio.AudioEngine.MuteLoseFocus) );
 #endif
-			studioSystem.update();
+			_studioSystem.update();
 		}
 	}
 
@@ -278,15 +278,15 @@ public partial class FMODManagerSystem : GameObjectSystem<FMODManagerSystem>, IS
 			return RESULT.OK;
 		}
 		if ( callbackInfo.instancetype == ERRORCALLBACK_INSTANCETYPE.STUDIO_EVENTINSTANCE
-			&& callbackInfo.functionname.Equals( eventSet3DAttributes )
+			&& callbackInfo.functionname.Equals( _eventSet3DAttributes )
 			&& callbackInfo.result == RESULT.ERR_INVALID_HANDLE )
 		{
 			return RESULT.OK;
 		}
 		if ( callbackInfo.instancetype == ERRORCALLBACK_INSTANCETYPE.STUDIO_SYSTEM
-			&& callbackInfo.functionname.Equals( systemGetBus )
+			&& callbackInfo.functionname.Equals( _systemGetBus )
 			&& callbackInfo.result == RESULT.ERR_EVENT_NOTFOUND
-			&& callbackInfo.functionparams.StartsWith( masterBusPrefix ) )
+			&& callbackInfo.functionparams.StartsWith( _masterBusPrefix ) )
 		{
 			return RESULT.OK;
 		}

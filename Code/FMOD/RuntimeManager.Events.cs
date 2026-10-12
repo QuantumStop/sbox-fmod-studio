@@ -4,16 +4,16 @@ namespace FMODSbox;
 
 public partial class FMODManagerSystem
 {
-	private static readonly object EventCacheLock = new();
-	private static int EventCacheVersion = 1;
-	private static int EventCacheBuiltVersion = 0;
-	private static List<string> CachedEventPaths = [];
+	private static readonly object _eventCacheLock = new();
+	private static int _eventCacheVersion = 1;
+	private static int _eventCacheBuiltVersion = 0;
+	private static List<string> _cachedEventPaths = [];
 
 	internal static void MarkEventCacheDirty()
 	{
-		lock ( EventCacheLock )
+		lock ( _eventCacheLock )
 		{
-			EventCacheVersion++;
+			_eventCacheVersion++;
 		}
 	}
 
@@ -22,18 +22,17 @@ public partial class FMODManagerSystem
 	/// </summary>
 	public static IReadOnlyList<string> GetAllEventPaths( bool forceRefresh = false )
 	{
-		if ( !IsInitialized )
-			return Array.Empty<string>();
+		if ( !IsInitialized ) return [];
 
-		lock ( EventCacheLock )
+		lock ( _eventCacheLock )
 		{
 			if ( forceRefresh )
 			{
-				EventCacheVersion++;
+				_eventCacheVersion++;
 			}
 
-			if ( EventCacheBuiltVersion == EventCacheVersion && CachedEventPaths.Count > 0 )
-				return CachedEventPaths;
+			if ( _eventCacheBuiltVersion == _eventCacheVersion && _cachedEventPaths.Count > 0 )
+				return _cachedEventPaths;
 
 			var unique = new HashSet<string>( StringComparer.OrdinalIgnoreCase );
 
@@ -62,9 +61,9 @@ public partial class FMODManagerSystem
 				}
 			}
 
-			CachedEventPaths = unique.OrderBy( x => x, StringComparer.OrdinalIgnoreCase ).ToList();
-			EventCacheBuiltVersion = EventCacheVersion;
-			return CachedEventPaths;
+			_cachedEventPaths = unique.OrderBy( x => x, StringComparer.OrdinalIgnoreCase ).ToList();
+			_eventCacheBuiltVersion = _eventCacheVersion;
+			return _cachedEventPaths;
 		}
 	}
 }

@@ -11,10 +11,7 @@ public struct EventReference
 
 	public static Func<string, FMOD.GUID> GuidLookupDelegate;
 
-	public override readonly string ToString()
-	{
-		return string.Format( "{0} ({1})", Guid, Path );
-	}
+	public override readonly string ToString() => string.Format( "{0} ({1})", Guid, Path );
 
 	public readonly bool IsNull => string.IsNullOrEmpty( Path ) && Guid.IsNull;
 

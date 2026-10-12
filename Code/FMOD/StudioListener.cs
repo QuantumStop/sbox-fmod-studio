@@ -10,10 +10,8 @@ public partial class StudioListener : Component
 	[Property] private Rigidbody _rigidBody { get; set; }
 	public int ListenerNumber => FMODManagerSystem.Current.Listeners.IndexOf( this );
 
-	/// <summary>
-	/// Use this to manually set the rigidbody through code, sort of private getter public setter situation
-	/// </summary>
-	/// <param name="body"></param>
+	/// <summary>Use this to manually set the rigidbody through code, sort of private getter public setter situation</summary>
+	/// <param name="body">The Rigidbody</param>
 	public void SetRigidbody( Rigidbody body ) => _rigidBody = body;
 
 	protected override void OnEnabled()
@@ -33,15 +31,11 @@ public partial class StudioListener : Component
 		_lastFramePosition = WorldTransform.Position;
 	}
 
-	protected override void OnDisabled()
-	{
-		FMODManagerSystem.RemoveListener( this );
-	}
+	protected override void OnDisabled() => FMODManagerSystem.RemoveListener( this );
 
 	protected override void OnUpdate()
 	{
-		if ( ListenerNumber < 0 || ListenerNumber >= FMOD.CONSTANTS.MAX_LISTENERS )
-			return;
+		if ( ListenerNumber < 0 || ListenerNumber >= FMOD.CONSTANTS.MAX_LISTENERS ) return;
 
 		if ( NonRigidbodyVelocity )
 		{

@@ -16,7 +16,7 @@ public sealed class FMODEventResource : GameResource
 	/// </summary>
 	public static implicit operator string( FMODEventResource e ) => e?.EventPath ?? string.Empty;
 
-	private static readonly Color TypePurple = "#8d368dff";
+	private static readonly Color _typePurple = "#8d368dff";
 	private static Bitmap _iconLarge;
 	private static Bitmap _iconSmall;
 
@@ -83,7 +83,7 @@ public sealed class FMODEventResource : GameResource
 
 		var key = EventPath ?? ResourcePath ?? string.Empty;
 		var samples = GenerateDeterministicWave( key, LengthMs, 256 );
-		DrawWaveform( bitmap, samples, new Rect( w * 0.06f, h * 0.18f, w * 0.88f, h * 0.62f ), TypePurple.Lighten( 0.35f ) );
+		DrawWaveform( bitmap, samples, new Rect( w * 0.06f, h * 0.18f, w * 0.88f, h * 0.62f ), _typePurple.Lighten( 0.35f ) );
 
 		var hasLabeled = Parameters?.Any( p => p?.IsLabeled == true ) == true;
 		var hasFloat = Parameters?.Any( p => p?.IsLabeled != true ) == true;

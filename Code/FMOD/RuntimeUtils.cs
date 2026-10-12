@@ -88,23 +88,11 @@ namespace FMODSbox
 		public FMOD.GUID Guid;
 		public string Path;
 
-		public EventNotFoundException( string path )
-			: base( "[FMOD] Event not found: '" + path + "'" )
-		{
-			Path = path;
-		}
+		public EventNotFoundException( string path ) : base( "[FMOD] Event not found: '" + path + "'" ) => Path = path;
 
-		public EventNotFoundException( FMOD.GUID guid )
-			: base( "[FMOD] Event not found: " + guid )
-		{
-			Guid = guid;
-		}
+		public EventNotFoundException( FMOD.GUID guid ) : base( "[FMOD] Event not found: " + guid ) => Guid = guid;
 
-		public EventNotFoundException( EventReference eventReference )
-			: base( "[FMOD] Event not found: " + eventReference.ToString() )
-		{
-			Guid = eventReference.Guid;
-		}
+		public EventNotFoundException( EventReference eventReference ) : base( "[FMOD] Event not found: " + eventReference.ToString() ) => Guid = eventReference.Guid;
 	}
 
 	public class BusNotFoundException( string path ) : Exception( "[FMOD] Bus not found '" + path + "'" )
@@ -122,14 +110,12 @@ namespace FMODSbox
 		public string Path;
 		public FMOD.RESULT Result;
 
-		public BankLoadException( string path, FMOD.RESULT result )
-			: base( string.Format( "[FMOD] Could not load bank '{0}' : {1} : {2}", path, result.ToString(), FMOD.Error.String( result ) ) )
+		public BankLoadException( string path, FMOD.RESULT result ) : base( string.Format( "[FMOD] Could not load bank '{0}' : {1} : {2}", path, result.ToString(), FMOD.Error.String( result ) ) )
 		{
 			Path = path;
 			Result = result;
 		}
-		public BankLoadException( string path, string error )
-			: base( string.Format( "[FMOD] Could not load bank '{0}' : {1}", path, error ) )
+		public BankLoadException( string path, string error ) : base( string.Format( "[FMOD] Could not load bank '{0}' : {1}", path, error ) )
 		{
 			Path = path;
 			Result = FMOD.RESULT.ERR_INTERNAL;
@@ -141,15 +127,13 @@ namespace FMODSbox
 		public FMOD.RESULT Result;
 		public string Location;
 
-		public SystemNotInitializedException( FMOD.RESULT result, string location )
-			: base( string.Format( "[FMOD] Initialization failed : {2} : {0} : {1}", result.ToString(), FMOD.Error.String( result ), location ) )
+		public SystemNotInitializedException( FMOD.RESULT result, string location ) : base( string.Format( "[FMOD] Initialization failed : {2} : {0} : {1}", result.ToString(), FMOD.Error.String( result ), location ) )
 		{
 			Result = result;
 			Location = location;
 		}
 
-		public SystemNotInitializedException( Exception inner )
-			: base( "[FMOD] Initialization failed", inner )
+		public SystemNotInitializedException( Exception inner ) : base( "[FMOD] Initialization failed", inner )
 		{
 		}
 	}
@@ -208,8 +192,8 @@ namespace FMODSbox
 	[Serializable]
 	public class ThreadAffinityGroup
 	{
-		public List<ThreadType> threads = [];
-		public ThreadAffinity affinity = ThreadAffinity.Any;
+		public List<ThreadType> Threads = [];
+		public ThreadAffinity Affinity = ThreadAffinity.Any;
 
 		public ThreadAffinityGroup()
 		{
@@ -217,29 +201,29 @@ namespace FMODSbox
 
 		public ThreadAffinityGroup( ThreadAffinityGroup other )
 		{
-			threads = new List<ThreadType>( other.threads );
-			affinity = other.affinity;
+			Threads = [.. other.Threads];
+			Affinity = other.Affinity;
 		}
 
 		public ThreadAffinityGroup( ThreadAffinity affinity, params ThreadType[] threads )
 		{
-			this.threads = new List<ThreadType>( threads );
-			this.affinity = affinity;
+			Threads = [.. threads];
+			Affinity = affinity;
 		}
 	}
 
 	[Serializable]
 	public class CodecChannelCount
 	{
-		public CodecType format;
-		public int channels;
+		public CodecType Format;
+		public int Channels;
 
 		public CodecChannelCount() { }
 
 		public CodecChannelCount( CodecChannelCount other )
 		{
-			format = other.format;
-			channels = other.channels;
+			Format = other.Format;
+			Channels = other.Channels;
 		}
 	}
 

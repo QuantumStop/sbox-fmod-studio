@@ -20,22 +20,16 @@ public partial class FMODManagerSystem
 
 	private void ReleaseStudioSystem()
 	{
-		if ( studioSystem.isValid() )
+		if ( _studioSystem.isValid() )
 		{
-			studioSystem.release();
-			studioSystem.clearHandle();
+			_studioSystem.release();
+			_studioSystem.clearHandle();
 		}
 	}
 
-	public static void SetParameter( EventInstance instance, string param, float value, bool ignoreseekspeed )
-	{
-		SetParameterByName( instance, param.Trim(), value, ignoreseekspeed );
-	}
+	public static void SetParameter( EventInstance instance, string param, float value, bool ignoreseekspeed ) => SetParameterByName( instance, param.Trim(), value, ignoreseekspeed );
 
-	public static void SetParameter( EventInstance instance, string param, string value, bool ignoreseekspeed )
-	{
-		SetParameterByName( instance, param.Trim(), value.Trim(), ignoreseekspeed );
-	}
+	public static void SetParameter( EventInstance instance, string param, string value, bool ignoreseekspeed ) => SetParameterByName( instance, param.Trim(), value.Trim(), ignoreseekspeed );
 
 	private static void SetParameterByName( EventInstance instance, string name, float value, bool ignoreseekspeed )
 	{
@@ -55,10 +49,7 @@ public partial class FMODManagerSystem
 			StudioSystem.setParameterByIDWithLabel( id, value.Trim(), ignoreseekspeed );
 	}
 
-	private static void SetParameterByID( PARAMETER_ID id, float value, bool ignoreseekspeed )
-	{
-		StudioSystem.setParameterByID( id, value, ignoreseekspeed );
-	}
+	private static void SetParameterByID( PARAMETER_ID id, float value, bool ignoreseekspeed ) => StudioSystem.setParameterByID( id, value, ignoreseekspeed );
 
 	public static void SetParameterGlobal( string param, float value, bool ignoreseekspeed )
 	{
@@ -131,7 +122,7 @@ public partial class FMODManagerSystem
 
 	public static void MuteAllEvents( bool muted )
 	{
-		Current.isMuted = muted;
+		Current._isMuted = muted;
 
 		ApplyMuteState();
 	}
@@ -140,7 +131,7 @@ public partial class FMODManagerSystem
 	{
 		if ( StudioSystem.getBus( "bus:/", out Bus masterBus ) == RESULT.OK )
 		{
-			masterBus.setMute( Current.isMuted );
+			masterBus.setMute( Current._isMuted );
 		}
 	}
 
@@ -159,9 +150,7 @@ public partial class FMODManagerSystem
 		eventInstance.release(); // actually release it
 	}
 
-	/// <summary>
-	/// PlayOnObject a sound which is immediately released, making it innacessible (oneshot sound)
-	/// </summary>
+	/// <summary>PlayOnObject a sound which is immediately released, making it innacessible (oneshot sound)</summary>
 	/// <param name="path">Path string of the event</param>
 	/// <param name="position">WorldPosition of the event</param>
 	/// <param name="release">Should the instance be released or we do that ourselves</param>
@@ -177,9 +166,7 @@ public partial class FMODManagerSystem
 		}
 	}
 
-	/// <summary>
-	/// Play a sound
-	/// </summary>
+	/// <summary>Play a sound</summary>
 	/// <param name="guid">GUID of the event</param>
 	/// <param name="position">WorldPosition of the event</param>
 	/// <param name="release">Should the instance be released or we do that ourselves</param>
@@ -223,9 +210,7 @@ public partial class FMODManagerSystem
 		}
 	}
 
-	/// <summary>
-	/// Programmer Instrument version of regular PlayOnce, so we can have more things than in the Unity example (like 3D attributes)
-	/// </summary>
+	/// <summary>Programmer Instrument version of regular PlayOnce, so we can have more things than in the Unity example (like 3D attributes)</summary>
 	/// <param name="guid">GUID of the event</param>
 	/// <param name="key">The string for the audio table</param>
 	/// <param name="callback">The callback that needs to be created separately</param>
@@ -261,7 +246,7 @@ public partial class FMODManagerSystem
 		}
 		else
 		{
-			var result = Current.studioSystem.lookupID( path, out guid );
+			var result = Current._studioSystem.lookupID( path, out guid );
 			if ( result == RESULT.ERR_EVENT_NOTFOUND )
 			{
 				throw new EventNotFoundException( path.Trim() );
@@ -339,7 +324,7 @@ public partial class FMODManagerSystem
 		}
 		else
 		{
-			var result = Current.studioSystem.getEventByID( guid, out eventDesc );
+			var result = Current._studioSystem.getEventByID( guid, out eventDesc );
 
 			if ( result != RESULT.OK )
 			{
@@ -466,15 +451,9 @@ public partial class FMODManagerSystem
 		return true;
 	}
 
-	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, GameObject gameObject, ATTRIBUTES_3D attributes )
-	{
-		return FindOrAddAttachedInstance( instance, gameObject.WorldTransform, gameObject, attributes );
-	}
+	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, GameObject gameObject, ATTRIBUTES_3D attributes ) => FindOrAddAttachedInstance( instance, gameObject.WorldTransform, gameObject, attributes );
 
-	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, GameObject gameObject, ATTRIBUTES_3D attributes, EVENT_CALLBACK callback )
-	{
-		return FindOrAddAttachedInstance( instance, gameObject.WorldTransform, gameObject, attributes, callback );
-	}
+	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, GameObject gameObject, ATTRIBUTES_3D attributes, EVENT_CALLBACK callback ) => FindOrAddAttachedInstance( instance, gameObject.WorldTransform, gameObject, attributes, callback );
 
 	private static AttachedInstance FindOrAddAttachedInstance( EventInstance instance, Transform transform, GameObject gameObject, ATTRIBUTES_3D attributes )
 	{

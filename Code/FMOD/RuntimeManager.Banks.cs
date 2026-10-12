@@ -26,18 +26,18 @@ public partial class FMODManagerSystem
 				bankPath = string.Format( "{0}\\{1}", assetsFolder, bankName );
 			}
 
-			Current.loadingBanksRef++;
+			Current._loadingBanksRef++;
 
 			LoadedBank loadedBank = new();
-			FMOD.RESULT loadResult = Current.studioSystem.loadBankFile( bankPath, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out loadedBank.Bank );
+			FMOD.RESULT loadResult = Current._studioSystem.loadBankFile( bankPath, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out loadedBank.Bank );
 			Current.RegisterLoadedBank( loadedBank, bankPath, bankId, loadSamples, loadResult );
 
-			Current.loadingBanksRef--;
+			Current._loadingBanksRef--;
 		}
 	}
-	public static bool IsInitialized => Current is not null && Current.studioSystem.isValid();
+	public static bool IsInitialized => Current is not null && Current._studioSystem.isValid();
 
-	public static bool HaveAllBanksLoaded => Current.loadingBanksRef == 0;
+	public static bool HaveAllBanksLoaded => Current._loadingBanksRef == 0;
 
 	/*
 	public static bool HaveMasterBanksLoaded
@@ -183,5 +183,5 @@ public partial class FMODManagerSystem
 		}
 	}
 
-	public static void WaitForAllSampleLoading() => Current.studioSystem.flushSampleLoading();
+	public static void WaitForAllSampleLoading() => Current._studioSystem.flushSampleLoading();
 }
